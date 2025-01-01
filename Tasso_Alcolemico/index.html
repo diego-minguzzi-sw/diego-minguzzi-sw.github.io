@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calcola quanto è possibile bere secondo il Metodo D</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Calcola quanto è possibile bere secondo il Metodo D</h1>
+    <form id="calculationForm">
+        <label for="admitted">Tasso alcolemico massimo ammesso:</label>
+        <select id="admitted" name="admitted">
+            <option value="0">Neopatentati: 0</option>
+            <option value="0.5" selected>Ebbrezza lieve: 0.5</option>
+            <option value="0.8">Ebbrezza grave: 0.8</option>
+            <option value="1.5">Massima tolleranza legale: 1.5</option>
+        </select>
+        <label for="driverWeight">Peso del guidatore (kg):</label>
+        <input type="number" id="driverWeight" name="driverWeight" min="40" max="130" value="80">
+        <label for="perc">Gradazione alcolica della bevanda (%):</label>
+        <input type="number" id="perc" name="perc" min="1" max="100" step="0.1" value="4">
+        <label for="gender">Genere del guidatore:</label>
+        <select id="gender" name="gender">
+            <option value="male" selected>Uomo</option>
+            <option value="female">Donna</option>
+        </select>
+        <label for="condition">Condizione del guidatore:</label>
+        <select id="condition" name="condition">
+            <option value="empty" selected>Digiuno</option>
+            <option value="full">Stomaco pieno</option>
+        </select>
+        <button type="button" onclick="calculate()">Calcola</button>
+        <button type="button" onclick="resetForm()">Reset</button>
+    </form>
+    <p id="result"></p>
+    <ul>
+        <li>Questa applicazione é utilizzabile per un uso non professionale</li>
+        <li>Le informazioni fornite si intendono a carattere puramente indicativo</li>
+        <li>Questa applicazione non fornisce consigli medici</li>
+        <li>L'applicazione non utilizza cookies</li>
+    </ul>
+    <a href="https://www.avvocatoandreani.it/servizi/calcolo-tasso-alcolemico-teorico.php" target="_blank">Approfondimenti</a>
+    <script src="script.js"></script>
+</body>
+</html>
