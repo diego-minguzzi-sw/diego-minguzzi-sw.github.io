@@ -1,0 +1,2952 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+  .source_code {
+    background-color: lightgray;
+    font-family: Courier New;
+    border-style: solid;
+    border-width: thin;
+    font-size: normal;
+  }
+  </style>
+
+  <title>Rust, My Notes</title>
+  <link rel="icon"
+        type="image/x-icon"
+        href="https://pic.vsixhub.com/ae/db/570e6089-b871-41df-9cf4-a723cb34ef01-icon.png">
+</head>
+
+<body>
+
+<h1>. 00 Rust Book</h1>
+<a target="_blank" href="https://doc.rust-lang.org/stable/book/">The Rust Programming Language - book</a>: read up to section 10.3
+<p/>
+
+
+<a target="_blank" href="file://wsl.localhost/Ubuntu-24.04/home/minguzzi/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc/rust/html/book/index.html">The Rust Programming Language - book. WSL accessed from Windows</a>
+<p/>
+<a target="_blank" href="file://wsl.localhost/Ubuntu-24.04/home/minguzzi/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc/rust/html/index.html">Rust Documentation. WSL accessed from Windows</a>
+<p/>
+
+<a target="_blank" href="file://wsl.localhost/Ubuntu-24.04/home/minguzzi/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc/rust/html/std/index.html">Rust standard library. WSL accessed from Windows</a>
+<p/>
+
+
+<hr>
+
+<h1>. References</h1>
+<ul>
+  <li><a target="_blank" href="https://rust-lang.github.io/async-book/">Asynchrous programming in Rust</a></li>
+  <li><a target="_blank" href="https://github.com/rust-embedded/awesome-embedded-rust">Awesome Embedded Rust</a>
+    </li>
+  <li><a target="_blank" href="https://google.github.io/comprehensive-rust/">Comprehensive Rust</a></li>
+  <li> Embedded:
+      <ul>
+        <li> <a target="_blank" href="https://docs.espressif.com/projects/rust/book/introduction/hardware-overview.html">The Rust on ESP Book</a> <br>
+         <a target="_blank" href="https://docs.espressif.com/projects/rust/book/">The Rust on Rust on ESP</a> 
+        
+        </li>      
+        <li><a target="_blank" href="https://github.com/rust-embedded/awesome-embedded-rust">Awsome Embedded Rust</a></li>
+        <li><a target="_blank" href="https://docs.rust-embedded.org/discovery/microbit/">Discovery Book - new book (online)</a></li>
+        <li><a target="_blank" href="https://blog.theembeddedrustacean.com/">Embedded Rustacean blog</a></li>
+        <li><a target="_blank" href="https://docs.rust-embedded.org/book/">Embedded Rust book</a></li>
+        <li><a target="_blank" href="https://docs.rust-embedded.org/embedonomicon/">Embedonomicon</a>
+            walks you through the process of creating a no_std application from scratch</li>
+        <li><a target="_blank" href="https://probe.rs/">Probe.rs: embedded debugging toolkit</a></li>
+        <li><a target="_blank" href="https://hboeving.dev/blog/rust-2c-driver-p1/">Writing embedded drivers in Rust isn't that hard. Part 1</a></li>
+        <li><a target="_blank" href=""></a></li>
+      </ul>
+    </li>
+  <li><a target="_blank" href="https://doc.rust-lang.org/stable/book/">Rust Book</a> <br>
+    Command to upen <i>The Rust Book</i>: <br>
+    Browse the documentation by typing:
+    <code>rustup doc</code>
+    <p/>
+      <a target="_blank" href="https://doc.rust-lang.org/stable/book/">The Rust Programming Language - book</a><br>
+
+      <a target="_blank" href="https://docs.rust-embedded.org/discovery/microbit/05-led-roulette/index.html">
+          Rust Embedded Book: Micro bit</a>: read up to section 4.3<br>
+      <a target="_blank" href="https://docs.rust-embedded.org/book/index.html">
+          Embedded Rust Book: STM32 discovery</a>,
+            read up to <a target="_blank"
+                          href="https://docs.rust-embedded.org/book/start/registers.html">here</a>
+        <br>
+      <code>
+      <pre>
+            # Open the Rust book in Chrome.
+            export BROWSER="/usr/bin/google-chrome-stable" ; rustup doc --book
+
+            # Only the Rust Book
+            BROWSER="/snap/firefox/3358/usr/lib/firefox/firefox" rustup doc --book
+
+            # The std library reference documentation.
+            BROWSER="/snap/firefox/3358/usr/lib/firefox/firefox" rustup doc --std
+
+
+
+            # All the documents.
+            export BROWSER="/usr/bin/google-chrome-stable" ; \
+            rustup doc --book           ; \
+            rustup doc --edition-guide  ; \
+            rustup doc --std            ; \
+            rustup doc --embedded-book  ; \
+            rustup doc --reference      ; \
+            rustup doc --unstable-book
+      </pre>
+      </code>
+    </li>
+  <li><a target="_blank" href="https://doc.rust-lang.org/stable/rust-by-example/">Rust By Example (online book)</a></li>
+  <li><a target="_blank" href="https://cheats.rs/">Rust Cheatsheet</a></li>
+  <li><a target="_blank" href="https://www.rust-lang.org/"><b>Rust language main site (* * *)</b></a></li>
+  <li><a target="_blank" href="https://doc.rust-lang.org/1.0.0/style/style/naming/README.html">Rust Naming conventions</a></li>
+  <li><a target="_blank" href="https://play.rust-lang.org">Rust Playground</a></li>
+  <li><a target="_blank" href="https://doc.rust-lang.org/std/index.html">Standard Library Documentation</a></li>
+
+  <li><a target="_blank" href="https://doc.rust-lang.org/book/">The Rust programming Language (online book)</a></li>
+  <li><a target="_blank" href=""></a></li>
+  <li> UI
+    <ul>
+      <li>
+          <ul>
+            <li><a target="_blank" href="https://dioxuslabs.com/">Dioxus</a></li>
+            <li><a target="_blank" href="https://github.com/iced-rs/iced">Iced</a></li>
+            <li><a target="_blank" href="https://sycamore.dev/">Sycamore</a></li>
+          </ul>
+        </li>
+      <li> Leptos
+          <ul>
+            <li><a target="_blank" href="https://leptos.dev/">Leptos</a></li>
+            <li><a target="_blank" href="https://book.leptos.dev">Leptos book</a></li>
+
+          </ul>
+        </li>
+
+      <li>Slint
+        <ul>
+          <li><a target="_blank" href="https://slint.dev">Slint Home page</a></li>
+          <li><a target="_blank" href="https://www.youtube.com/watch?v=WBcv4V-whHk">Video tutorial, 24min.</a><br>
+              <a target="_blank" href="https://youtu.be/WBcv4V-whHk?t=505">watched until here</a>.
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h2>.. References: Libraries</h2>
+<ul>
+<li> <a target="_blank" href="https://crates.io/"><b>Crates.io: the Rust community's crate registry</b></a> <br>
+  </li>
+
+<li> <a target="_blank" href="https://docs.rs/chrono/">Chrono: Date and Time</a></li>
+<li> <a target="_blank" href="https://crates.io/crates/clap">Clap: Command line arguments - crates.io page</a> <br>
+     <a target="_blank" href="https://docs.rs/clap/latest/clap/">docs</a> <br>
+  Derive is recommended <a target="_blank" href="https://docs.rs/clap/latest/clap/_derive/_tutorial/index.html">tutorial</a> </li>
+<li><a target="_blank" href="https://crates.io/crates/warp">Warp</a></li>
+<li><a target="_blank" href=""></a></li>
+<li><a target="_blank" href=""></a></li>
+<li><a target="_blank" href=""></a></li>
+</ul>
+
+<hr>
+
+<h1>. Rust Uninstallation</h1>
+<div class="source_code">
+<pre>
+  rustup self uninstall
+</pre>
+</div>
+<p/>
+
+<h1>. Rust Installation</h1>
+Command:
+<div class="source_code">
+<pre>
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+</pre>
+</div>
+<p/>
+
+<div class="source_code">
+<pre>
+Welcome to Rust!
+
+This will download and install the official compiler for the Rust
+programming language, and its package manager, Cargo.
+
+Rustup metadata and toolchains will be installed into the Rustup
+home directory, located at:
+
+  /home/minguzzi/.rustup
+
+This can be modified with the RUSTUP_HOME environment variable.
+
+The Cargo home directory is located at:
+
+  /home/minguzzi/.cargo
+
+This can be modified with the CARGO_HOME environment variable.
+
+The cargo, rustc, rustup and other commands will be added to
+Cargo's bin directory, located at:
+
+  /home/minguzzi/.cargo/bin
+
+This path will then be added to your PATH environment variable by
+modifying the profile files located at:
+
+  /home/minguzzi/.profile
+  /home/minguzzi/.bashrc
+
+You can uninstall at any time with rustup self uninstall and
+these changes will be reverted.
+
+Current installation options:
+   default host triple: x86_64-unknown-linux-gnu
+     default toolchain: stable (default)
+               profile: default
+  modify PATH variable: yes
+</pre>
+</div>
+
+<p/>
+
+<div class="source_code">
+<pre>
+Rust is installed now. Great!
+
+To get started you may need to restart your current shell.
+This would reload your PATH environment variable to include
+Cargo's bin directory ($HOME/.cargo/bin).
+
+To configure your current shell, run:
+source "$HOME/.cargo/env"
+</pre>
+</div>
+<p/>
+<hr>
+
+<h1>. Learn Rust Programming, C.Matzinger, BPB Online, 2022, 288 pages.</h1>
+(Up to page 45).
+<p/>
+
+<h1>. Asynch Rust</h1>
+
+<b>Performance</b>: futures make progress only when polled, async is zero cost.<br>
+
+<b>Runtime </b>: Rust has no built-in runtime. They are provided by third parties, like Tokio.<br>
+
+<b>Async vs Threads</b>: use async when there are many tasks. Async tasks are light.
+Threads require CPU and memory overhead.
+<cite>
+Spawning and switching between threads is quite expensive as even idle threads consume system resources.<br>
+A thread pool library can help mitigate some of these costs, but not all.
+</cite>
+<p/>
+<ul>
+  <li>async / wait are implemented at language level</li>
+  <li>The Future struct and the futures crate are part of the standard library</li>
+</ul>
+<p/>
+
+To create an asynchronous function, you can use the async fn syntax:<br>
+<div class="source_code">
+<pre>
+async fn do_something() {}
+async fn hello_world() {}
+
+let future = hello_world();
+
+futures::executor::block_on(future);
+
+// Otherwise, the future can be passed to a Thread pool or some other executor.
+</pre>
+</div>
+The value returned by an code>async fn</code> is a <code>Future</code>. For anything to happen, the Future needs to be run on an executor.<br>
+
+
+<h2>.. Asynch Rust: links</h2>
+
+<ul>
+<li><a target="_blank" href="https://rust-lang.github.io/async-book/">Asynchroous programming in Rust</a></li>
+<li><a target="_blank" href="https://rust-lang.github.io/async-book/01_getting_started/04_async_await_primer.html">async await primer</a></li>
+</ul>
+
+<!-- ******************************************************************************************* -->
+<hr>
+<h1>. Data types</h1>
+
+<h2>.. Arrays</h2>
+Arrays contain elements of the same type. <br>
+Arrays are allocated on the stack.<br>
+Array items are referenced with an index that starts from zero (48). <br>
+Items are stored in a contiguous section of memory.<br>
+Arrays have fixed length, there is no dynamic resize. The Array size must be known at compile time.<br>
+An array is like a row of parked cars.  All parking lots contain the same thing, the number of lots is fixed.<br>
+An array is a data type parameterized by its items type and the number of items.<br>
+<div class="source_code"><pre>let words = ["English", "This", "sentence", "a", "in", "is"];</pre></div><br>
+<div class="source_code"><pre>let other_array: [i32; 4]= [1,2,3,4];</pre></div> // The size of the array and the number of items must match.
+<div class="source_code"><pre>let mut numbers: [i32; 4];</pre></div> Here, the content is not specified. Useless if not mutable.<br>
+<div class="source_code"><pre>let b= [ 1u8; 10];</pre></div> Createss an array of 10 items, all initialized to 1u8.<br>
+
+Note:
+<div class="source_code"><pre>
+  let another_array: [i32; 6] = [1,2,3,4,5,6]; // Explicit declaration of the array data type.
+  let mut numbers: [i32; 5] = [0; 5]; // This notation creates an array of 5 items, initialized to zero.
+  let more_numbers = [1i8; 5];        // Other example, the constant is 1, the data type is i8.
+  let five_items= [1u32; 5];          // Five items, the init value is 1u32.  *** Useful ***
+</pre></div>
+
+<p/>
+
+<h2>.. Multi dimensional arrays</h2>
+A 2D array is like a parking lot.<br>
+All rows must have the same data type, e.g. the same number of items.
+<p/>
+
+<h2>.. Blocks</h2>
+In order for a block to return an expression, the last expression must <b>NOT</b> terminate with a ;<br>
+<div class="source_code">
+<pre>
+  let other_text = { if is_even {"is even"} else {"is odd"} };
+</pre>
+</div>
+
+<h2>.. Casts, Casting</h2>
+Use the <b><code>as</code></b> operator.<br>
+<div class="source_code"> <pre>let floatNum= 5 as f32;</pre></div>
+The compiler executes the casting, but there can be a loss of precision.<br>
+
+<h2>.. Floating-Point variables</h2>
+The supported floating point data types are <code>f32</code> (6 to 9 significant decimal digits of precision)
+and <code>f64</code> (15 to 17 significant decimal digits of precision). <br>
+By default a floating point literal is <code>f64</code>.
+<p/>
+
+<h2>.. Integers</h2>
+<code>i32</code> is the default integer.
+<p/>
+<code>i8</code>, <code>i16</code>, <code>i32</code>, <code>i64</code>, <code>i128</code><br>
+<code>u8</code>, <code>u16</code>, <code>u32</code>, <code>u64</code>, <code>u128</code><br>
+Note that for every unsigned, there is a corresponding signed integer type.<br>
+The <code>isize</code> and <code>usize</code> is the most efficient type on the current architecture to represent a vector index (73).<br>
+It has the same size as the machine parallelism (73).<br>
+
+<h2>.. Booleans</h2>
+Booleans can be compared, as any other numeric data type. Remember that true = 1 and false = 0.<br>
+
+<h2>.. The Empty Tuple</h2>
+The empty tuple is like the <code>void</code> type in C, it is written as <code>()</code>.
+
+<h2>.. Enumerations</h2>
+Example: declaration of an enumeration type:
+<div class="source_code">
+<pre>
+enum Continent {
+  Europe,
+  Asia,
+  Africa,
+  America,
+  Oceania,
+}
+</pre>
+</div>
+Note: enums cannot be used with the equal sign. The <b><code>match</code></b> construct must be used.<br>
+Enumerations can have additional data. (98).<br>
+With respect to the C language, <b>Rust enumerative types combine the enum feature with the union feature</b>.
+<p/>
+
+Note that an enumeration can have additional custom data, depending on the enumerator:
+<div class="source_code">
+<pre>
+enum Shape {
+    Circle(f64),            // Radius
+    Rectangle(f64, f64),    // Width, height
+    Triangle(f64, f64, f64),// Three sides
+}
+</pre>
+</div>
+
+Note that an enumeration can have methods, similar to the implementation block of a structure:
+<div class="source_code">
+<pre>
+  impl Shape {
+      fn get_perimeter(&self) -&gt; f64 {
+          [...]
+      }
+  }
+</pre>
+</div>
+Enum methods probably contain a <code>match</code> construct.
+<p/>
+
+<h2>.. Constants</h2>
+Example:
+<div class="source_code">
+<pre>
+  // Similar to let x=5; , but with const.
+  const PI: f32= 3.14;
+
+  // They can be declared in modules, outside of structs or functions:
+  pub const NUM_MAX_FILES: u32= 5;
+</pre>
+</div>
+In constants, both the type and the value must be specified. The value must be known at compile time.<br>
+Constants are UPPER_SNAKE_CASE.<br>
+
+<h2>.. Expressions</h2>
+Statements can have an effect but they do not generate any value, they do not reaturn values.<br>
+Statements end with a semicolon ;<br>
+An assignment is a statement, it does not return any value.<br>
+<div class="source_code">
+<pre>
+  let a = 1 + 2; // The sum is an expression, its result is assigned to a.
+</pre>
+</div>
+<p/>
+
+An <i>expression</i> is anything that generates some kind of typed value.<br>
+<b>Expressions do not terminate with a semicolon, otherwise they are statements.</b>
+<p/>
+
+A block, enclosed by curly braces, is an expression.  The block is evaluated as its last value.<br>
+In order for an <i>if-clause</i> to be an expression, both branches must evaluate as the same data type.<br>
+<b>Return values can be explicitly stated using the <code>return</code> keyword or by leaving out the last <code>;</code>
+after the last expression in the block.</b>
+<br>
+<p/>
+
+<h2>.. Strings</h2>
+<b>String Literals</b>: a string enclosed in quotes is a string literal: it becomes hard-coded in the executable.<br>
+String literals are accessed by reference.<br>
+They are immutable and their value must be known at compile time because it is written in the executable.<br>
+<p/>
+
+The <b>String Type</b> has dynamic content. Objects of this type are allocated on the heap.  It is a built-in Rust type.<br>
+The <code>String</code> contains a pointer to the memory on the heap, its length and its capacity.<br>
+The <code>String</code> can be mutable. It has a pointer to the string memory, a length and a capacity.<br>
+
+Capacity is always greater or equal to the length.<br>
+<div class="source_code">
+<pre>
+  let message= String::from("Earth"); // Creates a String from a string literal.
+</pre>
+</div>
+"Earth" is a string literal used to initialize the new String object.
+<p>
+String interpolation is supported. Example:<br>
+<div class="source_code">
+<pre>
+"Hello {person}"
+</pre>
+</div>
+
+To access the bytes of a string, convert the string using the method: <code>s.as_bytes()</code> (218).
+<br>
+
+Literal strings are immutable in Rust (191).<br>
+The data type <code>String</code> is for mutable (dynamic) strings (194). The dynamic string has a capacity.<br>
+It is possible to print a string as a pointer. The method is: <code>as_ptr()</code> (196).
+
+
+<h3>... Raw strings</h3>
+Example: <b><code>let raw_string= r#"\abcd \n a raw string."#;</code></b>
+<p/>
+
+<h2>.. Char data type</h2>
+It represents a single character.<br>
+It is a unicode scalar value, it is stored using 4 bytes.<br>
+Example of how to assign a unicode value to a character:
+<div class="source_code">
+<pre>
+let finger = '\u{261D}';
+</pre>
+</div>
+
+<i>Not all environments are able to display the more exotic unicode characters.</i>
+<p/>
+
+<h3>... Generic Enums. (Option and Result)</h3>
+
+Enumerations can be generic.<br>
+
+<h4>.... Option</h4>
+Note the <b><code>Option &lt;T&gt;</code></b> it is the standard enum, to return an optional value,
+  or <code>None</code> in case of no value.<br>
+<p/>
+<div class="source_code">
+<pre>
+    enum Option&lt;T&gt; { Some(T), None }
+</pre>
+</div>
+
+Option is so common that it is included in the prelude.<br>
+
+<p/>
+
+<h4>.... Result</h4>
+Important is the <b><code>Result&lt; T,E &gt; </code></b> standard enum: its enumerators are Ok(result: T) and Err(err_obj: E).<br>
+For example E can be a String.<br>
+<b><code>Result</code></b> has utility functions: <br>
+  <code>is_ok()</code>, <br>
+  <code>unwrap()</code> returns the result, panics if it is an error. <br>
+  <code>is_err()</code>, <br>
+  <code>unwrap_err()</code> is similar to unwrap, but to retrieve the error datum<br>
+<p/>
+
+<!-- ******************************************************************************************* -->
+<hr>
+<h1>. Object Oriented Rust</h1>
+Rust supports both the functional and the <code><b>dot</b></code> notation.<br>
+Some functions, like  <code>new()</code>, can only be invoked using the functional notation. (263).<br>
+If a function can be invoked using the dot notation, then it can also be invoked using the functional notation,
+<cite>vice versa</cite> is not true.<br>
+
+<h2>.. Incapsulation</h2>
+<div class="source_code">
+<pre>
+  struct Person { // Data members declarations
+    name: String,
+    surname: String,
+  }
+
+  // Function member implementations. There can be multiple impl sections for a given type.
+  impl Person {
+      fn naming(self) -&gt; String {
+          format!("{} {}", self.name, self.surname)
+      }
+  }
+</pre>
+</div>
+
+Multiple <code>impl</code> blocks can exist for the same data type.<p/>
+
+<b>Note</b>: it is possible to add methods to any type with a name. (268).<br>
+<ul>
+  <li><code>self</code> is the name of the implicit object, like <code>this</code> in C++</li>
+  <li>The <code>self</code> argument must be specified, both as method argument and at the left of the dot</li>
+  <li><code>self</code> receives the current object by value, by default.  <br>
+    To get an immutable reference, <code>&amp;self</code> must be specified.<br>
+    To get a reference to a mutable, <code>&amp;mut self</code> must be specified.<br>
+</ul>
+<b><code>Self</code></b> is the type of the <code>self</code> object (269).<br>
+
+<h2>.. Constructors</h2>
+<div class="source_code">
+<pre>
+  struct Person { // Data members declarations
+    name: String,
+    surname: String,
+  }
+  impl Person {   // Function member implementations.
+      fn new() -&gt; Self {
+          // Constructor.
+      }
+  }
+</pre>
+</div>
+
+In the example above, <code>new()</code> is an <cite>associated function</cite>, like a static function in C++ (270).<br>
+
+<h2>.. Inheritance</h2>
+It is possible to derive from a Class, or to implement an interface.<br>
+
+<h2>.. Structs</h2>
+They are similar to tuples, but the items are named. You do not have to remember the order.<br>
+Struct names are CamelCase capitalized (56).<br>
+Structs have no overhead: there is no wasted space beyond the data members.<br>
+Struct data is stored on the stack, not on the heap.<br>
+It is possible to create a struct without fields, called <i>unit-like structs</i>, because they are similar to ().<br>
+Useful to implement a trait on a type, where there is no data to store in the type objects.
+<p/>
+
+<div class="source_code">
+<pre>
+struct SomeData { // Camel case for type names.
+    integer: u32, // Snake case for struct members.
+    character: char,
+}
+
+// Struct initialization
+let data = SomeData {
+    integer: 75,
+    character: 'Q',
+};
+</pre>
+</div>
+<p/>
+
+<h3>... Structs: Update syntax</h3>
+
+<div class="source_code">
+<pre>
+  struct Shuttle {
+      name: String,
+      crew_size: u8,
+      propellant: f64,
+  }
+
+  let mut vehicle = Shuttle {
+        name: String::from("Endevour"),
+        crew_size: 7,
+        propellant: 835957.0,
+  };
+
+  // All fields that are not explicitly initialized are taken from vehicle.
+  let vehicle2 = Shuttle {
+        name: String::from("Columbia"),
+        ..vehicle
+  };
+</pre>
+</div>
+
+<p/>
+There is also the implementation block:<br>
+<b>Struct methods</b> Structs can have methods, inside the <code>impl MyStruct{}</code> block,<br>
+
+<div class="source_code">
+<pre>
+  impl Shuttle {
+    // Associated function: similar to a static method in C++.
+    fn new(name:&str, crew_size: u8, propellnt: f64) -> Self {
+     [...]
+    }
+
+    // Struct method
+    fn get_name(&self) -> &str {
+        &self.name
+    }
+  }
+</pre>
+</div>
+
+<b>Struct associated functions</b> Structs can also have associated functions. They do not have the self parameter.<br>
+They are like <code>static</code> methods in C++, they are used to implement struct constructors, for example.<br>
+<p/>
+
+Rust doesn’t have an equivalent to the -> operator to call methods; instead,
+  Rust has a feature called automatic referencing and dereferencing. <br>
+Calling methods is one of the few places in Rust that has this behavior.
+<p/>
+
+<h2>.. Tuples</h2>
+Tuples (108) can contain heterogeneous (mixed) data types. <br>
+Each item of a tuple is called <cite>field</cite> (108).<p/>
+An empty pair of parentheses is an empty tuple (108). Tuples are similar to arrays, but fields cannot be referenced using a variable index.<br>
+<p/>
+
+Tuples are accessed using the dot notation.  After the dot there is a number indicating the tuple item number.<br>
+The first tuple item has index ZERO (zero-based access).<br>
+They are similar to arrays, in that they are stored in a fixed length, contiguous section of memory.<br>
+
+<b>Below an example of DEBUG FORMATTER:</b> :?
+<div class="source_code">
+<pre>
+  let mut stuff= (10i64, 3.14, 'x', "Mario");
+  println!("stuff:{:?}", stuff);  // Debug formatter to print a tuple.
+
+  let (value,_,_,name)= stuff;    // Tuple destructuring.
+  println!("name:{name} value:{value}");
+</pre>
+</div>
+
+<b>The dbg! macro to print expressions</b> example:
+<br>
+<div class="source_code">
+<pre>
+let rect = dbg!( create_rectangle(4, 3) );
+</pre>
+</div>
+
+Prints: the structure, the file and the line.
+<div class="source_code">
+<pre>
+[src/main.rs:73] create_rectangle(4, 3) = Rectangle {
+    width: 4,
+    height: 3,
+}
+
+</pre>
+</div>
+
+<p/>
+
+The empty tuple is called <b>unit</b> ()<br>
+
+<h2>.. Generic Data types</h2>
+They are abstract stand-ins for concrete data types or other properties.<br>
+They can be used with structs, functions, methods and more.<br>
+<h3>... Generic Structs</h3>
+
+Example (139)
+<div class="source_code">
+<pre>
+struct Rectangle&lt;T&gt;{
+  width: T,
+  height: T
+}
+
+impl &lt;T&gt; Rectangle &lt;T&gt; {
+  fn area(&amp;self) -&gt; T {
+    self.width * self.height
+  }
+}
+
+struct S&lt;T1,T2&gt;{
+    c:    char,
+    num:  T1,
+    num2: T2,
+}
+</pre>
+</div>
+The compiler can infer the data type of the struct items from the initialization code.
+<p/>
+<i>Do generics impact the runtime performance?</i> : no, generics are a zero-cost abstraction.<br>
+<p/>
+
+<b>Specialized implementations</b>
+An implementation block can be specialized for a generic of a specific type:
+
+<div class="source_code">
+<pre>
+  impl Rectangle &lt;u8&gt; {
+    fn get_perimeter(&self) -> u8 {
+      [...]
+    }
+  }
+</pre>
+</div>
+It means that the other specializations will not have the <code>get_perimeter()</code> function.<br>
+
+<h3>... Generic Functions</h3>
+Generics can also be used when we define functions.<br>
+
+<div class="source_code">
+<pre>
+  fn get_bigger&lt; : PartialOrd T&gt;(a: T, b: T) -&gt; T {
+</pre>
+</div>
+
+We must restrict T to PartialOrd, so the greater_than method must be defined.<br>
+Note that PartialOrd is included in the prelude.<br>
+
+<h2>.. Tuple Structs</h2>
+A Tuple Struct is declared as a struct, but fields have no names,
+they are accessed using the <cite>dot number</cite> notation (112).<br>
+
+The Tuple Struct declaration is enclosed in parentheses, not curly braces like structs.<br>
+In the tuple struct, members have no names, as in a tuple.  <b>Tuple structs can be composed of generic types</b> (140).<br>
+<p/>
+
+<div class="source_code">
+<pre>
+  struct RgbColor( u8, u8, u8); // Tuple struct representing the RGB color.
+</pre>
+</div>
+
+<p/>
+
+<h2>.. The Size of objects</h2>
+(171)
+<div class="source_code">
+<pre>
+  std::mem::size_of::&lt;i32&gt;();
+  std::mem::size_of_val(&12);
+</pre>
+</div>
+
+<h2>.. Ranges</h2>
+Range extremes must be of <code>usize</code> type (212).<br>
+Usual ranges are <cite>right-exclusive</cite> (215).<br>
+
+<h2>.. Slices</h2>
+<b>Slice</b>: a contiguous section of a collection. <br>
+<i>The slice references the collection without taking ownership of it.</i> <br>
+  <p/>
+The generic form of a slice is <code><b>&amp;[T]</b></code><br>
+<code><b>&amp;str</b></code> is a string slice. Note that <i>string literals are slices too</i>.
+How to declare a string slice. Examples:<br>
+  <ul>
+    <li> <code>let first_word= &amp;message[..9];  </code> </li>
+    <li> <code>let last_part= &amp;message[15..];  </code> </li>
+    <li> <code>let last_word= &amp;message[15..20];</code> </li>
+  </ul>
+The compiler cannot know the collection boundaries. <br>
+So a slice that accesses out of the collection boundaries causes a panic and a program crash.<br>
+The length of a string slice is expressed into bytes, not characters.<br>
+Range indices must occur at valid UTF-8 character boundaries, otherwise the program will panic.
+<p/>
+
+<center>
+  <b><code>&amp;String</code> is different from <code>&amp;str</code></b>
+</center>
+However, Rust allows us to use a String reference (<b><code>&amp;str</code></b>) in places where a String slice is needed,
+  since the String has all the data to function as a slice: pointer and length (the string has also the capacity).<br>
+It is not possible to convert a string slice into a reference to a String.<br>
+So, defining a function parameters as a string slice instead of reference to String , makes the signature more general and reusable.<br>
+
+
+<p/>
+Arrays, vectors, strings can be passed to functions as slices.<br>
+It is possible to take slices of slices.<br>
+
+<div class="source_code">
+<pre>
+  fn min( arr: &amp;[i32] ) -&gt; i32 { ... } // A function that has a slice argument.
+
+  min(&amp;arr);        // The function is called with the following syntax.
+  min(&amp;arr[2..5])   // The function is called with the slicing syntax.
+  min(&amp;arr[4..3])   // Backward slices cause runtime panic.
+
+  min(&amp;arr[2..])   // Slice from item 2 to the end.
+  min(&amp;arr[..3])   // Slice from the beginning to item 3, not included.
+
+  2..=4 // The upper limit is included, this is called right inclusive range.
+</pre>
+</div>
+
+<!-- ******************************************************************************************* -->
+<hr>
+<h1>. Syntax</h1>
+
+<h2>.. Namespaces</h2>
+<h3>... The use directive</h3>
+<b>The use statement</b>. To use a module, you have to import it in your scope using the <code>use</code> statement<br>
+
+(172) <b>use</b> imports a set of symbols in the current namespace. Example:<br>
+<div class="source_code">
+<pre>
+  use std::mem;     // Imports the path in the current scope.
+  use std::mem::*;  // Imports all symbols in the current scope.
+  use rand::random; // Imports just the random method.
+</pre>
+</div>
+
+Some modules have their own prelude. In order to import it, for example the prelude of the rand module:
+<div class="source_code">
+  use rand::prelude::*; // Imports the rand prelude.
+<pre>
+</pre>
+</div>
+
+The standard library (<b><code>std</code></b>) is included in all Rust programs by default.<br>
+
+<h2>.. Comments</h2>
+Single line and multiline comments are supported. Comments can be nested, and they must be nested correctly (7).  <br>
+
+<h2>.. Variables declaration</h2>
+Rust is a statically typed language.<br>
+
+<h3>... Shadowing</h3>
+Shadowing: declaring a new variable with the same name as an existing variable.<br>
+The new variable <i>shadows</i> the previous variable. This is different than creating a mutable variable.<br>
+Shadowing lets us reuse the guess variable name rather than forcing us to create two unique variables. <br>
+This feature is often used when you want to convert a value from one type to another type.
+<p/>
+
+Shadowing is different from marking a variable as <code>mut</code> because we’ll get a compile-time error if we accidentally try to reassign to this variable without using the let keyword. <br>
+By using let, we can perform a few transformations on a value but have the variable be immutable after those transformations have been completed.
+<p/>
+
+Shadowing allows to change the type and mutability of a variable (30).
+That is, the shadowing variable can also have a different data type or mutability.<br>
+<i>Not a different name, otherwise it would not be shadowing.</i><br>
+When the shadowing variable goes out of scope, the original variable still exists, with its original value.<br>
+
+Shadowing is useful to reuse certain common variable names.<br>
+<p/>
+
+<h3>... Variables that are references</h3>
+A reference is a constant pointer.<br>
+In case a reference is printed, Rust does not print the address itself, rather it dereferences the
+reference and prints the referenced object.<br>
+Why? Because the <code>print</code> macro <cite>expects objects, not references</cite> (131).<br>
+Remember:
+<div class="source_code">
+<pre>
+  let mut c = 45; // Mutable variable.
+  let ref_c = &amp;mut c;
+  *ref_c = 50;
+</pre>
+</div>
+<p/>
+
+<h3>... References: borrowing</h3>
+References allow you to refer to some value without taking ownership of it.
+<br>
+<ul>
+  <li>Reference is <code>&amp;</code></li>
+  <li>Reference to mutable (i.e. mutable reference) is: <code>&amp; mut </code><br>
+      Use it both in the definition of the function argument and when the parameter is passed to the function.<br>
+    </li>
+</ul>
+A reference to a variable does not have ownership on that object, so the object is not dropped when
+the reference variable goes out of scope.
+<br>
+
+<b>NOTE</b> when you create a mutable reference to a variable, you cannot create other references (mutable or immutable) to the same variable in the same scope.<br>
+You can only create a single mutable reference to a variable within a particular scope.<br>
+This restriction prevents data races and other possible problems.<br>
+The Rust compiler considers the scope of a variable between its creation and the last line where it is used.<br>
+<p/>
+
+The rules of References:
+<ul>
+  <li><b>At any given time, you can have either one mutable reference or any number of immutable references.</b></li>
+  <li><b>References must always be valid.</b></li>
+</ul>
+
+<b>Dangling references</b><br>
+You cannot return a reference to a local variable, in case the value is dropped when the function terminates.
+
+<h3>... Leading underscore</h3>
+Use a <b>leading underscore</b> for variable names that are assigned but not used, to silence the warning (24).<br>
+However, a variable whose name is underscore can only be used on the left side of an assignment, as <i>don't care</i> symbol.<br>
+The error is:<br>
+<div class="source_code"><pre>in expressions, `_` can only be used on the left-hand side of an assignment</pre></div><br>
+
+<h3>... Mutable / Immutable variables</h3>
+(23) It is possible to declare an (even immutable) variable and then assign it later. The compiler figures out the data type.<br>
+The compiler emits a warning if a variable is declared as <code>mutable</code> but it is never modified, so there is no need to be mutable.<br>
+
+<h3>... If</h3>
+Note that the condition must be a boolean, it must not be enclosed in brackets, but the block must be enclosed in curly braces.<br>
+Conditional statements and conditional expressions exist in Rust.  Conditional expressions are similar to the ternary operator in C/C++.
+<p/>
+There is also the <b>If let</b> construct. <i>It checks for a single condition of an enum datum</i>.<br>
+<code><b>If let</b></code> is syntactic sugar for a match expression.<br>
+<i>
+<b> If let takes a pattern one the left side, and an expression on the right side. </b>
+</i>
+<p/>
+
+<div class="source_code">
+<pre>
+    let res = return_option(true);
+    // Executes a pattern matching on res. res can be used in the scope of the if let.
+    if let Some(msg) = res {
+        println!("return_option() returned message: {}", msg)
+    } else if {
+        // ...
+    } else {
+        // ...
+    }
+</pre>
+</div>
+
+<h3>... While</h3>
+The while loop exists, <b>break</b> and <b>continue</b> exist in Rust (39).<br>
+The while loop, can break to exit, but the break cannot return a value (<i>unlike the loop</i>).
+
+<h3>... Loop</h3>
+The infinite loop is called <code>loop {} </code> in Rust.<br>
+The loop construct can be used to test multiple times a condition that maybe the first time is not true.
+Like a do while construct.
+<p/>
+Loops can use a break with a label:
+<div class="source_code">
+<pre>
+  'outer: loop {
+    indx += 1;
+    loop {
+      if innerIndx> 5 {
+        break 'outer;
+      }
+      innerIndx += 1;
+    }
+  }
+</pre>
+</div>
+<p/>
+<b>The break can be followed by the expression that the loop evaluates to.</b>
+<p/>
+
+A loop can break <b>returning an expression</b> <i>the returned value can tell us why the loop exited</i>.
+The loop is the only loop construct that can return a value.<br>
+
+<div class="source_code">
+<pre>
+  let result= loop {
+      index += 1;
+      str.push_str( &index.to_string());
+      if index > 3 {
+        break str;
+      }
+      str.push_str(",");
+  };
+</pre>
+</div>
+<p/>
+
+<h3>... For loops</h3>
+(41) The syntax is <code> for <cite>variable</cite> in <cite>range</cite> </code>,  <br>
+where range is <cite>start</cite>..<cite>end</cite>, where end is not included.<br>
+It is called <cite>right-exclusive</cite> range expression.(41)
+<p/>
+The operator <b>..=</b> is called <cite>right-inclusive</cite> range expression(42).<br>
+<b>Note:</b> both boundares of the range are evaluated before the beginning of the loop.<br>
+
+<b>Ranges</b> the range is a type on its own, it has the fields: <code>start</code>, <code>end</code>, <code>len</code> (203).<br>
+
+
+<h3>... match</h3>
+Each case of the match expression is called <b>arm</b>.  Each arm is separated from the next with a comma.<br>
+If the code is long, and a block is used, there is no need to use the comma (it is optional).<br>
+
+On the right side of the fat arrow there must be an expression, called pattern.
+<br>
+The right side can also contain a block of code,called the arm.
+<br>
+The match construct must cover all cases.
+<br>
+Conditions are evaluated top to bottom, as soon as a condition matches, the corresponding code is
+executed and the match statement does not evaluate anything else.
+<p/>
+
+We don’t typically use curly brackets if the match arm code is short. <br>
+If you want to run multiple lines of code in a match arm, you must use curly brackets,
+and the comma following the arm is then optional.
+<p/>
+
+Variables can be used in patterns. Variables identifiers used in patterns do not need to be declared. Their type is inferred.<br>
+Similar to the if-expressions, there are also match-expressions (102). A match construct can be used as an expression.<br>
+The underscore character acts as the <code>default</code> in C++.
+<p/>
+Guards can be used in match constructs (103).<br>
+Example :
+<div class="source_code">
+<pre>_ if indx<0 =&gt; <cite>do something</cite>,
+[...]</pre></div>
+
+<h3>... if let</h3>
+Related to the match, there is the if let construct.<br>
+<code><b>if let</b></code> takes a pattern and an expression separated by the equal sign.<br>
+<div class="source_code">
+<pre>if let MyResult::Failure(res_code) = value {
+    [...]
+}</pre></div>
+(104)
+
+<h3>... while let </h3>
+<code>while let</code> is similar to the <code>if let</code> construct (104).
+<p/>
+
+<h2>.. Literals</h2>
+A literal is a value known at compile time.<br>
+
+<h3>... Numeric literals</h3>
+In order to write an i32 literal, write, for example <b><code>15i32;</code></b>.<br>
+
+<h3>... String literals</h3>
+<div class="source_code">
+<pre>
+  b"hello" // A collection of ASCII characters, one byte each.
+  r#"Raw"# // Raw string.
+</pre>
+</div>
+
+
+<h2>.. Iterators</h2>
+It is possible to use an iterator in a for loop. <br>
+
+An iterator implements the logic to iterate on all the items of a collection.
+<br>
+The iterator has a next() method to retrieve the next item in the collection.<br>
+
+<h3>... Iterators: Enumerator.</h3>
+Collections have an <code>iter()</code> method that returns an iterator.
+<br>
+While iterating, it returns a tuple with index and reference to the collection item.<br>
+<div class="source_code">
+<pre>
+  for (indx,ch) in ch_array.iter().enumerate() {
+    println!("use_enumerate_on_array: indx:{indx} ch:{ch}");
+  }
+</pre>
+</div>
+<p/>
+The reference can be dereferenced with:
+<div class="source_code">
+<pre>
+  for (indx, &ch) in ch_array.iter().enumerate() {
+      println!("use_enumerate_on_array: indx:{indx} ch:{ch}");
+  }
+</pre>
+</div>
+
+Note that the method <code>iter_mut()</code> returns a mutable iterator (i.e. non const iterator in C++).<br>
+
+<cite>Iterators are lazy</cite>: they process data only when another function asks them for an item.
+<br>
+
+<p/>
+
+<div class="source_code">
+<pre>
+  for indx_ch in str.char_indices() { ... }
+</pre>
+</div>
+
+The iterator appears after the <b><code>in</code></b> keyword of the loop.<br>
+An iterator is any expression that has a <code>next()</code> method and returns an <code>Option</code> value (221).<br>
+
+Iterators over arrays, vectors and slices are possible (223). There is the method <code>.into_iter()</code> that returns an iterator that returns objects.<br>
+There is also a method <code>.into_iter()</code> that returns references to objects (225).<br>
+Examples with shorthands:<br>
+<ul>
+  <li><code>for item in v {}</code> iterator on objects (<code>.into_iter()</code>)</li>
+  <li><code>for item in &amp;v {}</code> iterator on non mutable references (<code>.iter()</code>)</li>
+  <li><code>for item in &amp;mut v {}</code> iterator on mutable references (<code>.iter_mut()</code>)</li></li>
+</ul>
+
+<h3>... Iterator adapters (e.g. filters)</h3>
+Iterator adapters transform an iterator into another iterator. Example:
+<div class="source_code"> <pre>
+  for n in arr.into_iter().filter(|x| *x &lt; 0) {
+        println!("n: {n}");
+  }
+</pre></div>
+
+There are different iterator adapters: filter, map.<br>
+<b>Enumerate</b>: the <code>enumerate()</code> method returns an iterator over a tuples made of index and object.
+
+<h3>... Iterator Consumers</h3>
+They accept a lambda function that returns a boolean (235):
+<ul>
+  <li><code>any</code> </li>
+  <li><code>all</code> </li>
+  <li><code>count</code> </li>
+  <li><code>sum</code> </li>
+  <li><code>min</code> </li>
+  <li><code>max</code> </li>
+</ul>
+
+Other consumers:
+<ul>
+  <li>collect: collect consumed items into a vector (237)</li>
+</ul>
+
+<!-- ******************************************************************************************* -->
+<hr>
+<h1>. Memory Allocation</h1>
+(151)
+<ul>
+  <li>Processor registers: Rust does not let you specify register allocation (170)</li>
+  <li><b>Static</b>: global variables and variables declared with the <code>static</code> keyword. <br>
+      The layout of static memory is determined at compile time,  Rust has the <code>static</code> keyword.<br>
+      In static variables the data type must be declared.<br>
+      Example: <code>static _abcd: i32= 3;</code></li>
+  <li><b>Stack</b>: all variables allocated with the <code>let</code> keyword (154)<br>
+      Variables in the stack are allocated in the order in which they are declared. <br>
+      Stack variables are added and removed in a <b>LIFO</b> manner.<br>
+      Variables are pushed and popped from the stack.<br>
+      Advantage of the local variables: it is very fast to push and pop data into the stack.  <br>
+      There is only one place where the new variable can go: the top of the stack.<br>
+      Limitation: the stack is small compared to the available RAM.<br>
+      Suppose that a thread allocates the address range [500,600) for the stack. <br>
+      The first i32 object occupies the addresses from 596 to 599.<br>
+      In order to use stack allocation, the size of all variables must be <b><i>known</i></b> at compile time (161).<br>
+      Data allocated in the stack can have different sizes, but each variable size must be known in advance to compile time.<br>
+      Object are implicitly allocated in the stack by the compiler, it is not possible to do it explicitly.
+    </li>
+  <li><b>Heap allocation</b> (164) Example <code>Box::new([0u8; SIZE]);</code>. (165)<br>
+        Box&lt;T&gt; allows you to store an object on the heap, even if the data is normally allocated on the stack.<br>
+        Boxes are considered <i>smart pointers</i>, because they provide additional methods beyond references.<br>
+        The Box owns the data it points to, the data is deallocated when the box goes out of scope.<br>
+        Note that the stack must contain the object that is then passed to Box::new(),<br>
+        Box returns a pointer, a pointer is a data type that stores addresses. <br>
+        The pointer must be dereferenced to access the contained data.<br>
+        Accessing and allocating data on the heap takes more time than on the stack.<br>
+        Allocating is slower because we have to search for the available memory.<br>
+        The benefit of the heap is that we can dynamically add and remove data, e.g. resizing data on the heap.<br>
+        The heap is larger than the stack.<br>
+        <b>Memory allocated with box is deallocated when the variable goes out of scope</b> (167). </li>
+</ul>
+
+<b2>Boxes</b2>
+Boxes are used:
+<ui>
+  <li>when a data of known size is needed, but the data size cannot be known at compile time<br>
+    Example: a recursive data type.</li>
+  <li>To transfer ownership of data rather than copying on the stack</li>
+</ui>
+Boxes provide indirection and heap allocation.<br>
+
+<h2>.. Borrowing and Ownership</h2>
+
+Ownership requires to know how the stack and the heap are used to manage program data.<br>
+
+<b>Scope</b> : the specific region of a program where a variable is valid.
+<br>
+In Rust, variable bindings live within a block of code,
+from the point where the variable is initialized until the end of the block.<br>
+Note that in Rust an error is raised if a variable is used before it is initialized.<br>
+
+Blocks of code are enclosed by curly braces.<br>
+Blocks of code evaluate to the last expression in them.<br>
+<p/>
+
+<b>The rules of ownership</b>:
+<ul>
+  <li>each value has an <i>owner</i> (the owning variable)</li>
+  <li>there can be only one owner at an given time</li>
+  <li>when the owner goes out of scope, the value is dropped and the memory is deallocated.<br>
+      The memory is deallocated immediately after the data goes out of scope.</li>
+</ul>
+<b>Rust never automatically creates deep copies of data.</b><br>
+
+<b>Ownership</b>
+Ownership applies to references to objects in the heap.
+<br>
+Ownership rules:
+<ul>
+  <li>Variables are responsible for freeing their own resources.</li>
+  <li>Every value is associated to one, <b>and only one</b> variable at a time</li>
+  <li>When the owning variable goes out of scope, the value is dropped.</li>
+</ul>
+Advantage of ownership: it is safe and efficient, deallocation can be determined at compile time.<br>
+Disadvantage: it requires understanding of ownership and to think differently.<br>
+
+Transferring the ownership of a variable to another is called <i><b>move</b></i>.<br>
+When we copy a String to another, we actually do a <i>move</i> operation.<br>
+In order to copy a value and not transfer ownership, the <code>.clone()</code> method is used.<br>
+<p>
+<center>Rust will never automatically create “deep” copies of your data, by default it executed shallow copies, known as move.</center>
+
+<p/>
+Therefore, any <i>automatic copying</i> can be assumed to be inexpensive in terms of runtime performance.
+</p>
+
+<p/>
+<div class="source_code">
+<pre>
+  let outer_planet;
+  let other_planet;
+  let outer_value: i32;
+  {
+    let inner_planet= String::from("Mercury");
+    let inner_value = 54;
+    println!("inner_planet: {inner_planet}");
+    println!("inner_value: {inner_value}");
+    outer_planet= inner_planet;
+    outer_value= inner_value;
+    other_planet = outer_planet.clone();
+    println!("outer_value: {outer_value}");
+    println!("other_planet:{other_planet}");
+  }
+</pre>
+</div>
+
+<p/>
+In case a variable content lives on the heap, the mechanism of ownership applies.<br>
+If a variable lives on the stack and it has a known size (e.g. built-in types), the datum is always copied <br>
+(it implements the copy trait), there is no transfer of ownership, so the ownership mechanism does not apply.<br>
+<p>
+  Built in data types are always deep copied.<br>
+  Built-in types implement the Copy trait, they are stored in the stack and theyt are trivially copied..<br>
+  Tuples implement it, if the constituent parts implement the Copy trait.<br>
+  If a type implements the Copy trait, variables that use it do not move, but rather are trivially copied, making them still valid after assignment to another variable.<br>
+  Rust won’t let us annotate a type with Copy if the type, or any of its parts, has implemented the Drop trait. <br>
+  Nothing that requires allocation can implement <b>Copy</b>. <br>
+
+  <ul>
+    <li> the copy is done for stack-only data types, such as integer and floating point</li>
+    <li> copying is done implicitly, cloning must be done explicitly using the <code>clone()</code> method.</li>
+    <li> Rust has a special annotation called the Copy trait that we can place on types that are stored on the stack.<br>
+        If a type implements the Copy trait, the copy is trivial, the move is not used.<br>
+        Rust won’t let us annotate a type with Copy if the type, or any of its parts, has implemented the Drop trait.<br>
+      </li>
+  </ul>
+  So, it is important to know if a certain value lives on the heap or on the stack.<br>
+</p>
+
+<h3>... Ownership and functions</h3>
+<i><b>The mechanics of passing a value to a function are similar to those when assigning a value to a variable. </b></i>
+
+
+When a variable is passed to a function, it is either copied or moved, depending on the type.
+<br>
+The rules of passing a parameter to a function are the same as for assignment.<br>
+Returning a value from a function transfers ownership: it is a move.<br>
+<p/>
+
+<h3>... Borrowing</h3>
+Borrowing is common in Rust programming, to pass data that lives on the heap.<br>
+<ul>
+  <li>Access data without taking ownership of it</li>
+  <li>Create references using the borrow operator <b>&amp;</b> : the ampersand.<br>
+      The borrow operator creates a reference to a variable. <br>
+      Ownership is not moved.<br>
+      When the reference goes out of scope, the underlying data is not <b>dropped</b>.
+    </li>
+</ul>
+
+Borrows are temporary views of the data.<br>
+The concept of borrowing is independent of memory allocation.<br>
+In Rust, the assignment of a variable to another , in case the object is allocated on the heap, is a <b>move</b> operation.<br>
+The same is true for the return value of a function: it is a move.<br>
+
+The <b>star</b> operator dereferences the borrow and provides access to the owned object.<br>
+
+<center>
+<i>
+Mutable references have one big restriction: if you have a mutable reference to a value,
+you can have no other references to that value.
+</i>
+</center>
+<p/>
+
+<h4>.... Borrowing: the Borrow checker</h4>
+The Rust compiler uses the borrow checker. It compares the scope of variables, to make sure all borrows are valid.<br>
+A variable A has a lifetime, a reference variable REF references to A, REF has another lifetime.<br>
+If REF references A, the valid lifetime of REF is the intersection between the two lifetimes.
+<p/>
+If the reference REF is accessed outside of the valid lifetime an error is raised.<br>
+
+<hr>
+
+<!-- ******************************************************************************************* -->
+<h1>. Modules: the Module system</h1>
+Packages, Crates, Modules and use, and Paths are all part of the module system.
+(<a target="_blank" href="https://doc.rust-lang.org/book/ch07-00-managing-growing-projects-with-packages-crates-and-modules.html">
+   link to doc.rust-lang.org
+ </a>).<br>
+Rust has modules, similar to namespaces (271).  Software units are called modules in Rust.<br>
+
+<p/>
+
+<h2>.. Modules: the Modules</h2>
+<ul>
+  <li>Modules subdivide code to group related items</li>
+  <li>Provide isolated namespaces to control scope and privacy</li>
+</ul>
+
+Modules can contain: Functions, Macros, Types, Traits, impl blocks, Constants, Sub-modules.
+A module can be defined:
+<ul>
+  <li>inline: within a file that uses that module</li>
+  <li>in a separate file</li>
+</ul>
+<p/>
+
+<h3>... Modules: the Modules: public and private items</h3>
+The keyword <code><b>pub</b></code> marks an item as public, by default it is private.
+<br>
+<ul>
+  <li>all items are private by default</li>
+  <li>parent modules cannot use private items that are defined in child modules</li>
+  <li>child modules can use items contained in parent modules, even if they are private</li>
+</ul>
+
+A module must be public, otherwise its items are not accessible from outside.<br>
+
+The public/private visibility is controlled on a field-by-field basis. <br>
+Everything public must be explicitly marked <code><b>pub</b></code><br>
+The exceptions are Enums: when an enum is marked as public, all the enumerators become public as well.<br>
+It would not make sense to have some enumerators public and some not.<br>
+
+<h3>... Modules: the Modules: inline module</h3>
+<div class="source_code">
+<pre>
+
+pub mod garden; // Includes in this file the garden module code, found in src/garden.rs .
+
+fn main() { // This is the binary root. Code at this level is at the root of the module tree hierarchy.
+    hello::english();                 // Relative
+    crate::hello::casual::spanish();  // Absolute
+}
+
+mod hello { // Inline module: it is automatically in scope for main()
+  pub fn english(){ // Functions must be public to be called by other modules.
+    println!("hello");
+    spanish();  // Implicitly uses the relative path.
+  }
+
+  pub fn spanish(){
+    println!("hola");
+  }
+
+  pub mod casual {  // Submodule hello::casual
+    pub fn english(){
+      println!("hey");
+    }
+
+    pub fn spanish(){
+      super::spanish(); // References a function in the upper module.
+      println!("che pasa");
+    }
+  }
+}
+</pre>
+</div>
+
+<h3>... Modules: the Modules: structs and enums in modules</h3>
+Modules can store structs and implementation blocks.
+
+<h2>.. Modules: Paths</h2>
+A way to name and refer to an items in a module system, to bring them in our scope and use them in our programs.
+<p/>
+They can be relative or absolute.<br>
+
+<h2>.. Modules: Absolute and relative paths</h2>
+In a package, the <code>src/main.rs</code> is the binary crate root, of the crate with the same name as the package<br>
+ while the <code>src/lib.rs</code> is the library crate root, of the library with the sme name as the package.<br>
+The package name is defined in the <code>Cargo.toml</code> file.
+<p/>
+
+Path components are separated by ::<br>
+<ul>
+  <li>An absolute path starts with the keyword <code>crate::</code> .</li>
+  <li>Relative paths start from within the current scope, or<br>
+      <ul>
+        <li>start from within the current scope, or</li>
+        <li>uses an identifier in the current module, <code><b>self</b></code>, or <code><b>super</b></code></li>
+      </ul>
+    </li>
+</ul>
+
+<h2>.. Modules: Bringing modules into scope</h2>
+The <code><b>use</b></code> statement brings all public items into scope.<br>
+The names bought into scope are private, they cannot be accessed by clients of the module.<br>
+<code>pub use</code> makes all imported names as if they were declared public by the importing module.
+<p/>
+
+<code>use crate::</code> allows a crate to include code from a sibling module.<br>
+
+<div class="source_code">
+<pre>
+    // Brings all crate::greeting::formal into scope in the current source file.
+    use crate::greeting::formal;
+    use crate::greeting::casual;
+    use crate::greeting::{formal, casual};  // Same as the two lines above.
+    use crate::greeting::*;  // Brings into scope all public items in greeting not recommended.
+
+    use rand::prelude::*;   // Standard practice: the most common items in a package are bought into scope.
+
+    use greetings as greets; // Alias for a path.
+
+    use crate::greeting::formal::spanish; // Brings only a name into scope (e.g. a function)
+
+    fn main(){
+        formal::spanish();  // The last part of the path must still be used.
+    }
+</pre>
+</div>
+
+It is not possible to bring the same name twice or more into scope: the compiler will not let you do so.<br>
+
+
+<b>Note:</b> it is better to bring into scope an item and refer to it by its parent: it is more clear.<br>
+Idiomatic <code><b>use</b></code> statements:
+<ul>
+  <li>for functions: bring the parent module into scope.<br></li>
+  <li>for structs and enums, bring the item itself into scope</li>
+</ul>
+
+<h3>... Modules: the pub mod construct</h3>
+Example: declare a <code>pub mod</code> in the root lib.Example:<br>
+<code>pub mod hosting;</code> Suppose that hosting contains a pub method called <code>add_to_waitlist()</code> <br>
+So, the main binary crate can refer to <code>add_to_waitlist()</code> using:<br>
+<div class="source_code">
+<pre>
+    use again_07_projects as again;
+
+    fn main() {
+        println!("main started.");
+        again::hosting::add_to_waitlist();
+    }
+</pre>
+</div>
+
+
+
+<h2>.. Modules: Crates</h2>
+
+<ul>
+  <li><b>crate</b>: library or executable.  <br>
+      A collection of Rust source code files.<br>
+      A crate is the smallest amount of code that the compiler considers at a time.<br>
+      When a rust source file is compiler using <code>rustc</code>, the Rust compiler considers that file as a crate.<br>
+      A crate can be a file, and it can contain modules or use modules contained in other files.  It is a compile unit.
+      <p/>
+      
+      A crate can be a binary crate or a library crate. Given a package directory structure, <br>
+      the compiler searches for the <code>src</code> directory:<br>
+      <ul>
+        <li><b>binary crate</b>: the crate compiles to produce an executable program that can run on its own<br>
+          the compiler searches a file called<br>
+          <code>src/main.rs</code> in Rust the convention is that <code>src/main.rs</code> defines a binary crate <br>
+          with code to compile (<b>called crate root file</b>): if the compiler finds <code>src/main.rs</code>,
+            it means it is a binary crate.<br>
+          There must be a <code>main()</code> method, which  is the entry point of the crate.<br>
+          The compilation process creates a <code>my_project</code> executable</li>
+        <li><b>library crate</b>: a collection of code for other programs to use.<br>
+          The compiler searches a file <code>src/lib.rs</code> with code to compile (<b>called crate root file</b>)<br>
+          If it finds the <code>src/lib.rs</code>, it means it is a library crate (it is a convention).<br>
+          The compilation process creates a <code>my_project</code> library.</li>
+          The package can contain both <code>src/main.rs</code> and <code>src/lib.rs</code>,<br>
+          it means that the package contains both a binary crate and a library crate.<br>
+          In case, for example the package is <code>my_package</code>, the library file is called:<br>
+          <b><code>libmy_package.rlib</code></b><br>
+          </li>
+        <li>the crate root is the source file that the compiler starts from, it is the root module of the crate.<br>
+            <b>Declare the submodules any other file than the crate root</b>,<br>
+            the compiler will then search for files that implement it, if it is a non-inline module<br>
+            If you declare a <code>mod vegetables</code> module in the garden, <br>
+            the compiler will then search for the implementing file, either:
+              <ul>
+                <li><code>src/garden/vegetables.rs</code></li>
+                <li><code>src/garden/vegetables/mod.rs</code></li>
+              </ul>
+          </li>
+        <li>the package can contain additional modules e.g. a file like <code>src/some_module.rs</code>
+          </li>
+        <li>a package can have multiple binary crates by placing files in the src/bin directory:
+            each file will create a separate binary crate. <br>
+          Example:<br>
+          <code>bin/second_bin.rs</code> : causes the compiler to produce a binary called <code>second_bin</code> .<br>
+          It must contain a <code>main()</code><br>
+          <code>bin/third_bin.rs</code> : causes the compiler to produce a binary called <code>third_bin</code> .<br>
+          It must contain a <code>main()</code><br>
+          </li>
+        <li>a package contains at most one library crate.</li>
+        <li>a package must contain at least one crate.</li>
+        <li>A package contains a <code>Cargo.toml</code> file that describes the package crates.</li>
+        <li>How to create a module with additional code to be referenced by a binary crate?<br>
+            For example, create :
+            <code>fourth_bin/main.rs</code> : the entry point (root) of the binary crate <code>fourth_bin</code> <br>
+            <code>fourth_bin/another_module.rs</code> : a separate  module contained in the fourth_bin<br>
+          </li>
+      </ul>
+  </li>
+</ul>
+<p/>
+Other directories can be added to the package structure:
+<ul>
+  <li><code>benches</code> for benchmark code</li>
+  <li><code>examples</code> for relevant examples</li>
+  <li><code>tests</code> for unit tests</li>
+</ul>
+<p/>
+
+Modules and submodules:
+<ul>
+  <li>
+    <b>Modules</b> Suppose you declare a <code>mod garden;</code> in the <code>lib.rs</code>. <br>
+      The compiler searches for:
+      <ul>
+      <li><code>src/garden.rs</code> (This is the Rust idiomatic way)</li>
+      <li><code>src/garden/mod.rs</code></li>
+      </ul>
+    </li>
+  <li>
+    <b>Submodules</b>: In any file other than the crate root, you can declare submodules. <br>
+    For example, you might declare <code>mod vegetables;</code> in <code>src/garden.rs</code> . <br>
+    The compiler will look for the submodule’s code within the directory named for the parent module in these places:
+    <ul>
+      <li>Inline, directly following <code>mod vegetables</code>, within curly brackets instead of the semicolon</li>
+      <li>In the file <code>src/garden/vegetables.rs</code> (idiomatic way)</li>
+      <li>In the file <code>src/garden/vegetables/mod.rs</code></li>
+    </ul>
+    </li>
+</ul>
+<b>crates.io:</b>  the official registry for crates for the Rust community.<br>
+</li>
+</ul>
+The keyword <code><b>use</b></code> brings a path into scope.<br>
+
+
+There are crate registries,like <code>crates.io</code>
+
+<h2>.. Modules: Packages</h2>
+A backage is a bundle of one or more crates.<br>
+Packages are used to build, test and share one or more  crates, that provide a set of functionalities, using Cargo.<br>
+A package can contain as many binary crates as you like, but at most only one library crate.<br>
+A package must contain at least one crate, whether that’s a library or binary crate.
+<p/>
+<cite>A package can contain one or more target crates:<br>
+  zero to many binary crates, at most a library crate.</cite>
+<p/>
+
+A package can contain one or more crates.<br>
+
+The packages consists of:
+<ul>
+  <li>a collection of source files, organized into directories</li>
+  <li>a <code>Cargo.toml</code> manifest file</li>
+  <li>a <code>Cargo.lock</code> file: the first time you rebuild with new dependencies, cargo updates the Cargo.lock with the current versions.<br>
+      Then, the cargo starts using the dependencies of the  <code>Cargo.lock</code> file until it changes.
+    </li>
+</ul>
+
+<h2>.. Modules: Packages versus Crates</h2>
+A package contains crates. The package is higher in the hierarchy.<br>
+The command <code>cargo new my_project</code> creates a new package.<br>
+The manifest file describes howto build the crates within this package.<br>
+<p/>
+
+The hierarchy is:
+<ul>
+  <li>a Package contains Crates</li>
+  <li>a Crate: a tree of modules that produces a binary or an executable </li>
+</ul>
+
+In case of binary crate, the toml does not contain indication of where to find the source files.<br>
+It looks in a <code>src</code> directory.<br>
+<ul>
+  <li>if it finds a <code>main.rs</code> file it means that it is a binary crate</li>
+  <li>if it finds a <code>lib.rs</code> file it means that it is a library crate</li>
+  <li>the package can contain both the lib.rs and the main.rs, it means that the package has both a binary crate  and a library<br>
+      the package can contain additional Rust files in src, for example <code>some_module.rs</code></li>
+</ul>
+
+<div class="source_code">
+<pre>
+  my_project                        // root package directory
+  ├── Cargo.toml
+  └── src
+      ├── bin
+      │   ├── second_bin.rs         // creates a second_bin bin crate, it must contain a main().
+      │   └── third_bin             // Additional binary crate in the package
+      │       ├── another_module.rs // a separate module
+      │       └── main.rs
+      ├── lib.rs                    // library of the package, my_project library crate
+      ├── main.rs                   /* first executable of the package my_project binary crate,
+      │                              * it must contain a main(). */
+      ├── some_module.rs            // All the items in this file become part of the some_module module.
+      └── some_module
+          └── child_module.rs       // All the items in this file become part of some_module::child_module
+</pre>
+</div>
+<p/>
+
+Alternative to organize submodules:
+<div class="source_code">
+<pre>
+  my_project          // root package directory
+  ├── Cargo.toml
+  └── src
+      ├── main.rs
+      └── some_module
+          └── mod.rs  // All the items in this file become part of some_module
+</pre>
+</div>
+<p/>
+
+<h2>.. Modules: Normal modules: the module content is separated into multiple files</h2>
+A file using the module must declare it, with the statement:<br>
+<code> <b>mod some module;</b></code>
+
+<h3>... Modules: how to expose a submodule as if it was part of the module itself (* * * * *)</h3>
+Suppose a module called <code>sub_module</code> has a submodule  called <code>rectangle</code>.<br>
+We want to expose rectangle items as if they were part of <code>sub_module</code>.<br>
+<code>sub_module/mod.rs</code> must contain the statements:
+
+<div class="source_code">
+<pre>
+mod rectangle;
+pub use self::rectangle::*;
+</pre>
+</div>
+
+The tree is:
+<div class="source_code">
+<pre>
+.
+├── Cargo.lock
+├── Cargo.toml
+├── src
+│   ├── lib.rs
+│   ├── main.rs
+│   └── my_module
+│       ├── mod.rs
+│       └── sub_module
+│           ├── mod.rs
+│           └── rectangle.rs
+</pre>
+</div>
+
+<h2>.. The Module system: libraries</h2>
+<div class="source_code">
+<pre>
+  # How to create a library package.
+  cargo new --lib serdes
+</pre>
+</div>
+
+<h2>.. Access modifiers</h2>
+<code><b>pub</b></code> is the access modifier.  It makes the struct, member, function accessible from outside a module. (56)<br>
+
+<!-- ******************************************************************************************* -->
+<hr>
+<h1>. Automating Tests</h1>
+<b>Anatomy of a Test function</b> :
+<ul>
+  <li>Initialize state</li>
+  <li>Run test code</li>
+  <li>Check that results are what we expected</li>
+</ul>
+<p/>
+
+How define a test function:
+<div class="source_code">
+<pre>
+#[test]   // Annotate the function with the test attribute.
+</pre>
+</div>
+<p/>
+
+<div class="source_code">
+<pre>
+cargo test  // Build and run an executable to execute all the functions marked as unit test.
+</pre>
+</div>
+
+If a custom type must be tested for equality, with <code>assert_eq!()</code> and <code>assert_ne!()</code> macros, it must derive the implementation with:<br>
+<div class="source_code">
+<pre>
+  #derive(PartialEq,Debug)
+</pre>
+</div>
+
+In <code>assert_eq!()</code>, all arguments after the parameters to be tested for equality, are passed to a format!() macro to be printed.<br>
+There is also the <code>should_panic</code> annotation for a test case.
+
+<div class="source_code">
+<pre>
+  #[test]
+  #[should_panic(expected="A Person needs a name!")]  // expected is optional.
+  fn person_test(){
+      [...]
+  }
+
+  #[test]
+  #[ignore]
+  fn test_but_normally_ignored() {  // This test case is ignored.
+    let result= 2 + 3;
+    assert_eq!(result,5,"Expected 5, got:{result}");
+  }
+</pre>
+</div>
+
+<b>Cargo test</b>
+<ul>
+  <li>Compile and run the test binary</li>
+  <li>Runs multiple tests in parallel: can cause problems if multiple tests use the same resources.<br>
+      Example, all of them access a database.<br>
+      The exact timing when each test is executed is not predictable.<br>
+      <b><code>cargo test -- --test-threads=1 # Runs tests sequentially. </code></b>
+    </li>
+  <li>Captures standard output</li>
+</ul>
+
+<b>
+<div class="source_code">
+<pre>
+  cargo test [args] -- [args_bin]
+    args: arguments for cargo test itself, the orchestrator of test binaries
+    args_bin: arguments to the test binary executable
+</pre>
+</div>
+</b>
+<p/>
+
+<div class="source_code">
+<pre>
+  cargo test -- --show-output # Shows all the output to stdout
+
+  cargo test test_that_works  # Runs only the test function test_that_works()
+  cargo test test_            # Runs only the test functions whose name contains "test_"
+  cargo test test_cli_args_ -- --show-output  # Runs only the test functions whose name contains "test_cli_args_",
+                                              # showing the stdout.
+
+  cargo test -- --include-ignored # Runs all the tests, including the ignored
+  cargo test -- --ignored # Runs the tests marked as ignore
+</pre>
+</div>
+<p/>
+By default the output to std output is shown only if a test does not pass.<br>
+<p/>
+<b>Note</b>: establish a guideline to name test cases, to be able to filter test functions.<br>
+Example: <code><b>it_</b></code> for integration tests, <code><b>ut_</b></code> for unit tests.
+<p/>
+
+<h2>.. Automating Tests: Unit Tests</h2>
+<ul>
+  <li>Test individual modules of code in isolation</li>
+  <li>Contained in the same file as the code they test</li>
+  <li>Organized into a module named <code><b>tests</b></code> annotated with <code><b>#[cfg(test)]</b></code><br>
+    <code>cfg</code> means conditional compilation: tests are not compiled, unless <code>cargo test</code> is run.</li>
+</ul>
+
+The test is a submodule, so it can access , <code>use super::*;</code> the items in the module above.<br>
+
+<div class="source_code">
+<pre>
+  #[cfg(test)]
+  mod tests {
+    use super::*;
+
+    #[test]
+    fn ut_method(){
+      [...]
+    }
+
+    #[test]
+    fn ut_method2(){
+      [...]
+    }
+  }
+</pre>
+</div>
+
+<h2>.. Automating Tests: Integration Tests</h2>
+<ul>
+  <li>Integration tests are external to the code they test</li>
+  <li>Integration tests test the code through its public interface</li>
+  <li>Test multiple libraries to ensure they work together</li>
+</ul>
+Integration tests are in a <code>tests</code> directory at the same level as <code>src</code><br>
+Integration test methods must be annotated with <code>#[test]</code> There is no <code>#[cfg(test)]</code> .
+<p/>
+To run only integration tests;
+<div class="source_code">
+<pre>
+  cargo test --test '*' # Only integration tests are run.
+  cargo test --lib      # Only unit tests are run.
+</pre>
+</div>
+<p/>
+
+<h3>... Automating Tests: Integration Tests supportung methods</h3>
+Example: in the tests directory there are files; I want to add an additional module with utility functions.<br>
+I cannot add a file in the <code>tests</code> directory: it would be compiled and become a separate integration test binary file.<br>
+Suppose that the new module must be called <code>test_utils</code>.<br>
+The trick is creating a directory for the module: <code>test_utils</code>, within the directory create a <code>mod.rs</code> source file for utility functions.<br>
+
+
+Moreover:
+<ul>
+  <li>Only library crates expose functionalities for other crates to use:<br>
+    So, it is not possible to create an integration test for a binary, <br>
+    so: <b>add most of the reusable functionality to libraries: binaries should only call functions that are in libraries, so the
+    library functions are tests by unit tests and integration tests. </b></li>
+</ul>
+
+<hr>
+
+<!-- ******************************************************************************************* -->
+<h2>.. The Prelude</h2>
+The list of things that are automatically imported into every Rust program.<br>
+The Prelude does not import the entire Rust standard library. Just the most common modules.<br>
+
+
+
+<!-- ******************************************************************************************* -->
+<h1>. Project organization</h1>
+Example:
+<div class="source_code">
+<pre>
+  .
+  ├── app                               # The executable crate "app".-------------------------------
+  │   ├── Cargo.toml
+  │   └── src
+  │       └── main.rs
+  ├── Cargo.lock
+  ├── Cargo.toml
+  └── entities                          # The library crate "entities".-----------------------------
+      ├── Cargo.toml
+      ├── src
+      │   ├── audio_resource.rs
+      │   ├── lib.rs
+      │   ├── podcast_episode.rs
+      │   ├── podcast_feed.rs
+      │   └── simple.rs
+      └── tests                         # Contains the integration tests. It must be called tests.--
+          ├── test_podcast_episode.rs
+          └── test_simple.rs
+</pre>
+</div>
+<p/>
+
+Note:<br>
+<b>Mod</b>  <code>mod m;</code> will read <code>m.rs</code> or <code>m/mod.rs</code> . <p/>
+
+Root level <b><code>Cargo.toml</code></b> file:
+<div class="source_code">
+<pre>
+  [workspace]
+  members = [
+      "app",
+      "entities",
+  ]
+</pre>
+</div>
+<p/>
+
+The <b><code>Cargo.toml</code></b> of <b><code>app</code></b> contains:
+<div class="source_code">
+<pre>
+  [dependencies]
+  entities = { path="../entities" }
+</pre>
+</div>
+<p/>
+
+<b><code>main.rs</code></b> can access entities structs and functions as:
+<div class="source_code">
+<pre>
+  let res_obj= entities::Simple::new("Abcd".to_string());
+</pre>
+</div>
+<p/>
+
+<b><code>lib.rs</code></b> of <b>entities</b> contains:
+<div class="source_code">
+<pre>
+  mod audio_resource;
+  mod podcast_episode;
+  mod podcast_feed;
+  mod simple;
+
+  pub use audio_resource::*;
+  pub use podcast_episode::*;
+  pub use podcast_feed::*;
+  pub use simple::*;
+</pre>
+</div>
+<p/>
+
+Example of integration test file:
+<div class="source_code">
+<pre>
+  #[test]
+  fn test_simple_new() {
+      let want_name= "Abcde".to_string();
+      let result_obj= entities::Simple::new(want_name.clone());
+      assert!( result_obj.is_ok() );
+      if let Ok(obj) = result_obj {
+        assert_eq!(want_name, obj.name());
+      }
+  }
+</pre>
+</div>
+
+<!-- ******************************************************************************************* -->
+<hr>
+<h1>. Lifetime</h1>
+The concepts of scope and lifetime are related.<br>
+
+<h2>.. Lifetime: Lifetime Annotation</h2>
+Examples of lifetime annotations
+<div class="source_code">
+<pre>
+  &i32        // a reference
+  &'a i32     // a reference with an explicit lifetime
+  &'a mut i32 // a mutable reference with an explicit lifetime
+</pre>
+</div>
+
+The syntax to explicitly define a generic lifetime for parameters.<br>
+Note that the lifetime annotations are all in the function signature, not the body.<br>
+So, lifetime annotations are part of the function contract, not the implementation.<br>
+<div class="source_code">
+<pre>
+  fn best_fuel &lt;'a &gt;(x: &'a str, y: &'a str) -> &'a str {
+    [...]
+  }
+</pre>
+</div>
+The above lifetime annotation states that the returned reference is valid as long as both parameter references are valid.<p/>
+
+We state that <code>x</code> and <code>y</code> have the same lifetime. The compiler uses the most restrictive of the two.<br>
+Such lifetime is assigned also to the result.
+The compiler thus checks the variable that gets assigned the result against the expected lifetime.
+<p/>
+Remember, when we specify the lifetime parameters in this function signature,
+we’re not changing the lifetimes of any values passed in or returned. <br>
+Rather, we’re specifying that the borrow checker should reject any values that do not adhere to these constraints.
+<p/>
+
+When returning a reference from a function, the lifetime parameter for the return type needs to match the lifetime parameter for one of the parameters.<br>
+If the reference returned does not refer to one of the parameters, it must refer to a value created within this function.<br>
+However, this would be a dangling reference because the value will go out of scope at the end of the function.
+
+<h3>... Lifetime: the lifetime syntax</h3>
+In the method argument, there is a backtick after the ampersand, before the data type.<br>
+
+<div class="source_code">
+<pre>
+  fn best_fuel &lt;'a &gt;(x: &'a str, y: &str) -> &'a str { // Not all parameters must be annotated.
+    [...]
+  }
+
+  fn best_fuel &lt;'a,'b&gt;(x: &'a str, y: &'b str) -> &'a str { // Multiple lifetime annotations.
+    [...]
+  }
+</pre>
+</div>
+It is better to annotate all parameters, to be more explicit.<br>
+The second version of <code>best_fuel()</code> is better.
+<p/>
+
+<h3>... Lifetime: the static lifetime</h3>
+<ul>
+  <li>The static lifetime annotation indicates references that are available for the entire duration of the program.<br>
+      For example: string literals. It must be annotated explicitly.</li>
+  <li>Static lifetime can be coerced to a more strict lifetime, if the referenced is passed as output parameter from a function with another lifetime annotation, although it is rarely done.</li>
+  <li><code>'static</code> can be used as a trait bound, to ensure that the data will only contain static elements.<br>
+    Example:<br>
+    <code>T: Display + 'static</code>
+   </li>
+</ul>
+
+<div class="source_code">
+<pre>
+</pre>
+</div>
+
+<p/>
+
+<h2>.. Lifetime: Lifetime elision rules.</h2>
+There are situations when the borrow checker can infer the lifetime on its own,
+so adding the lifetime annotation is not necessary.
+<br>
+<ul>
+  <li> A set  of rules for the compiler to analyze reference lifetimes. </li>
+  <li> It describes situations that do not require explicit lifetime annotations. </li>
+  <li> If the code matches those situations, explicit lifetime annotation is not needed. </li>
+  <li> If there is any ambiguity, explicit annotation is still required. </li>
+</ul>
+<p/>
+
+<h3>.. Lifetime: the elision rules.</h3>
+<a target="_blank" href="https://doc.rust-lang.org/stable/book/ch10-03-lifetime-syntax.html#lifetime-elision">Lifetime elision in the Rust book</a>. <br>
+<ul>
+  <li>Rule 1: each input parameter that is a reference is assigned its own separate lifetime: 
+      so if the function returns a reference, the compiler does not know what to do and it returns an error</li>
+  <li>Rule 2: of there is only one input lifetime, it is assigned to all output lifetimes</li>
+  <li>Rule 3: if there is a <code>&amp;self</code> or <code>&amp;mut self</code> input parameter,
+              its lifetime is assigned to all output parameters</li>
+</ul>
+In the future, additional rules can be added.<br>
+If the rules do not hold, the compiler requires the explicit lifetime annotation.<br>
+
+<h2>.. Lifetime: Struct lifetime annotation</h2>
+Example:
+<div class="source_code">
+<pre>
+  struct Shuttle&lt;'a&gt; {
+      name: &amp;'a str
+  }
+  impl&lt;'a&gt; Shuttle&lt;'a&gt; {
+      fn send_transmission(&amp;self, msg: &amp;str) -&gt; &amp;str {
+          self.name
+      }
+  }
+</pre>
+</div>
+
+<!-- ******************************************************************************************* -->
+<hr>
+<h1>. Runtime Error Handling</h1>
+(Runtime) errors are categorized as:
+<ul>
+  <li>Unrecoverable errors: e.g. index beyond boundaries. Handled by Rust with the <b><code>panic!</code></b> macro.
+      </li>
+  <li>Recoverable errors: the program can resolve the problem. E.g. a file does not exist. <br>
+      Handled with the Result&lt;T,E&gt; enum type.<br>
+      There is the <b> <code>enum Result&lt;T,E&gt; { OK(T),Err(E) } </code> </b>
+      </li>
+</ul>
+There are no exceptions, just <code><b>panic!()</b></code> for unrecoverable and Result for recoverable errors.<br>
+<p/>
+Backtrace dumps list on top the called methods and on bottom the caller methods.<br>
+Detect your code in the call backtrace: the functions called by your program are above.<br>
+
+<h2>.. Runtime Error Handling: Recoverable errors</h2>
+The Rust prelude contains the Result&lt;T,E&gt; enum type.  If a method returns the result, it is better to to call <code>unwrap()</code>.<br>
+<b>Expect</b>: there is also the <code>expect(&amp;str)</code> method: in case of error it panics with the given panic message.<br>
+
+<b>Note</b>: both the <code>unwrap()</code> and the <code>expect()</code> method are not recommended.<br>
+
+<b>Note 2</b>: the question mark operator (?) propagates the error to the caller, otherwise returns the content of the Ok enumerator.<br>
+
+<h2>.. Error Handling: panic</h2>
+It is possible to explicitly raise a panic, calling the <code>painc!()</code> macro.<br>
+By default, upon panic, the runtime unwinds the stack and frees resources.<br>
+It is possible to abort on painc, declaring in the Cargo.toml :<br>
+
+<div class="source_code">
+<pre>
+[profile.release]
+panic = 'abort'
+</pre>
+</div>
+
+<!-- ******************************************************************************************* -->
+<hr>
+<h1>. Traits: Interfaces / Traits </h1>
+Rust flavour of interfaces is called <b><i>traits</i></b> (71): a trait incapsulates a group of related functions.<br>
+A trait groups functions that can be implemented by multiple structs.
+<ul>
+  <li> A collection of methods representing a set of behaviors necessary to accomplish some task </li>
+  <li> Data types can implement a trait, it means it provides the trait methods</li>
+  <li> Generics use traits to specify the capabilities of unknown data types</li>
+  <li> Similar to interfaces in other programming languager, but there are some differences</li>
+</ul>
+<p/>
+Example of custom trait definition. The Description trait has only one method: <code>describe()</code>. <br>
+A trait is a contract-<br>
+<div class="source_code">
+<pre>
+  trait Description{
+    fn describe(&self) -&gt; String;
+  }
+</pre>
+</div>
+<p/>
+
+Satellite implements the trait Description:
+<div class="source_code">
+<pre>
+  impl Description for Satellite {
+    fn describe(&self) -&gt; String {
+      [...]
+    }
+  }
+</pre>
+</div>
+<p/>
+
+<h2>.. Traits: default trait implementation</h2>
+When declaring a trait, it is possible to provide a default implementation, structs implementing the trait can override it.<br>
+If a struct does not override the method, the default version is used.<br>
+
+<div class="source_code">
+<pre>
+  trait Description {
+      fn describe(&self) -&gt; String {
+          String::from("An object flying through space.")
+      }
+  }
+</pre>
+</div>
+
+<h2>.. Traits: derivable traits</h2>
+By default, a struct does not implement any trait.<br>
+Rust has derivable traits that provide a default implementation, created by the compiler.<br>
+When you derive a trait, the compiler generates default code for the required methods.
+<p/>
+Derivable traits are: Eq, PartialEq, Ord, ParitalOrd, Clone, Copy, Hash, Default, and more.<br>
+For example (the same derive clause can contain multiple traits, separated by commas):<br>
+<div class="source_code">
+<pre>
+    #[derive(PartialEq; PartialOrd)]
+    struct Satellite {
+        [...]
+    }
+</pre>
+</div>
+<p/>
+
+<h2>.. Traits: Trait Bounds, when working with generics</h2>
+<ul>
+  <li>They require a generic type to implement specific traits</li>
+  <li>Boundaries guarantee that the generic type will have the necessary behaviors</li>
+</ul>
+
+Example of trait bound:
+<div class="source_code">
+<pre>
+  fn print_type&lt;T: std::fmt::Display&gt;( item: &T )
+</pre>
+</div>
+
+<h2>.. Traits: Multiple trait bounds on generics</h2>
+You may want to impose multiple bounds on a generic type.<br>
+There is an alternate syntax that uses the <code><b>where</b></code> keyword.
+<p/>
+<div class="source_code">
+<pre>
+    // In case the where clause is not used:
+    fn compare_and_print&lt; T : std::fmt::Display + std::cmp::PartialEq + From&lt;U&gt;,
+                        U : std::fmt::Display + std::cmp::PartialEq + Copy&gt;(a: &T, b: &U) {
+        [...]
+    }
+
+    // Same, but the where clause is used.
+    fn compare_and_print&lt; T, U &gt;(a: &T, b: &U)
+        where T : std::fmt::Display + std::cmp::PartialEq + From&lt;U&gt;,
+              U : std::fmt::Display + std::cmp::PartialEq + Copy
+    {
+        [...]
+    }
+</pre>
+</div>
+
+<h2>.. Traits: return types with implemented traits</h2>
+There is a syntax to impose a boundary on a return type,  without using the letter T, U, etc.<br>
+<div class="source_code">
+<pre>
+    fn get_displayable() -&gt; impl fmt::Display {
+        [...]
+    }
+</pre>
+</div>
+
+In case <code>get_displayable()</code> has multiple return values, all must be of the same type.
+The language requires it.<br>
+
+<h2>.. Traits: Implementation of a local trait on a local type </h2>
+One restriction to note is that we can implement a trait on a type only if at least one of the trait or the type is local
+to our crate.
+At least one of the conditions must be true:
+<ul>
+  <li>The trait is local to the crate ( it is defined in the crate) and then implemented on a type that is
+      local to the crate or contained in another crate</li>
+  <li>The type is local to the crate</li>
+</ul>
+
+<!-- ******************************************************************************************* -->
+<hr>
+<h1>. Functions </h1>
+<b>Syntax</b>:
+<div class="source_code">
+<pre>
+  fn four() -&gt; i32 {
+  }
+</pre>
+</div>
+
+In case the function does not return any value, the return the data type is the unit, the empty tuple.<br>
+Functions can be called before they are defined.<br>
+Functions cannot be shadowed, in the same block. A function in a block can shadow a function in an outer block (117). <br>
+Function arguments by default are passed <b>by value</b>. However, to be changed, arguments must be declared mutable. (120).<br>
+<div class="source_code">
+<pre>
+  fn print_doubled( mut x: f64) { [...]
+</pre>
+</div>
+
+The fuction can have one or more parameters.  At runtime, the exact parameter value is called argument.
+<br>
+
+The last expression is the object returned from the function: <b>the returned expression must not be terminated by a ;</b>.<p/>
+
+The <code>return</code> statement exists, to exit from a function (123).<br>
+It is possible to return multiple values from a function, as a tuple.<br>
+It is thus possible to return a tuple, an enum, a struct, a tuple struct, an array, or a vector from a function (124).<br>
+
+<h2>.. Passing arguments by value</h2>
+Variables that live on the stack (e.g. built-in data types) are passed by valued and copied on the stack.<br>
+The called function receives a copy of the variable.<br>
+
+<h2>.. Passing arguments by transferring ownership</h2>
+<div class="source_code">
+<pre>
+  // launch_rocket receive ownership of the argument variable
+  fn launch_rocket(mut name: String) -> String {
+    name.push_str(" launched.");
+    name
+  }
+
+  let rocket_name = String::from("Apollo");
+  let rocket_name = launch_rocket(rocket_name);
+  // The caller can use rocket_name because of shadowing.
+</pre>
+</div>
+
+
+<h2>.. Passing arguments by reference (mutable/immutable)</h2>
+The argument can be declared as mutable reference (127).<br>
+<div class="source_code">
+<pre>
+  fn increase(n: &amp;i32) -&gt; i32 { [...] }  // n is a constant reference to an int 32.
+
+  fn decrease(n: &amp;mut i32) { [...] }        // n is a mutable reference to an i32
+
+  fn double ( a: &amp;mut [i32;10]) { [...] }   // mutable reference
+
+  fn sum_array ( a: &amp; [i32;10]) -&gt; i32 { // constant reference, useful as in C++
+</pre>
+</div>
+
+Note: in Rust 2021 there is no need to write the star (*) symbol to dereference an object passed by reference (128). <br>
+
+<h2>.. Closures = Lambda functions</h2>
+In Rust functions cannot access variables outside their scope, unless they are consts or static variables (184).<br>
+A closure can capture its scope (189).<br>
+
+<div class="source_code">
+  <pre>
+  | a: u32 | -> u32 { ... } // Args and return type are type annotated.
+  | a | { ... }             // The compiler infers the data types.
+
+  fn  add_one_v1   (x: u32) -> u32 { x + 1 }  # Similarity between fn syntax and closures.
+  let add_one_v2 = |x: u32| -> u32 { x + 1 };
+  let add_one_v3 = |x|             { x + 1 }; # All type annotations can be removed.
+  let add_one_v4 = |x|               x + 1  ; # Brackets can be removed if the body is one expression.
+  </pre>
+</div>
+The code compiles only if there is an instance of <code>add_one_v3</code> and <code>add_one_v4</code>, <br>
+otherwise data types cannot be inferred.<br>
+Once the compiler has inferred the data types, with one instance, the other instances must be consistent.<br>
+<p/>
+
+Closures can capture values from their environment in three ways, <br>
+which directly map to the three ways a function can take a parameter:
+<ul>
+  <li>borrowing immutably</li>
+  <li>borrowing mutably</li>
+  <li>taking ownership</li>
+</ul>
+The closure will decide which of these to use based on what the body of the function does with the captured values.
+<p/>
+
+<div class="source_code">
+  <pre>
+  // only borrows, list is not modified.
+  let only_borrows= ||{ println!("Within closure:{:?}",list); };
+
+  // borrows mutably, the closure var must be declared as mut.
+  let mut borrows_mutably= || { other_list.push(45); };
+
+  // The move keyword forces the closure to take ownership of the passed values.
+  thread::spawn( move || println!("From thread: {:?}", list)) // The closure takes ownership of the values it uses in the environment.
+        .join()
+        .unwrap();
+  </pre>
+</div>
+
+<p/>
+<div class="source_code">
+  <pre>
+  |a: &amp;i32, b: &amp;i32| -&gt; std::cmp::Ordering { ... } // Full syntax
+  |a, b|  { ... }                                             // Compact syntax
+  |a,b | b.cmp(a)                                             // One liner
+  </pre>
+</div>
+
+There are different ways to invoke a closure (189)
+
+Closures implement one, two, or all three of the traits below, in an additive fashion:
+<ul>
+  <li>FnOnce: all clousures implement this trait: for a cloure that moves captured values out of its body</li>
+  <li>FnMut: a closure that mutates its captured values, but it does not move out its captured values.<br>
+            Can be called multiple times</li>
+  <li>Fn: does not mutate and does not move out its captured values. Can be called multiple times, can be passed as a thread body. </li>
+</ul>
+
+If we do not need to capture values from the environment, we can pass the name of a function instead of a closure.<br>
+
+
+<h1>. Operators</h1>
+<h2>.. Logical Operators</h2>
+Ampersand is the logical operator.  Double ampersand is the short-circuiting AND logical operator.<br>
+Double vertical pipe is the short circuiting OR logical operator.<br>
+
+<p/>
+
+<hr>
+
+<!-- ******************************************************************************************* -->
+<h1>. Smart Pointers</h1>
+Smart pointers implement the <code>Deref</code> and <code>Drop</code> traits.<br>
+The Deref trait allows an instance of the smart pointer struct to behave like a reference so you can
+write your code to work with either references or smart pointers. <br>
+The Drop trait allows you to customize the code that’s run when an instance of the smart pointer goes out of scope.
+
+<h2>.. Deref coercion</h2>
+Deref coercion converts a reference to a type that implements the Deref trait into a reference to another type.<br>
+For example, deref coercion can convert &amp;String to &amp;str because String implements the Deref trait such that it
+returns &amp;str.<p/>
+When the Deref trait is defined for the types involved, Rust will analyze the types and use Deref::deref as many times as necessary to get a reference to match the parameter’s type. The number of times that Deref::deref needs to be inserted is resolved at compile time, so there is no runtime penalty for taking advantage of deref coercion!
+
+<!-- ******************************************************************************************* -->
+<hr>
+<h1>. Standard Library</h1>
+The standard library is always included, by default.
+The standard library is organized into modules.<br>
+<div class="source_code">
+<pre>
+  "abcd".len();     // Object oriented style.
+  str::len("abcd"); // Procedural style.
+</pre>
+</div>
+
+<h2>.. The application</h2>
+
+<h3>.. Cli arguments</h3>
+The function <code>std::env::args()</code> returns an iterator over the command line arguments (244).<br>
+
+<h3>.. The return code</h3>
+<code>std::process::exit()</code>
+
+<h2>.. Containers</h2>
+
+<h2>.. Println formatting</h2>
+<div class="source_code">
+<pre>
+  // c is printed with 3 decimal places of precision.
+  println!("c:{:.3}", c);
+
+  // c is printed with 8 total characters and 3 decimal places of precision.
+  println!("c:{:8.3}", c);
+
+  println!("c:{:08.3}", c);  // Padding with zeros before the number.
+
+  // Rust supports string interpolation. The name can be used instead of the positional argument.
+  println!("c={c:8.3}");
+</pre>
+</div>
+
+Note: println!() adds a trailing newline, whereas print!() does not.<br>
+prinln!() takes a reference to the expression.
+<p/>
+
+<h3>... Vectors</h3>
+(179) Vectors have size and capacity.
+
+<!-- ******************************************************************************************* -->
+<hr>
+<h1>. Coding Style</h1>
+(114)
+<ul>
+  <li>Constants in <cite>screaming snake case</cite>, or upper snake case.</li>
+  <li>Static variables in UPPERCASE_SEPARATED_BY_UNDERSCORES (screaming snake)</li>
+  <li>Type and enum names in <cite>Upper camel case</cite></li>
+  <li>Any other name in snake case</li>
+</ul>
+
+rustfmt is the automatic formatter tool:
+<div class="source_code">
+<pre>
+  rustfmt -v --edition 2024 main.rs
+</pre>
+</div>
+
+<hr>
+
+<!-- ******************************************************************************************* -->
+
+<h1>. Embedded</h1>
+<h2>.. Embedded: Installation</h2>
+<h3>... Embedded: Rust terminology </h3>
+<ul>
+  <li>1st level: <b>Peripheral Access Crate (PAC)</b>: provides a safe access to the chip peripherals.</li>
+  <li>2nd level: <b>Hardware Access Layer (HAL)</b>: abstracts the chip. The HAL is built on top of the PAC.</li>
+  <li><b>Board Support Crate (BSC)</b> or <b>Board Support Package (BSP)</b>:
+      abstracts the whole board.<br>
+      It provides abstractions over the microcontroler and the sensors, LEDs, etc. on the board.</li>
+</ul>
+
+<h3>... Embedded: Installation of the required tools under Linux Ubuntu 2022: </h3>
+<b>OS-agnostic tools</b>
+<div class="source_code">
+<pre>
+  cargo install cargo-binutils
+  rustup component add llvm-tools
+  cargo binstall probe-rs-tools
+  cargo install probe-rs-tools
+</pre>
+</div>
+
+<b>Linux Ubuntu installation commands</b>
+<div class="source_code">
+<pre>
+  sudo apt-get install gdb-multiarch minicom
+</pre>
+</div>
+
+Create a file /etc/udev/rules.d/69-microbit.rules , with the following content:
+<div class="source_code">
+<pre>
+# CMSIS-DAP for microbit
+
+ACTION!="add|change", GOTO="microbit_rules_end"
+
+SUBSYSTEM=="usb", ATTR{idVendor}=="0d28", ATTR{idProduct}=="0204", TAG+="uaccess"
+
+LABEL="microbit_rules_end"
+</pre>
+</div>
+
+To <b>reload the udev rules</b>:
+<div class="source_code">
+<pre>
+  sudo udevadm control --reload
+  sudo udevadm trigger
+</pre>
+</div>
+
+To enumerate devices on the USB bus:
+<div class="source_code">
+<pre>
+  lsusb | grep -i "NXP ARM mbed"
+</pre>
+</div>
+On my PC the response is:
+
+<div class="source_code">
+<pre>
+  Bus 001 Device 007: ID 0d28:0204 NXP ARM mbed
+</pre>
+</div>
+<b>Bus 001 Device 007</b><p/>
+
+Check the permissions:
+<div class="source_code">
+<pre>
+minguzzi@mingux:~/ext_repo$ ls -l /dev/bus/usb/001/007
+crw-rw-r--+ 1 root root 189, 6 Aug 11 21:37 /dev/bus/usb/001/007
+
+They must be:
+crw-rw-r--+
+
+# Verify the permissions with:
+minguzzi@mingux:~/ext_repo$ getfacl /dev/bus/usb/001/007
+getfacl: Removing leading '/' from absolute path names
+# file: dev/bus/usb/001/007
+# owner: root
+# group: root
+user::rw-
+user:minguzzi:rw-
+group::rw-
+mask::rw-
+other::r--
+</pre>
+</div>
+
+<p>
+<a target="_blank" href="https://tech.microbit.org/hardware/">Microbit Hardware documentation</a>
+</p>
+
+<h3>... Embedded: Building, Running, Debugging</h3>
+<h4>.... Embedded: Microbit v2</h4>
+
+<b>IMPORTANT COMMANDS: Build the executable</b>
+<div class="source_code">
+<pre>
+  # In the root directory of the cargo project, run:
+  cargo build -r --features v2 --target thumbv7em-none-eabihf # Release
+  cargo build --features v2 --target thumbv7em-none-eabihf
+
+  # Verify that the executable is for the target ARM architecture.
+  cargo readobj --features v2 --target thumbv7em-none-eabihf --bin led-roulette -- --file-headers
+</pre>
+</div>
+
+<b>Flash the executable</b>
+<div class="source_code">
+<pre>
+  cargo embed --features v2 --target thumbv7em-none-eabihf
+</pre>
+</div>
+<p/>
+<b>Summary: TL; TD</b>
+
+The set of commands to build and flash are:
+<div class="source_code">
+<pre>
+  cargo build --features v2 --target thumbv7em-none-eabihf  # Build
+  cargo embed --features v2 --target thumbv7em-none-eabihf  # Flash
+</pre>
+</div>
+
+
+<h4>.... Embedded: Debugging</h4>
+<div class="source_code">
+<pre>
+  # In a terminal, flash the executable.
+  cargo embed --features v2 --target thumbv7em-none-eabihf
+
+  GDB stub listening at 127.0.0.1:1337
+
+  # In another terminal
+  gdb-multiarch target/thumbv7em-none-eabihf/debug/led-roulette
+
+  (gdb) target remote :1337
+
+  (gdb) break main
+
+</pre>
+</div>
+
+Other gdb commands:
+<code>
+  <ul>
+    <li>continue or c</li>
+    <li>layout src </li>
+    <li>break <i>line number</i> </li>
+    <li>print <i>symbol name</i></li>
+    <li>next <i>execute one line</i></li>
+    <li>info locals <i>print all local variables</i></li>
+    <li>monitor reset <i>restarts the execution</i></li>
+    <li>quit <i>Quits the GDB</i></li>
+  </ul>
+</code>
+
+<h2>.. Embedded: Communication via Minicom</h2>
+For example, with the Microbit, a device appears: /dev/ttyACM0 <br>
+<b>Minicom</b> is used.  A typical configuration file for minicom is:
+<div class="source_code">
+<pre>
+pu baudrate 115200
+pu bits 8
+pu parity N
+pu stopbits 1
+pu rtscts No
+pu xonxoff No
+</pre>
+</div>
+<i>The last line must terminate with a newline.</i><p/>
+
+<h2>.. Embedded Links</h2>
+<ul>
+  <li><a target="_blank" href="https://crates.io/crates/microbit-v2">Microbit v2 Crate</a> </li>
+  <li><a target="_blank" href="https://tech.microbit.org/hardware/">Overview of the Embedded Rust Ecosystem</a> (YouTube)
+    Franz Skarman </li>
+</ul>
+
+<h2>.. Embedded: The Embednomicon</h2>
+A no_std application can be the only process running on the target.<br>
+<b>no_std</b> means that the crate will link the <code><b>core</b></code> crate instead of the std crate.<br>
+The no_std lacks I/O and memory allocation. <br>
+A no_std  application lacks all that standard runtime, so it must initialize its own runtime, if any is required.
+
+The std crate assumes that the application will run on an OS.
+To create the minimal app:
+<div class="source_code">
+<pre>
+  cargo new --edition 2018 --bin smallest_app
+</pre>
+</div>
+
+The main.rs has on top, some attributes:
+<ul>
+  <li>no_main : the program won't use the standard main function as its entry point.</li>
+  <li>no_std</li>
+</ul>
+<!-- ******************************************************************************************* -->
+
+<h1>. Embedded with STM32</h1>
+With the STM32, the target is: <b><code>thumbv7em-none-eabihf</code></b> <br>
+
+<h2>.. Embedded with STM32: Installation</h2>
+
+<div class="source_code">
+<pre>
+  rustc -V                              # The version should be at least 1.31
+  rustup target add thumbv7em-none-eabihf
+  cargo install cargo-binutils          # The version must be>= v0.3.6
+  sudo apt install gdb-multiarch openocd qemu-system-arm
+  cargo install cargo-binutils
+  rustup component add llvm-tools
+  sudo apt install libssl-dev pkg-config # Needed by cargo-generate?
+  cargo install cargo-generate
+  rustup target add thumbv7m-none-eabi    # The architecture emulated on the QEMU.
+  rustup target add thumbv7em-none-eabihf # The core on the STM32 Discovery.
+</pre>
+</div>
+<p/>
+<b>Ubuntu specific</b> instructions:
+<div class="source_code">
+<pre>
+  sudo apt install gdb-multiarch openocd qemu-system-arm
+</pre>
+</div>
+
+<h2>.. Embedded with STM32: Getting Started 1 </h2>
+
+To reload all the UDEV rules:<br>
+<div class="source_code">
+<pre>
+  sudo udevadm control --reload-rules
+
+  minguzzi@mingux:~/doc/My_Tech_Notes_Dropbox_proxy$ lsusb
+  Bus 002 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
+  Bus 001 Device 005: ID 0bda:b00c Realtek Semiconductor Corp. Bluetooth Radio
+  Bus 001 Device 003: ID 0408:5365 Quanta Computer, Inc. HP TrueVision HD Camera
+  Bus 001 Device 007: ID 0483:374b STMicroelectronics ST-LINK/V2.1
+  Bus 001 Device 006: ID 046d:c31c Logitech, Inc. Keyboard K120
+  Bus 001 Device 004: ID 260d:1019  PERIMICE-520
+  Bus 001 Device 002: ID 214b:7250 Huasheng Electronics USB2.0 HUB
+  Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+</pre>
+</div>
+
+<b>Bus 001 Device 007</b><br>
+<div class="source_code">
+<pre>
+  /dev/bus/usb/001/007  # The path exists
+
+  ls -al  /dev/bus/usb/001/007
+  crw-rw----+ 1 root plugdev 189, 6 Sep  1 12:28 /dev/bus/usb/001/007
+</pre>
+</div>
+<p/>
+
+Verify the installation.  Uses Open On-Chip Debugger:
+<div class="source_code">
+<pre>
+  openocd -f /usr/share/openocd/scripts/interface/stlink.cfg -f /usr/share/openocd/scripts/target/stm32f3x.cfg
+
+  Open On-Chip Debugger 0.11.0
+  Licensed under GNU GPL v2
+  For bug reports, read
+          http://openocd.org/doc/doxygen/bugs.html
+  Info : auto-selecting first available session transport "hla_swd". To override use 'transport select <transport>'.
+  Info : The selected transport took over low-level target control. The results might differ compared to plain JTAG/SWD
+  Info : Listening on port 6666 for tcl connections
+  Info : Listening on port 4444 for telnet connections
+  Info : clock speed 1000 kHz
+  Info : STLINK V2J37M26 (API v2) VID:PID 0483:374B
+  Info : Target voltage: 2.920310
+  Info : stm32f3x.cpu: hardware has 6 breakpoints, 4 watchpoints
+  Info : starting gdb server for stm32f3x.cpu on 3333
+  Info : Listening on port 3333 for gdb connections
+</pre>
+</div>
+
+<p/>
+<b><code>cargo-generate</code></b>  creates a project template.
+<p/>
+<b><code>cargo-binutils</code></b> a collection of cargo subcommands that wrap the LLVM tools that are shipped with the toolchain.<br>
+Each tool support all the architectures supported by Rust.
+<p/>
+<b><code>qemu-system-arm</code></b>  can fully emulate ARM systems.
+<p/>
+<b><code>probe-rs</code></b> simple tool to work with debuggers.  There is a VS extension for probe-rs.
+<p/>
+
+<b><code>OpenOCD</code></b> for debugging, testing and programming embedded systems.<br>
+Interfaces the development host with JTAG and SWD (Serial Wire Debugger).<br>
+It may require complex configuration.
+<p/>
+
+<h2>.. Embedded with STM32: Getting Started 2 </h2>
+<div class="source_code">
+<pre>
+  # Installs Cargo Generate
+  cargo install cargo-generate
+
+  # Creates a template of an app named: first
+  cargo generate --name first --git https://github.com/rust-embedded/cortex-m-quickstart
+
+  # Check the target architecture
+  cat .cargo/config.toml
+
+  # Installs the target architecture
+  rustup target add thumbv7m-none-eabi
+
+  # Builds: the target architecture is
+  cargo build --target thumbv7m-none-eabi
+  cargo build                               # Same effect, the target architecture is set by the .cargo/config.toml
+
+  # Builds and reads the binary headers of the app: first.
+  cargo readobj --bin first -- --file-headers
+
+  cargo size --bin first --release -- -A    # Prints the size of the linker sections.
+
+  # Disassembles the binary.
+  cargo objdump --bin app --release -- --disassemble --no-show-raw-insn --print-imm-hex
+</pre>
+</div>
+
+<h3>... Embedded with STM32: Run on QEMU</h3>
+<div class="source_code">
+<pre>
+# To run the binary on the QEMU
+qemu-system-arm \
+  -cpu cortex-m3 \
+  -machine lm3s6965evb \
+  -nographic \
+  -semihosting-config enable=on,target=native \
+  -kernel target/thumbv7m-none-eabi/debug/first
+</pre>
+</div>
+
+Semihosting: the emulated device can use the stdout, stderr, stdin and create files.<br>
+
+Uncomment the proper line in <code>.cargo/config.toml</code>, then run the app in emulated mode with:
+<div class="source_code">
+<pre>
+  cargo run --bin first --release
+</pre>
+</div>
+
+<h4>.... Embedded with STM32: Debug on QEMU</h4>
+<b><i>Note the flags: -S and -gdb </i></b>.<br>
+
+<div class="source_code">
+<pre>
+qemu-system-arm \
+  -cpu cortex-m3 \
+  -machine lm3s6965evb \
+  -nographic \
+  -semihosting-config enable=on,target=native \
+  -gdb tcp::3333 \
+  -S \
+  -kernel target/thumbv7m-none-eabi/debug/first
+
+# In another terminal:
+gdb-multiarch -q target/thumbv7m-none-eabi/debug/first
+</pre>
+</div>
+
+<h4>.... Embedded with STM32: Debug on the STM32 Discovery board</h4>
+<a href=="https://docs.rust-embedded.org/book/start/hardware.html" target="_parent">
+  the same steps explained in the Embedded book</a>
+<br>
+
+<b>The target architecture is : Cortex-M4F and Cortex-M7F (with FPU) thumbv7em-none-eabihf</b>
+
+<br>
+
+<div class="source_code">
+<pre>
+  # In one terminal run Open OCD.
+  openocd
+
+  # In another terminal, run the GDB client.
+  gdb-multiarch -q target/thumbv7em-none-eabihf/debug/app_on_hw
+
+  # In the GDB client session:
+  target remote :3333
+  load # Loads the program into the microcontroller.
+  monitor arm semihosting enable
+</pre>
+</div>
+
+
+There is a file <code>openocd.gdb</code> that contains all the boilerplate commands:
+<div class="source_code">
+<pre>
+  # In one terminal run Open OCD.
+  openocd
+
+  cargo build
+
+  # In another terminal, run the GDB client.
+  gdb-multiarch -x openocd.gdb target/thumbv7em-none-eabihf/debug/app_on_hw
+  gdb-multiarch -x openocd.gdb target/thumbv7em-none-eabihf/debug/registers
+
+</pre>
+</div>
+
+
+<hr>
+
+
+quit
+
+<!-- ******************************************************************************************* -->
+
+<h1>. Tools </h1>
+<h2>Rust formatter</h2>
+<div class="source_code">
+<pre>
+
+</pre>
+</div>
+
+<hr>
+
+<h2>cargo</h2>
+Cargo can perform a local installation of one or more binaries of  a package, using the command:
+<div class="source_code">
+<pre>
+  cargo install --root=/home/minguzzi/tmp --path .
+</pre>
+</div>
+It installs the binaries to the path <code>/home/minguzzi/tmp</code>. <br>
+The command is launched on the directory of the binar crate to install.<br>
+
+
+
+<h1>. Getting Started with Secure Embedded Systems_ Developing IoT -- Alexandru Radovici, Ioana Culic -- 1, 2022</h1>
+Read up to page:54  <br>
+<center>
+  <a target="_blank" href="https://github.com/tock/tock">https://github.com/tock/tock</a><br>
+</center>
+
+<p/>
+The Application Binary Interface (ABI) : the standard used by application programs to send requests to the kernel (syscalls), and receive results back.<br>
+The API is the set of requests that the application can send to the kernel.<br>
+Example: the sound card. The kernel knows the sound card and how to send requests to it.<br>
+The kernel exports the sound API to the developer.<br>
+The same program will run on any hardware that exports the same sound ABI.<br>
+Applications interact with the user, services are background tasks that normally do not interact with the user.<br>
+<p/>
+Stack:
+<ul>
+  <li>Applications</li>
+  <li>IPC and Capsules: upper layer drivers that provide an API to the user space.</li>
+</ul>
+
+<h1>. Patterns in Rust</h1>
+<h2>.. Patterns: Creational Patterns</h2>
+<h3>.. Patterns: Creational: Default pattern</h3>
+Default pattern: implement the Default trait in your data types.<br>
+MyType::new() calls the default constructor.<br>
+<div class="source_code">
+<pre>
+impl Example {
+    T::new() -> Self {
+        Self::default()
+    }
+}
+</pre>
+</div>
+
+Use the default to specify a default enumerator.<br>
+<div class="source_code">
+<pre>
+#[derive(Default)]
+enum Size {
+    Small,
+    #[default]
+    Medium,
+    Large,
+}
+</pre>
+</div>
+
+Having a default is not appropriate when a field must have a non default, chosen value.<br>
+
+<h3>.. Patterns: Creational: Builder pattern</h3>
+When a type has a constructor that would require default or named parameters.<br>
+Create a builder to keep track of the constructor parameters. All Builder field are Optional.<br>
+Each Builder method modifies an Optional field and returns a reference to itself.<br>
+
+<!-- ******************************************************************************************* -->
+<hr>
+<h1>. Leptos: Web Apps with Rust and Leptos</h1>
+
+<h2>.. Leptos: Installation</h2>
+Update Rust with rustup.
+<div class="source_code">
+<pre>
+  cargo install cargo-leptos
+  rustup target add wasm32-unknown-unknown # unknown-unknown: OS and CPU agnostic.
+</pre>
+</div>
+
+To create a new Leptos project with basic boilerplate:
+<div class="source_code">
+<pre>
+  cargo leptos new --git leptos-rs/start
+</pre>
+</div>
+
+To run the project with auto reloading:
+<div class="source_code">
+<pre>
+  cargo leptos watch
+</pre>
+</div>
+
+</body>
+</html>
