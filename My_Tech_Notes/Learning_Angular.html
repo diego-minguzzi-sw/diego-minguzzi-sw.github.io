@@ -1,0 +1,261 @@
+<html>
+<body>
+Angular
+<ul>
+<li>creates a structure of the application: reactive</li>
+<li>Handles differences among browsers</li>
+</ul>
+Check the Node.js and NPM version
+<pre>npm -v</pre>
+Installed Node.JS node-v14.16.0-x64<br>
+Install Angular 10: [8]<br>
+<pre>npm install -g @angular/cli@10.0.2</pre>
+<code>ng</code> is the command line tool. Example: ng version. There are shortcuts (9).<br>
+<code>npm install -g typescript </code> <cite>Install Typescript</cite> <br> 
+<code>
+C:\Users\minguzzi>tsc --version` <br>
+Version 4.2.3 <br>
+</code>
+
+Creation of an app called my-app:
+<pre>
+D:\webdev_wrkdir\00_my_app>ng n my-app
+? Would you like to add Angular routing? No
+? Which stylesheet format would you like to use? CSS
+</pre>
+Angular locates tags in the body:
+<pre> <body> <app-root></app-root> </body> </pre>
+(12)
+The app-root corresponds to a module of the application.
+Components are composed of modules. A component has a selector, when Angular finds the tag matching the selector, <br>
+it searches among the registered components.  If it finds one, it renders the component template in place of the tag.
+The template is written in Angular template language.<br>
+In the file main.ts it defines the bootstrapping process:<br>
+<code>platformBrowserDynamic().bootstrapModule(AppModule).catch(err => console.error(err));</code><br>
+
+It defines the entry point : AppModule
+
+<h2>TS configuration</h2>
+In VisualCode, define a tsconfig.json file like:
+<pre>
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "sourceMap": true,
+    "outDir": "out",
+    "experimentalDecorators": true
+  }
+}
+</pre>
+Place it in the directory with other TS files.
+Then the menu item Terminal/Run Task , select typescript.
+
+<h2>Typescript</h2>
+Decorators on:
+<ul>
+<li>Classes</li>
+<li>Properties: propery decorators can be used to react to changes in properties and 
+    logging values of properties when objects are instantiated. </li>
+<li>Methods</li>
+<li>Parameters</li>
+</ul>
+
+<h1>Chapter 3: Components</h1>
+(65) 
+To generate a component called hero:<br>
+<code>ng generate component hero</code>
+
+A component is composed of:
+<ul>
+<li> Component class, e.g. hero.component.ts </li>
+<li> Component template hero.component.html: defines the view of the component.</li>
+<li> CSS files, that depend on the styling </li>
+<li> The unit test: hero.component.spec.ts </li>  
+</ul>
+
+The component is added automatically to app.module.ts, e.g.:
+<pre>
+import { HeroComponent } from './hero/hero.component';
+@NgModule({
+  declarations: [
+    [...]
+    HeroComponent
+  ],
+  [...]
+})
+</pre>
+
+<p>
+  <b>Note</b> page 71: how to select the class of a component given its class name.
+</p>
+<p>
+  <a href="https://developer.mozilla.org/en-US/docs/Web/Events">Events that can be handled</a>
+</p>
+
+Input binding can use dynamic data or static data (75).
+<b>Hooks</b><br>
+<ul>
+<li><code>OnInit</code> (84) : constructors are relatively empty. OnInit() performs the real initialization of the component, in particular if data comes from Angular services.</li>
+<li><code>OnDestroy</code>  : used to reset timers and unsubscribe from observable streams.</li>
+</ul>
+Page (90) directives to hide show data in HTML based on the data.<br>
+Pipes (99) format data.<br>
+
+(119) Modules:<br>
+A module is a typescript class.  It contains a decorator with the following properties:
+<ul>
+  <li>declarations</li>
+  <li>imports</li>
+  <li><b>exports</b>: artifacts that are listed among the declarations, and that other modules can use.</li>
+  <li>providers: services that the module provides</li>
+</ul>
+
+<p></p>
+
+Suppose that a module is called <code>heroes</code><br>.
+To generate the component heroList, part of heroes:
+<pre>
+  ng generate component heroes/heroList --module=heroes
+</pre>
+
+So:
+<ul>
+  <li>A module is added with ng generate</li>
+  <li>One or more components are added to the module</li>
+  <li>The module must list the exported components in the exports list</li>
+  <li>The client module must the import the modules that it uses.
+    <pre>
+    import { HeroesModule } from './heroes/heroes.module';
+
+    @NgModule({
+      declarations: [
+        AppComponent,
+        HeroComponent
+      ],
+      imports: [
+        BrowserModule,
+        HeroesModule
+      ],
+      providers: [],
+      bootstrap: [AppComponent]
+    })      
+    </pre>
+</li>
+</ul>
+
+
+<ul>
+<li>Root module: the main module, it is called AppModule</li>
+<li>Feature Modules: each of them implements a specific functionality</li>
+<li>Core module: application-wide artifacts that do not fit anywhere else, e.g the top bar, footer bar, spinner, 
+  and services like the logging or the local cache service.<br>
+  <cite>This module is loaded only once in AppModule.</cite> (i.e. the Root module)</li>
+<li>Shared Module: it contains components, directives, and pipes that can be used in feature modules.</li>
+</ul>
+
+We can distinghuish how Angular loads them:
+<ul>
+<li>Eager loaded: loaded when the application starts </li>
+<li>Lazily loaded modules</li>
+</ul>
+
+<h4>Configuring the application</h4>
+The source tree.
+<ul>
+<li>angular.json : the main configuration of the Angular CLI workspace</li>
+<li>e2e: end to end tests
+<li>src
+    <ul>
+    <li>app: all the angular files of the application</li>
+    <li>assets: fonts, images</li>
+    <li>polyfills.ts: </li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    </ul>
+  </li>
+</ul>
+
+<h4>Configuring the environment</h4>
+(124) 
+<pre>
+  ng command --configuration=name_conf
+</pre>
+command can be server, build , test.<br>
+The configuration <cite>name_conf</cite> refers to the <code>environment.<cite>name_conf</cite>.ts</code> file <br>
+Moreover (125), for each environment configuration, a proper object in angular.json must be created.
+<pre>
+  "production": {
+    "fileReplacements": [
+      {
+        "replace": "src/environments/environment.ts",
+        "with": "src/environments/environment.prod.ts"
+      }
+    ],
+    "optimization": true,
+    "outputHashing": "all",
+    "sourceMap": false,
+    "extractCss": true,
+    "namedChunks": false,
+    "extractLicenses": true,
+    "vendorChunk": false,
+    "buildOptimizer": true,
+    "budgets": [
+      {
+        "type": "initial",
+        "maximumWarning": "2mb",
+        "maximumError": "5mb"
+      },
+      {
+        "type": "anyComponentStyle",
+        "maximumWarning": "6kb",
+        "maximumError": "10kb"
+      }
+    ]
+  }
+</pre>
+
+<h3>Dependency Injection</h3>
+(126)
+
+<center>(128) <b>The component should only be concerned with presentation logic.</b> </center>
+
+A service is created with:
+<pre>ng generate service heroes/hero</pre>
+Service.
+<pre>
+@Injectable({
+  providedIn: 'root'
+})
+export class HeroService {
+
+  constructor() { }
+}
+</pre>
+(129) A service, by default, it is not registered with a module, rather, it is registered with an injector.<br>
+
+(131) Dependency injection : the injected service is passed to the constructor.<br>
+
+<hr>
+
+<ul>
+<li>
+  (91) When using expressions that evaluate to a boolean value, it is best to use triple equality, 
+  ===, over the usual == because === checks not only whether values are equal but also whether types match.</li>
+</ul>
+
+
+<br>
+
+<h3>Reactive functional programming in Angular</h3>
+Observable, observer, timeline, stream of events, composable operators.
+<br>
+(160) using the <code>from</code> operator to convert from promises or callbacks to RxJs.<br>
+
+
+(161)
+
+</body>
+</html>

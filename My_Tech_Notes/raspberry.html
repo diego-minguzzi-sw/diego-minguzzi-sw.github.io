@@ -1,0 +1,1297 @@
+<html>
+<head>
+  <style>
+  .source_code {
+    background-color: lightgray;
+    font-family: Courier New;
+    border-style: solid;
+    border-width: thin;
+    font-size: larger;    
+  }
+  </style>
+  <title>Yocto and Raspberry PI</title>
+</head>  
+
+<body>
+<h1> 1. Todo</h1>
+<ul>
+<li><b>( )</b> Configurazione statica dell'IP </li>
+<li><b>( )</b> Aggiungere il supporto del wifi </li>
+<li><b>( )</b> Impostare le recipes per ottenere l'immagine gia' configurata </li>
+<li><b>( )</b> Aggiungere una full command line </li>
+<li><b>( )</b> Aggiungere boost C++ library </li>
+<li><b>( )</b> Produrre un SDK </li>
+<li><b>( )</b> Scaricare ed eseguire una minima applicazione sul target Rpy </li>
+<li><b>( )</b> Avviare dbus session all'avvio </li>
+<li><b>( )</b> Aggiungere bluetooth bluez </li>
+<li><b>( )</b> Aggiungere il supporto del bluetooth </li>
+<li><b>(_)</b> Testare l'uso dei GPIO </li>
+<li><b>(_)</b> Testare l'uso dei GPIO per PWM </li>
+
+
+<li><b>(_)</b> Aggiungere un utente non root alla piattaforma</li>
+<li><b>(_)</b> Eseguire il resize della partizione con il root file system</li>
+
+<li><b>(_)</b> </li>
+<li><b>(_)</b> </li>
+<li><b>(_)</b> </li>
+<li><b>(_)</b> </li>
+<li><b>(_)</b> </li>
+<li>_L8R_<b>(_)</b> Impostare tastiera in italiano</li>
+
+</ul>
+
+<!-- ******************************************************************************************* -->
+<hr>
+
+<h1> 2. Yocto for the Raspberry Pi 3</h1>
+Tested on Linux LUbuntu 20.04 LTS<br>
+Last modification: August 2022 <p/>
+<ul>
+  <li><a target="_blank" 
+         href="https://docs.yoctoproject.org/ref-manual/system-requirements.html#required-packages-for-the-build-host">
+    Prerequisites</a> 
+  </li>
+  <li><a target="_blank" href=""></a> </li>
+  <li><a target="_blank" href=""></a> </li>
+  <li><a target="_blank" href=""></a> </li>
+</ul>
+
+<div class="source_code"> 
+<pre>
+# prerequisites  
+sudo apt install gawk wget git diffstat unzip texinfo gcc build-essential chrpath socat cpio python3 python3-pip python3-pexpect xz-utils debianutils iputils-ping python3-git python3-jinja2 libegl1-mesa libsdl1.2-dev pylint3 xterm python3-subunit mesa-common-dev zstd liblz4-tool  
+  
+git clone --depth 1 -b kirkstone git://git.yoctoproject.org/poky.git
+git clone --depth 1 -b kirkstone git://git.openembedded.org/meta-openembedded
+git clone --depth 1 -b kirkstone git://git.yoctoproject.org/meta-raspberrypi
+source poky/oe-init-build-env rpi_build
+
+bitbake -c cleansstate core-image-base
+bitbake core-image-base --runall fetch # fetch all the packages before building them.
+
+
+Common targets are:
+    core-image-minimal
+    core-image-full-cmdline
+    core-image-sato
+    core-image-weston
+    meta-toolchain
+    meta-ide-support
+
+You can also run generated qemu images with a command like 'runqemu qemux86'
+
+Other commonly useful commands are:
+ - 'devtool' and 'recipetool' handle common recipe tasks
+ - 'bitbake-layers' handles common layer tasks
+ - 'oe-pkgdata-util' handles common target package tasks
+ 
+cd /home/minguzzi/yocto
+source poky/oe-init-build-env rpi_build 
+
+sudo bmaptool -d copy /home/minguzzi/yocto/rpi_build/build_output/deploy/images/raspberrypi3/core-image-full-cmdline-raspberrypi3.wic.bz2 /dev/mmcblk0
+</pre>
+</div>
+
+In my Linux box, the created image can be find at the path:
+<div class="source_code"> 
+<pre>
+  /home/minguzzi/yocto/rpi_build/build_output/deploy/images/raspberrypi3/core-image-full-cmdline-raspberrypi3.wic.bz2
+  
+  sudo apt install bmap-tools # This package is needed to flash the image.
+  sudo bmaptool -d copy /home/minguzzi/yocto/rpi_build/build_output/deploy/images/raspberrypi3/core-image-full-cmdline-raspberrypi3.wic.bz2 /dev/mmcblk0
+
+</pre>
+</div>
+
+LICENSE_FLAGS
+<h1> 2. Yocto for the Raspberry Pi 3</h1>
+Tested on Linux LUbuntu 18.04 LTS<br>
+Last modification: November 03 2018 <p/>
+
+<pre>
+sudo apt-get install gawk wget git-core diffstat unzip texinfo gcc-multilib build-essential chrpath socat cpio python python3 python3-pip python3-pexpect xz-utils debianutils iputils-ping libsdl1.2-dev xterm
+apt-get install kpartx
+sudo apt-get install make xsltproc docbook-utils fop dblatex xmlto
+
+git clone git://git.yoctoproject.org/poky
+git checkout tags/yocto-2.5 -b my-yocto-2.5
+
+cd $HOME/temp_controller/yocto/poky
+git clone -b sumo git://git.yoctoproject.org/meta-raspberrypi
+
+cd $HOME/temp_controller/yocto
+source poky/oe-init-build-env rpi_build
+bitbake -c cleansstate  rpi-basic-image
+bitbake rpi-basic-image
+
+</pre>
+
+
+
+
+
+
+
+
+
+<hr>
+<h1> 2. Yocto for the Raspberry Pi 3</h1>
+Tested on Linux LUbuntu 2204 LTS<br>
+Last modification: August 2017 
+
+<h1> 2. Yocto for the Raspberry Pi 3</h1>
+Tested on Linux LUbuntu 16.04.2 LTS<br>
+Last modification: October 14 2017 <p/>
+
+<hr>
+
+<h1> 3. Setting up the build host (x86)</h1>
+<ul>
+<li>
+  Installing the base packages:
+  <pre>
+  sudo apt-get install gawk wget git-core diffstat unzip texinfo gcc-multilib build-essential chrpath socat cpio python python3 python3-pip python-pexpect python3-pexpect libsdl1.2-dev xterm
+  </pre>
+  <b>
+  <pre>
+  apt-get install kpartx
+  </pre></b>
+</li>
+
+<li>
+  Optional packages needed by the Eclipse plug-in:
+  <pre>
+  sudo apt-get install libsdl1.2-dev xterm
+  </pre>
+</li>
+
+<li>
+  Optional packages to build the documentation:
+  <pre>
+  sudo apt-get install make xsltproc docbook-utils fop dblatex xmlto
+  </pre>
+</li>
+
+</ul>
+
+<h2>Getting the Yocto project release</h2>
+<pre>
+git clone git://git.yoctoproject.org/poky
+cd poky
+git checkout pyro
+cd $HOME/yocto/poky
+git checkout -b pyro origin/pyro
+cd $HOME/yocto/poky
+</pre>
+
+<h2>Getting the meta-intel and building a base image</h2>
+<pre>
+git clone git://git.yoctoproject.org/meta-intel
+
+cd $HOME/yocto/poky/meta-intel
+git checkout pyro
+cd $HOME/yocto/poky
+source oe-init-build-env build-x86
+</pre>
+
+In order to build the image:
+<pre>
+bitbake core-image-base
+</pre>
+
+Also check the <code>core-image-rt-sdk</code> image, including a complete SDK suitable for development.<br>
+
+Aggiungere al <code>local.conf</code> file:<br>
+<code>IMAGE_FSTYPES += "wic wic.bmap"</code><p/>
+
+Flashare l'immagine mediante:<br>
+<code>oe-run-native bmaptool copy ./tmp/deploy/images/qemux86-64/core-image-minimal-machine.wic /dev/sdX</code><P/>
+
+Per eseguire il flash dell'image il comando e' <code>bmaptool</code><br>
+Esempio:
+<pre>
+bmaptool copy /home/minguzzi/yocto/poky/build-x86/tmp/deploy/images/intel-core2-32/core-image-base-intel-core2-32.wic /dev/mmcblk0p1
+
+dd if=/home/minguzzi/yocto/poky/build-x86/tmp/deploy/images/intel-core2-32/core-image-base-intel-core2-32.hddimg of=/dev/sdc bs=4096
+
+</pre>
+
+<h2>Installing and building a base image for the Raspberry Pi 3</h2>
+<pre> 
+git clone -b pyro git://git.yoctoproject.org/meta-raspberrypi 
+cd meta-raspberrypi
+git checkout pyro
+
+bitbake rpi-basic-image
+</pre>
+
+When the build completes the image will be located at following path in your build directory: <code>tmp/deploy/images/raspberrypi2/rpi-basic-image-raspberrypi2.rpi-sdimg</code><br>
+
+In order to <a target="_blank" href="http://www.instructables.com/id/Building-GNULinux-Distribution-for-Raspberry-Pi-Us/">flash the SD card</a></li>
+<pre>
+sudo umount /dev/mmcblk0
+sudo dd if=/home/minguzzi/yocto/poky/build-pi/tmp/deploy/images/raspberrypi3/rpi-basic-image-raspberrypi3.rpi-sdimg of=/dev/mmcblk0  bs=1M
+sync
+sudo umount /dev/mmcblk0
+</pre>
+
+<b>Note that the device is <code>/dev/mmcblk0</code>, not <code>/dev/mmcblk0p1</code> </b><p>
+
+Second attempt, to test the procedure:<br>
+<code>	
+cd  yocto/<br>
+ls<br>
+sudo apt-get install gawk wget git-core diffstat unzip texinfo gcc-multilib build-essential chrpath socat cpio python python3 python3-pip python-pexpect python3-pexpect libsdl1.2-dev xterm kpartx<br>
+sudo apt-get install libsdl1.2-dev xterm<br>
+sudo apt-get install make xsltproc docbook-utils fop dblatex xmlto<br>
+git clone git://git.yoctoproject.org/poky<br>
+cd poky/<br>
+git checkout pyro<br>
+cd $HOME/yocto/poky<br>
+git checkout -b pyro origin/pyro<br>
+git clone git://git.yoctoproject.org/meta-intel<br>
+cd $HOME/yocto/poky/meta-intel<br>
+git checkout pyro<br>
+cd ..<br>
+git clone -b pyro git://git.yoctoproject.org/meta-raspberrypi <br>
+cd meta-raspberrypi<br>
+git checkout pyro<br>
+cd ..<br>
+source oe-init-build-env ../build-pi<br>
+sudo dd if=/home/minguzzi/yocto/build-pi/tmp/deploy/images/raspberrypi3/rpi-basic-image-raspberrypi3.rpi-sdimg of=/dev/sdb bs=1M <br>
+sudo dd if=/home/minguzzi/yocto/build-pi/tmp/deploy/images/raspberrypi3/rpi-basic-image-raspberrypi3.rpi-sdimg of=/dev/sdb bs=4M <br>
+</code>
+
+<p/>
+<!-- SET UP OF THE PLATFORM FOR THE WEARABLE PROJECT ******************************************* -->
+<h1> 4. The Wearable Project </h1>
+<h2> 4.1 Installation procedure for the Wearable project</h2>
+<h3> 4.1.1 Installation of required Linux packages</h3>
+<code>
+sudo apt-get install gawk wget git-core diffstat unzip texinfo gcc-multilib build-essential chrpath socat cpio python python3 python3-pip python-pexpect python3-pexpect libsdl1.2-dev xterm gawk-doc libasound2-doc python-pexpect-doc python-setuptools-doc texlive-base texlive-latex-base texlive-generic-recommended texinfo-doc-nonfree <br>
+sudo apt-get install kpartx  <br>
+sudo apt-get install make xsltproc docbook-utils fop dblatex xmlto<br>
+</code>
+<br>
+
+<h3> 4.1.2 Setting up of Yocto</h3>
+
+<pre>
+mkdir wearable
+cd wearable
+mkdir yocto
+cd yocto
+git clone git://git.yoctoproject.org/poky 
+export WPROJ_ROOT=/home/minguzzi/wearable 
+cd poky 
+git checkout pyro 
+git checkout -b pyro origin/pyro 
+git clone git://git.yoctoproject.org/meta-intel 
+cd meta-intel/ 
+git checkout pyro 
+cd .. 
+git clone -b pyro git://git.yoctoproject.org/meta-raspberrypi 
+cd meta-raspberrypi 
+git checkout pyro 
+cd .. 
+</pre>
+<p/>
+
+<h3> 4.1.3 Build of the platform image</h3>
+<pre>
+source oe-init-build-env ../build-wproj
+</pre>
+<br>
+<pre>
+export WPROJ_ROOT=/home/minguzzi/wearable 
+cd ${WPROJ_ROOT}/yocto/poky
+source oe-init-build-env ../build-wproj
+
+# Cleans the previous state
+bitbake -c cleansstate  rpi-basic-image
+
+bitbake rpi-basic-image
+
+# Fetches all of the sources.
+bitbake -c fetchall  rpi-basic-image
+
+bitbake rpi-basic-image
+sudo dd if=${WPROJ_ROOT}/yocto/build-wproj/tmp/deploy/images/raspberrypi3/rpi-basic-image-raspberrypi3.rpi-sdimg of=/dev/sdb bs=1M
+sudo dd if=${WPROJ_ROOT}/yocto/build-wproj/tmp/deploy/images/raspberrypi3/rpi-basic-image-raspberrypi3.rpi-sdimg of=/dev/sdb bs=4M
+</pre>
+Given the configuration, the Rpy gets the static IP address 192.168.10.8
+
+<br>
+<h3> 4.1.4 Setting the cross-development environment</h3>
+<pre>
+cd ${WPROJ_ROOT}/yocto/poky
+source oe-init-build-env ../build-wproj/
+bitbake -c populate_sdk rpi-basic-image
+</pre>
+The resulting installation sh file can be found at:
+<pre>
+${WPROJ_ROOT}/yocto/build-wproj/tmp/deploy/sdk
+</pre>
+
+In order to install the SDK at the path <code>/opt/rpi_sdk_1.0</code>, run:
+<pre>
+sudo ${WPROJ_ROOT}/yocto/build-wproj/tmp/deploy/sdk/poky-glibc-x86_64-rpi-basic-image-cortexa7hf-neon-vfpv4-toolchain-2.3.2.sh -d /opt/rpi_sdk_1.0 
+</pre>
+
+The output of the command is:
+<pre>
+on-vfpv4-toolchain-2.3.2.sh -d /opt/rpi_sdk_1.0 
+Poky (Yocto Project Reference Distro) SDK installer version 2.3.2
+=================================================================
+You are about to install the SDK to "/opt/rpi_sdk_1.0". Proceed[Y/n]? Y
+Extracting SDK......................................................................done
+Setting it up...done
+SDK has been successfully set up and is ready to be used.
+Each time you wish to use the SDK in a new shell session, you need to source the environment setup script e.g.
+ $ . /opt/rpi_sdk_1.0/environment-setup-cortexa7hf-neon-vfpv4-poky-linux-gnueabi
+</pre>
+
+<!-- SDK and application development *********************************************************** -->
+<h3> 4.1.5 Setting up the SDK and application development</h3>
+Notes taken from 
+<a target="_blank" 
+   href="http://www.phytec.de/fileadmin/user_upload/images/content/1.Products/Software/L-813e_4.pdf">
+   The Phytec manual
+</a>.<br>
+
+The SDK was created and installed.<br>
+The SDK variables are sourced by:<br>
+<pre>minguzzi@samsunx:/opt/poky/2.3$ source environment-setup-cortexa7hf-neon-vfpv4-poky-linux-gnueabi</pre>
+<p/>
+The environment file sets the variables like CPP, CC, etc.<p/>
+
+<code>hello_rpy.cpp file:</code>
+<pre>
+#include <iostream>
+
+int main()
+{
+  int a{5};
+  std::cout << "Hello, Raspberry PI 3\n";
+
+  std::cout << "a=" << a << std::endl;
+  ++a;
+  std::cout << "a=" << a << std::endl;
+
+  return 0;
+}
+</pre>
+
+<code>makefile file:</code>
+<pre>
+hello_rpy: hello_rpy.cpp makefile
+	${CXX} -o hello_rpy -g hello_rpy.cpp
+</pre>
+
+<p/>
+
+
+<b>Notes</b> 
+<ul>
+<li>the <code>ssh-server-openssh</code> must be added to the <code>IMAGE_FEATURES</code>, in place of the ssh-server-dropbear.
+  </li>
+<li>By default, the toolchain creates dynamically linked binaries.  To create statically linked binaries, add: <br>
+  <code>IMAGE_INSTALL_append = " glibc-staticdev"</code>
+  </li>  
+</ul>
+
+In order to build the SDK:<br>
+<code>bitbake <i>image</i> -c populate_sdk </code><p/>
+
+Then, the SDK can be found under <i>build/deploy/sdk</i><p/>
+
+In that directory a script is created, to install the SDK.<br>
+<hr>
+
+<!-- Linux Graphics and OpenGL ***************************************************************** -->
+
+<h2> 4.2 Setting up the GUI support on the wearable project (a.k.a. Linux Graphics and OpenGL)</h2>
+
+<ul>
+<li><a target="_blank" href="https://devblogs.nvidia.com/parallelforall/egl-eye-opengl-visualization-without-x-server/">
+      OpenGL visualization without X server</a></li>
+<li><a target="_blank" href="http://raspberrycompote.blogspot.it/2012/12/low-level-graphics-on-raspberry-pi-part_9509.html">
+      Tutorials: Low level graphics on Raspberry Pi.</a></li>
+
+<li><a target="_blank" href="https://www.khronos.org/registry/OpenGL-Refpages/es2.0/">OpenGL ES 2.0 Reference pages.</a></li>
+<li><a target="_blank" href="https://stackoverflow.com/questions/40490113/eglfs-on-raspberry2-failed-to-add-service-already-in-use">https://stackoverflow.com/questions/40490113/eglfs-on-raspberry2-failed-to-add-service-already-in-use</a></li>
+<li><a target="_blank" href="https://github.com/ds-hwang/gbm_es2_demo">Example OpenGL ES2 demo using GBM and DRM(KMS) modesetting (also for Yocto)</a></li>
+<li><a target="_blank" href="https://github.com/Igalia/meta-webkit/issues/1">https://github.com/Igalia/meta-webkit/issues/1</a></li>
+<li><a target="_blank" href="https://www.khronos.org/registry/EGL/extensions/MESA/EGL_MESA_platform_gbm.txt">https://www.khronos.org/registry/EGL/extensions/MESA/EGL_MESA_platform_gbm.txt</a></li>
+<li><a target="_blank" href="https://blogs.igalia.com/elima/tag/gbm">https://blogs.igalia.com/elima/tag/gbm</a></li>
+<li><a target="_blank" href="https://lists.freedesktop.org/archives/mesa-users/2015-August/001009.html">https://lists.freedesktop.org/archives/mesa-users/2015-August/001009.html</a></li>
+<li><a target="_blank" href="https://stackoverflow.com/questions/23139886/how-to-create-opengl-context-via-drm-linux">https://stackoverflow.com/questions/23139886/how-to-create-opengl-context-via-drm-linux</a></li>
+<li><a target="_blank" href="https://dvdhrm.wordpress.com/2012/09/13/linux-drm-mode-setting-api/">https://dvdhrm.wordpress.com/2012/09/13/linux-drm-mode-setting-api/</a></li>
+<li><a target="_blank" href="http://betteros.org/tut/graphics1.php">http://betteros.org/tut/graphics1.php *  * * *</a></li>
+<li><a target="_blank" href="https://www.toradex.com/community/questions/11296/opengl-gles-on-console-drm-gbm-egl-for-colibri-imx.html">
+    https://www.toradex.com/community/questions/11296/opengl-gles-on-console-drm-gbm-egl-for-colibri-imx.html</a></li>
+<li><a target="_blank" href="https://www.khronos.org/registry/EGL/extensions/MESA/EGL_MESA_platform_gbm.txt">https://www.khronos.org/registry/EGL/extensions/MESA/EGL_MESA_platform_gbm.txt</a> GBM example</li>
+<li><a target="_blank" href=""></a></li>
+<li><a target="_blank" href="https://stackoverflow.com/questions/34439832/how-to-create-an-opengl-3-3-or-4-x-context-through-egl">
+https://stackoverflow.com/questions/34439832/how-to-create-an-opengl-3-3-or-4-x-context-through-egl</a></li>
+<li><a target="_blank" href="https://gist.github.com/Miouyouyou/ca15af1c7f2696f66b0e013058f110b4">A very ugly Wayland EGL OpenGL example </a></li>
+<li><a target="_blank" href="https://jan.newmarch.name/Wayland/index.html">Programming Wayland Clients </a></li>
+<li><a target="_blank" href="https://gist.github.com/sarnold/55d55bbf355ccc9d8d8d09d35f993959">local.conf example with mesa on poky</a></li>
+<li><a target="_blank" href=""></a></li>
+<li><a target="_blank" href=""></a></li>
+<li><a target="_blank" href="http://moi.vonos.net/linux/graphics-stack/">http://moi.vonos.net/linux/graphics-stack/</a>Overview of the Linux Graphic stack</li>
+</ul>
+
+Yocto configurations tested:
+<table border="1">
+<tr>
+  <th>
+    local.conf
+  </th>
+  <th>
+    Outcome
+  </th>
+</tr>
+
+
+<tr>
+  <td>
+    DISTRO_FEATURES_append = " opengl "<br>
+    IMAGE_INSTALL_append = " libdrm mesa-gl "<br>
+    PACKAGECONFIG_add = " gbm gles1 gles2 gles3 "<br>
+    DISTRO_FEATURES_remove = " x11 wayland "
+    PACKAGECONFIG_append_rpi-mesa-gl = " gbm gles1 gles2 "<br>
+  </td>
+  <td>Mancano i file di include.</td>
+</tr>
+
+<tr>
+  <td>
+    DISTRO_FEATURES_append = " opengl egl-gles2 egl-gles3 " <br>
+    DISTRO_FEATURES_append = " x11 " <br>
+    IMAGE_INSTALL_append = " libglu libdrm mesa-gl eglinfo-x11 " <br>
+  </td>
+  <td>mesa-gl configured with enabled: gbm, shared-glapi, glx-tls, dri-drivers=swrast<br>
+      in usr/include ci sono gli header di: drm, EGL, GL, GLES, GLES2, <br>
+      sotto:  <br>
+      <code>/opt/rpi_sdk_1.0/sysroots/cortexa7hf-neon-vfpv4-poky-linux-gnueabi/usr/src/debug/mesa-gl/2_17.0.2-r0/mesa-17.0.2/src </code> <br>
+      ci sono i sorgenti della libreria GBM</td><br>
+      /dev/dri/card0 non viene trovato.
+</tr>
+
+<tr>
+  <td>
+    <code>
+    # Adds support for Mesa 20171005 ------------------------- <br>
+    DISTRO_FEATURES_append = " opengl egl-gles2 egl-gles3 " <br>
+    DISTRO_FEATURES_append = " x11 " <br>
+    IMAGE_INSTALL_append = " libglu libdrm mesa mesa-demos" <br>
+    PREFERRED_PROVIDER_virtual/mesa = "mesa" <br>
+    PREFERRED_PROVIDER_virtual/libgl = "mesa" <br>
+    PREFERRED_PROVIDER_virtual/egl = "mesa" <br>
+    PREFERRED_PROVIDER_virtual/libgles2 = "mesa" <br>
+    <br>
+    # Adds support for Mesa 20171015 ------------------------- <br>
+    IMAGE_FEATURES += " hwcodecs " <br>
+    DISTRO_FEATURES_append = " wayland" <br>
+    IMAGE_INSTALL_append = " weston-xwayland matchbox-terminal" <br>
+    CORE_IMAGE_EXTRA_INSTALL += "wayland weston" <br>
+    IMAGE_INSTALL_append = " weston weston-init weston-examples gtk+3-demo" <br>
+    </code>
+  </td>
+  <td>
+  x11 parte ma non le demo di OpenGL
+  </td>
+</tr>
+
+<tr>
+  <td>
+    <code>
+    # Adds support for Mesa 20171005 ------------------------- <br>
+    DISTRO_FEATURES_append = " opengl egl-gles2 egl-gles3 "
+    DISTRO_FEATURES_append = " x11 "  <br>
+    IMAGE_INSTALL_append = " libglu libdrm mesa mesa-demos"  <br>
+    PREFERRED_PROVIDER_virtual/mesa = "mesa"  <br>
+    PREFERRED_PROVIDER_virtual/libgl = "mesa"  <br>
+    PREFERRED_PROVIDER_virtual/egl = "mesa"  <br>
+    PREFERRED_PROVIDER_virtual/libgles2 = "mesa"  <br>
+     <br>
+    # Adds support for Mesa 20171015 -------------------------  <br>
+    IMAGE_INSTALL_append =" kernel-modules"  <br>
+    IMAGE_FEATURES += " hwcodecs " <br>
+    IMAGE_FEATURES += " package-management x11-base"   <br>
+    IMAGE_FEATURES += "x11-sato"  <br>
+     <br>
+    IMAGE_INSTALL = "\ <br>
+        ${CORE_IMAGE_BASE_INSTALL} \ <br>
+        packagegroup-core-clutter-core clutter-1.0-examples \ <br>
+      " <br>
+     <br>
+    LICENSE_FLAGS_WHITELIST = "commercial" <br>
+    VIRTUAL-RUNTIME_dev_manager = "udev"  <br>
+    </code>
+  </td>
+  
+  <td>
+  </td>    
+</tr>
+
+<tr>
+  <td>
+    <code>
+    
+GPU_MEM = "128"
+
+BB_NO_NETWORK="0"
+
+# The number of threads that BitBake runs in parallel
+BB_NUMBER_THREADS="5"
+
+IMAGE_INSTALL_append = " packagegroup-core-full-cmdline"
+
+IMAGE_INSTALL_append = " kbd-keymaps"
+
+# Pro-wifi
+IMAGE_INSTALL_append = " linux-firmware wpa-supplicant"
+
+# Removes the splash screen on boot
+IMAGE_FEATURES_remove = "splash"
+
+# Adds recipes from the meta-rbplatform layer (Raspberry Pi Platform RPB).
+# Network configuration: eth0 and Wifi
+IMAGE_INSTALL_append = " rbp-network-configuration"
+
+# SDK
+# Support for the SDK: the ssh-server-openssh substitutes the Dropbear SSH
+IMAGE_FEATURES_remove = "ssh-server-dropbear"
+IMAGE_FEATURES_append = " ssh-server-openssh"
+
+# Allows the toolchain to create statically linked binaries.
+IMAGE_INSTALL_append = " glibc-staticdev"
+
+# Adds support for Boost C++ libraries 20170924 -------------------------
+IMAGE_INSTALL_append = " boost "
+
+# Adds support for Bluetooth 20170924
+DISTRO_FEATURES_append += " bluez5 bluetooth "
+IMAGE_INSTALL_append += " bluez5 "
+
+# Adds support for GPIO access 20170924 --------------------------------
+IMAGE_INSTALL_append += " i2c-tools rpio rpi-gpio "
+
+# Adds support for Mesa 20171005 -------------------------
+DISTRO_FEATURES_append = " opengl egl-gles2 egl-gles3 "
+DISTRO_FEATURES_append = " x11 wayland"
+IMAGE_INSTALL_append = " libglu libdrm mesa mesa-demos eglinfo-x11"
+
+# Adds support for Mesa 20171015 -------------------------
+IMAGE_INSTALL_append =" kernel-modules weston-xwayland matchbox-terminal"
+IMAGE_FEATURES += " hwcodecs "
+IMAGE_FEATURES += " package-management x11-base"
+CORE_IMAGE_EXTRA_INSTALL += "wayland weston"
+
+PREFERRED_PROVIDER_virtual/mesa = "mesa"
+PREFERRED_PROVIDER_virtual/libgl = "mesa"
+PREFERRED_PROVIDER_virtual/egl = "mesa"
+PREFERRED_PROVIDER_virtual/libgles2 = "mesa" 
+PREFERRED_PROVIDER_virtual/libgles3 = "mesa" 
+
+MACHINE_FEATURES += " vc4graphics"
+
+IMAGE_INSTALL_append = " weston weston-init weston-examples gtk+3-demo udev-extraconf"
+
+VIRTUAL-RUNTIME_dev_manager = "udev"
+
+LICENSE_FLAGS_WHITELIST = "\
+  commercial"
+
+# Adds support for italian. 20171005 ---------------------------
+IMAGE_LINGUAS_append = " it-it"
+    </code>
+  </td>
+    the X11 terminal starts.
+    all of the include and libs are in the target: not wanted
+    OpenGL demos glxgears etc start
+    /dev/dri/card0 exists
+
+  <td>
+  </td>
+
+</tr>
+</table>
+
+
+<hr>
+
+<h3> 4.1.6 The Resulting Platform</h3>
+<ul>
+<li> The SD is accessed as device /dev/mmcblk0p0 /dev/mmcblk0p1  /dev/mmcblk0p2, mount /dev/mmcblk0p3 /mnt </li>
+<li>Fstab per eseguire al boot il mount di /dev/mmcblk0p3:
+<pre>
+# stock fstab - you probably want to override this with a machine specific one
+
+/dev/root            /                    auto       defaults              1  1
+proc                 /proc                proc       defaults              0  0
+devpts               /dev/pts             devpts     mode=0620,gid=5       0  0
+tmpfs                /run                 tmpfs      mode=0755,nodev,nosuid,strictatime 0  0
+tmpfs                /var/volatile        tmpfs      defaults              0  0
+
+# uncomment this if your device has a SD/MMC/Transflash slot
+/dev/mmcblk0p3       /media/card          auto       defaults,sync         0  0
+</pre>
+</li>
+<li> 
+Mesa
+<pre>
+MESA-LOADER: device is not located on the PCI bus
+MESA-LOADER: device is not located on the PCI bus
+MESA-LOADER: device is not located on the PCI bus
+Using display 0xd9d8f8 with EGL version 1.4
+===================================
+EGL information:
+  version: "1.4 (DRI2)"
+  vendor: "Mesa Project"
+  extensions: "EGL_EXT_buffer_age EGL_EXT_image_dma_buf_import EGL_KHR_cl_event2 EGL_KHR_config_attribs EGL_KHR_create_context EGL_KHR_fence_sync EGL_KHR_get_all_proc_addresses EGL_KHR_gl_renderbuffer_image EGL_KHR_gl_texture_2D_image EGL_KHR_gl_texture_cubemap_image EGL_KHR_image EGL_KHR_image_base EGL_KHR_image_pixmap EGL_KHR_no_config_context EGL_KHR_reusable_sync EGL_KHR_surfaceless_context EGL_KHR_wait_sync EGL_MESA_configless_context EGL_MESA_drm_image EGL_MESA_image_dma_buf_export "
+===================================
+OpenGL ES 2.x information:
+  version: "OpenGL ES 2.0 Mesa 17.0.2"
+  shading language version: "OpenGL ES GLSL ES 1.0.16"
+  vendor: "Broadcom"
+  renderer: "Gallium 0.4 on VC4 V3D 2.1"
+  extensions: "GL_EXT_blend_minmax GL_EXT_multi_draw_arrays GL_EXT_texture_format_BGRA8888 GL_OES_compressed_ETC1_RGB8_texture GL_OES_depth24 GL_OES_element_index_uint GL_OES_fbo_render_mipmap GL_OES_mapbuffer GL_OES_rgb8_rgba8 GL_OES_stencil8 GL_OES_texture_3D GL_OES_texture_npot GL_OES_vertex_half_float GL_OES_EGL_image GL_OES_depth_texture GL_OES_packed_depth_stencil GL_EXT_texture_type_2_10_10_10_REV GL_OES_get_program_binary GL_APPLE_texture_max_level GL_EXT_discard_framebuffer GL_EXT_read_format_bgra GL_NV_fbo_color_attachments GL_OES_EGL_image_external GL_OES_EGL_sync GL_OES_vertex_array_object GL_EXT_unpack_subimage GL_NV_draw_buffers GL_NV_read_buffer GL_NV_read_depth GL_NV_read_depth_stencil GL_NV_read_stencil GL_EXT_draw_buffers GL_EXT_map_buffer_range GL_KHR_debug GL_OES_surfaceless_context GL_EXT_separate_shader_objects GL_EXT_draw_elements_base_vertex GL_EXT_texture_border_clamp GL_KHR_context_flush_control GL_OES_draw_elements_base_vertex GL_OES_texture_border_clamp "
+===================================
+
+</pre>
+</li>
+</ul>
+
+<!-- ******************************************************************************************* -->
+
+<!-- RPI PLATFORM CONFIGURATION ************************************ -->
+<hr>
+<h2>Raspberry Pi platform configuration</h2>
+
+<h3>How to statically configure the IP address of Network interfaces</h3>
+
+I tried with the following <code>/etc/network/interfaces</code> file.
+<pre>
+# /etc/network/interfaces -- configuration file for ifup(8), ifdown(8)
+ 
+# The loopback interface
+auto lo
+iface lo inet loopback
+
+# Wireless interfaces
+auto wlan0
+iface wlan0 inet dhcp
+	wireless_mode managed
+	wireless_essid any
+	wpa-driver wext
+	wpa-conf /etc/wpa_supplicant.conf
+
+iface atml0 inet dhcp
+
+# Wired or wireless interfaces
+auto eth0
+# iface eth0 inet dhcp
+iface eth0 inet static
+	address 192.168.10.5
+	netmask 255.255.255.0
+	network 192.168.10.0
+	gateway 192.168.10.1
+		
+iface eth1 inet dhcp
+
+# Ethernet/RNDIS gadget (g_ether)
+# ... or on host side, usbnet and random hwaddr
+iface usb0 inet static
+	address 192.168.7.2
+	netmask 255.255.255.0
+	network 192.168.7.0
+	gateway 192.168.7.1
+
+# Bluetooth networking
+iface bnep0 inet dhcp
+</pre>
+The eth0 was given the static address 192.168.10.5 .<br>
+
+At the beginning it was necessary to execute the following commands in order to configure the <code>eth0</code>:<br>
+<code>
+ifdown eth0<br>
+ifup eth0<br>
+</code>
+
+The issue was solved by adding the <code>linux-firmware</code> to the <code>IMAGE_INSTALL</code> variable.<br>
+
+The solutions listed <a target="_blank" href="https://unix.stackexchange.com/questions/93063/i-always-need-to-ifdown-ifup-wlan0-after-reboot">here</a> do not work.<br>
+<p/>
+
+The static configuration in the interfaces file works if the linux-firmware is added to the image</b><br>
+
+My current <code>/etc/network/interfaces</code> file is:
+<pre>
+# /etc/network/interfaces -- configuration file for ifup(8), ifdown(8)
+ 
+# Wired or wireless interfaces
+auto eth0
+iface eth0 inet static
+address 192.168.10.5
+netmask 255.255.255.0
+
+# The loopback interface
+auto lo
+iface lo inet loopback
+		
+# Bluetooth networking
+iface bnep0 inet dhcp
+</pre>
+<p/>
+
+<b>NOTE</b>: do not add the gateway line to the <code>eth0</code> configuration, 
+otherwise the Raspberry will not be able to resolve names using the DNS, that is accessed by means of the wifi network.<p/>
+
+<h3>How to add support for WiFi</h3>
+In the <code>local.conf</code> , add the line:<p/>
+
+<pre>IMAGE_INSTALL_append = " linux-firmware wpa-supplicant"</pre>
+
+wpa_supplicant file:<br>
+<pre>
+ctrl_interface=/var/run/wpa_supplicant
+ctrl_interface_group=0
+update_config=1
+
+network={
+    key_mgmt=WPA-PSK
+    ssid="BBBELL-D3AD"
+    psk="CsGeviP1995_BrqPX8"
+}
+</pre>
+
+The solution described <a target="_blank" href="https://raspinterest.wordpress.com/2017/02/28/configure-wlan0-and-bluetooth-in-yocto-raspberry-pi-3/">here</a> adds way too many image features and layers, beside that, it is for a previous version of Yocto.<p/>
+
+
+<h3>How to remove the splash screen at boot</h3>
+In the <code>local.conf</code>, add the line:
+<pre>
+IMAGE_FEATURES_remove = "splash"
+</pre>
+<p/>
+
+<h3>How to add a full command line</h3>
+In the <code>local.conf</code>, add the line:
+<pre>
+IMAGE_INSTALL_append = " packagegroup-core-full-cmdline"
+</pre>
+
+<h3>How to add support for the Italian keyboard</h3>
+The solution is described <a target="_blank" href="https://stackoverflow.com/questions/28166405/yocto-changing-keyboard-layout-support-in-core-image-sato">here</a>.<br>
+<ul>
+<li> The following line must be added to <code>local.conf</code>: <br> <pre>IMAGE_INSTALL_append = " kbd-keymaps"</pre></li>
+<li> On the console command line, issue the command <br><code>loadkeys it</code></li>
+</ul>
+
+<p/>
+
+<!-- Qt5 *************************************************************************************** -->
+<h3>How to add support for Qt5</h3>
+Adapted from <a target="_blank" href="http://blog.unixshell.se/?p=27">here</a><br>
+An example image containing Qt5 is:
+<pre>
+DESCRIPTION = "Extend core-image by adding Qt5"
+
+inherit core-image populate_sdk_qt5
+
+IMAGE_FEATURES += "package-management ssh-server-dropbear tools-debug"
+
+# Qt Packages
+IMAGE_INSTALL += " \
+    qtbase \
+    qtbase-plugins \
+    qtbase-fonts \
+    qtdeclarative \
+    qtdeclarative-plugins \
+    qtdeclarative-qmlplugins \
+    qtdeclarative-tools \
+    qtmultimedia \
+    qtmultimedia-plugins \
+    qtmultimedia-qmlplugins \
+    qtwebkit \
+    qtwebkit-qmlplugins \
+    qtsvg \
+    qtsvg-plugins \
+    "
+
+# Example application
+IMAGE_INSTALL += " touchpoints "
+</pre>
+
+<a target="_blank" href="http://blog.qt.io/blog/2016/07/01/aligning-with-the-yocto-project/">Qt infos on Yocto by Digia</a>
+<a target="_blank" href=""></a>
+<a target="_blank" href=""></a>
+
+<!-- Qt for Raspberry Pi 3: instructions from qt.io -->
+Created the recipe <code>rpi-qt-image</code> .<br>
+Instructions from <a target="_blank" href="https://stackoverflow.com/questions/40258161/how-do-i-get-qt-sdk-configured-properly-with-yocto-project">here</a>.<br>
+<p/>
+
+Followed instructions from <a target="_blank" href="http://doc.qt.io/QtForDeviceCreation/qtee-custom-embedded-linux-image.html">qt.io</a><br>
+<a target="_blank" href="http://doc.qt.io/QtForDeviceCreation/qtee-custom-embedded-linux-image.html">qtee-custom-embedded-linux-image</a>
+
+<pre>
+sudo apt-get install gawk curl git-core diffstat unzip p7zip texinfo gcc-multilib build-essential chrpath libsdl1.2-dev xterm gperf bison g++-multilib
+
+git clone -b pyro git://code.qt.io/yocto/meta-boot2qt.git
+
+cd build-rpi-qt/
+../meta-boot2qt/b2qt-init-build-env init --device raspberrypi3 --reference /home/minguzzi/qt_io/mirror
+export MACHINE=raspberrypi3
+source ./setup-environment.sh
+</pre>
+
+then:<br>
+bitbake b2qt-embedded-qt5-image<br>
+bitbake meta-toolchain-b2qt-embedded-qt5-sdk<br>
+
+<pre>
+cd /home/minguzzi/yocto/poky
+git clone -b pyro  https://github.com/meta-qt5/meta-qt5.git
+</pre>
+
+<h2>Build the image</h2>
+<ul>
+<li>Clean the previous state:<br>
+   <code>bitbake -c cleansstate  rpi-basic-image</code></li>
+<li>Builds the image:<br>
+   <code>bitbake rpi-basic-image</code><p/>
+   The root filesystem is located under:<br>
+   <code>/home/minguzzi/yocto/build-pi/tmp/work/raspberrypi3-poky-linux-gnueabi/rpi-basic-image/1.0-r0/rootfs</code>
+   </li>   
+</ul>
+
+
+<!-- PANDABOARD ES Rev.3 *********************************************************************** -->
+<h1> 5. Yocto for the Panda Board ES rev.3</h1>
+
+<pre>
+git clone -b morty git://git.yoctoproject.org/poky.git 
+cd poky
+git checkout morty
+
+git clone -b morty git://git.yoctoproject.org/meta-ti
+
+bitbake -c listtasks core-image-full-cmdline
+bitbake -c fetchall core-image-full-cmdline
+bitbake core-image-full-cmdline
+
+</pre>
+
+<h3>How to solve the infamous * failed to add service - already in use?</h3>
+<code>* failed to add service - already in use?</code><br>
+When calling eglGetDisplay()
+
+
+
+
+<p>
+<hr>
+<!-- USEFUL COMMANDS *************************************************************************** -->
+<hr>
+
+<h2>Useful commands</h2>
+
+<ul>
+<li>BitBake runs the tasks to build a recipe<br>
+    <code>bitbake</code> <i>recipe-name</i><p/>
+  </li>
+<li>Cleans all output files and shared state cache for a target:<br>
+    <code>bitbake -c</code> <i>cleansstate</i> <i>image-name</i><p/>
+  </li>  
+  
+<li>
+  Displays where a valiable is assigned while creating an image (the image is <code>core-image-base</code> the variable is <code>IMAGE_FEATURES</code>:
+  <pre>bitbake -e core-image-base | grep -e IMAGE_FEATURES</pre>
+  </li>
+<li>Executes a specific task to build an image:<br>
+    <code>bitbake -c</code> <i>task-name</i> <i>image-name</i><p/>
+  </li>  
+<li>Fetches all of the packages before building the image:<br>
+    <code>bitbake -c fetchall </code> <i>image-name</i><p/>
+  </li>
+  
+<li>Generate the Yocto documentation.  Move to the <code>yocto/poky/documentation</code> directory and issue the make command. E.g. <br>
+  <pre>make DOC=dev-manual html</pre>
+  Other manuals are:
+    <ul>
+    <li>sdk-manual</li>
+    <li>bsp-guide</li>
+    <li>dev-manual</li>
+    <li>kernel-dev</li>
+    <li>ref-manual</li>
+    <li>yocto-project-qs</li>
+    <li>mega-manual</li>
+    <li>profile-manual</li>
+    <li>toaster-manual</li>
+    </ul>
+  </li>  
+
+<li>List of the available BitBake tasks to build a given image:<br>
+    <code>bitbake -c listtasks </code> <i>image-name</i><p/>
+  </li>
+<li>List of the available images:
+    <pre>ls meta*/recipes*/images/*.bb</pre>
+  </li>
+
+<li>List of the configured layers (in general, bitbake-layers provides a set of useful commands):
+    <pre>bitbake-layers show-layers</pre>
+  </li>
+
+</ul>
+
+<hr>
+
+<!-- NOTES ON YOCTO **************************************************************************** -->
+<h1> 6. Notes on the Yocto project</h1>
+Based on the OpenEmbedded (OE) project, which uses the BitBake tool to construct Linux images.<br>
+<b>Source Directory</b> = locally installed Yocto Project files.<br>
+The supported BSP(s) are maintained in their own layers.  <br>
+Poky build tool:
+<ul>
+<li>BitBake</li>
+<li>OpenEmbedded core = (<code>meta</code>)</li>
+<li>Yocto-specific metadata <code>meta-yocto</code></li>
+<li>Yocto specific BSP The naming scheme is <code>meta-</code><cite>bsp_name</cite>, es.<code>meta-raspberrypi</code></li>
+</ul>
+The build process creates the Linux distribution and the toolchain from source.
+In order to flash, see <a target="_blank" href="http://www.yoctoproject.org/docs/2.3/dev-manual/dev-manual.html#flashing-images-using-bmaptool">Flashing Images Using bmaptool</a>
+
+<h2>Building the image</h2>
+<ul>
+<li>
+  BitBake searches <code>build/conf/bblayers.conf</code>, reads the <code>BBLAYERS</code>, for each directory in the list:
+  <ul>
+    <li>A <code>build/conf/layer.conf</code> is searched. (<code>BBPATH</code> is automatically set)</li>	  
+  </ul>	
+  </li>
+</ul>
+
+<h3>Terms</h3>
+<ul>
+  <li>Build environment: it is created by sourcing <code>oe-init-build-env</code></li>
+  <li>Classes: a simple inheritance mechanism allowing recipes to share common workflows (<code>.bbclass</code> extension)</li>
+  <li>Configuration files, <code>.conf</code> extension, define the global content.  They can set or overwrite variables, those settings are global.
+    <ul>
+   <li> <code>bblayers.conf</code> : contained in the build environment directory </li>
+    <li> <code>bitbake.conf</code> is the main configuration file.  BitBake expects that a <code>bitbake.conf</code> is present in every directory listed as metadata.</li>
+    <li> <code> layer.conf </code> : exists in every layer metadata directory.  Contains the variables and paths to find the recipes  </li>
+    <li><code>local.con</code> build environment configuration </li>
+    <li>Machine configuration files</li>
+    </ul>  	
+  </li>	
+  <li>Append files <code>.bbappend</code> append recipe information to a recipe file <code>.bb</code> file, located in the same directory.
+    BitBake verbatim appends the contents of an append file to the corresponding recipe.
+    <br>
+    Append files are commonly used by layers building on top of other layers.
+    </li>
+  <li>BSP: documents, source and binaries to enable an operating system to run on a target hardware platform.</li>  
+  <li>Image: the binary output that runs on a specific hardware or QEMU: it can be copied to a storage medium, and then the target can boot and run.</li>
+  <li>Layer = a collection of recipes
+      <ul>
+      <li>Recipe : a set of instructions implementing the build flow for a particular package.<br>
+       A recipe can set a variable, but that setting is local to the recipe.<br>      	
+       A logical unit of tasks to be executed: normally it is a package to be built.  A recipe declares the artifacts it depends on, by the <code>DEPENDS</code> variable. The tasks are determined by the Open Embedded workflow.  BitBake itself does no impose any workflow.
+      	<ul>
+          <li><b>Fetch</b>: <code>do_fetch</code> fetches the source and makes it available in the WORKDIR directory</li>
+          <li><b>Extract</b>: <code>do_unpack</code></li>
+          <li><b>Patch</b>: <code>do_patch</code></li>
+          <li><b>Configure</b>: <code>do_configure</code></li>
+          <li><b>Build</b>: <code>do_compile</code></li>
+          <li><b>Install</b>: <code>do_install</code></li>          
+          <li><b>Package</b>: packaging is needed in order to bunding files into a single archive for distribution and installation into the target system </li>
+      	</ul>     
+      </li>
+      </ul>
+    </li>
+  <li>Metadata: any file (classes, recipes, configuration files, etc) instructing Bit</li>        
+  <li>Package: either
+    <ul>
+      <li>the OS specific file to distribute a sw component</li>		 
+      <li>in yocto: the recipes and other metadata to build the respective software bundle</li>      
+    </ul>  
+  </li>  
+  <li>Recipe file <code>.bb</code>; a recipe is a metadata containing the directives to build a sofware package.<br>
+      <b>Note on recipe names</b>: <br>
+      <cite>
+      There seem to be certain rules regarding .bb files naming, but apparently those are not written anywhere. Some of those rules seem to be
+      ( see <a target="_blank" href="https://lists.yoctoproject.org/pipermail/yocto/2013-July/014941.html">here</a>):
+      <ul>
+      <li>No spaces</li>
+      <li>Underscores can only by used to separate name and version</li>
+      <li>No ASCII special characters</li>
+      <li>No non-ASCII characters</li>
+      <li>No uppercase letters</li>
+      </ul>
+      </li>
+      </cite>
+</ul>
+
+Classes and recipes describe the tasks to be run. A recipe can inherit one or more classes.
+Metadata is divided into three groups: configuration, class and recipe.
+
+<h2>Generating the root filesystem image</h2>
+The <code>rootfs</code> can be seen as a ready to use filesystem for a target.
+<ul>
+<li>Generate the rootfs directory tree</li>
+<li>Populate the rootfs</li>
+<li>wraps the final filesystem</li>
+<li>compress, if necessary</li>
+</ul>
+The rootfs image generation is performed by the subtasks of <code>do_rootfs</code>.
+The list of packages is the union of <code>IMAGE_INSTALL</code> and <code>IMAGE_FEATURES</code>, filtered by <code>PACKAGE_EXCLUDE</code>.<br>
+The generated image is placed in <i>build_dir</i><code>/tmp/deploy/image/</code><code>/</code><i>machine</i><br>
+<p/>
+
+<h2>The build directory</h2>
+The build directory contains:
+<ul>
+<li><code>conf</code>: it contains local.conf, etc</li>
+<li><code>downloads</code>, the downloaded packages, unless it was configured to be somewhere else</li>
+<li><code>sstate-cache</code> it contains packaged data snapshots.  It is a cache used to speed the build process.</li>
+<li><code>tmp</code> the temporary build directory.
+    The most important directories are:
+      <ul>
+      <li>deploy<: the build products /li>
+      <li>sysroots the shared libraries, headers, utilities that are used in the process of building recipes </li>
+      <li>work</li>
+      </ul>
+  </li>
+</ul>
+
+As mentioned, the tasks are:
+<ul>
+  <li><code>do_fetch</code> downloads the packages in the download directory</li>
+  <li><code>do_unpack</code> unpacks the downloaded packages in the <code>build/tmp/work</code> directory</li>
+  <li><code>do_patch</code> in the <code>build/tmp/work</code> directory</li>
+  <li><code>do_configure</code></li>
+  <li><code>do_compile</code></li>
+  <li><code>do_install</code> the built artifacts are installed in the proper directory under <code>build/tmp/work/...</code> </li>   
+  <li>The packages are shared and possibly modified under <code>build/tmp/sysroot</code> </li>       
+</ul>     
+<p>
+	
+Variables in <code>local.conf</code>:
+<ul>
+<li><code>BBLAYERS</code> in <code>bblayers.conf</code> : the paths to allo the the layers included by the build environment</li>
+<li><code>BBFILES</code> in <code>bblayers.conf</code> : the recipe file list   </li>
+<li><code>IMAGE_INSTALL</code> : the list of packages to be included in the image</li>
+<li><code>TOPDIR</code> : the full absolute path to the build directory </li>
+<li><code>TMP_DIR</code> : it is specific to the build, the temporary directory can be under the build directory</li>
+</ul>
+
+<b>SDK</b> = native applications for the development host.
+
+<h2>Writing a recipe</h2>
+
+<hr>
+
+<!-- EMBEDDED LINUX PRIMER ********************************************************************* -->
+<h1> 7. Embedded Linux</h1>
+
+In embedded systems, the bootloader has the same functionality as the BIOS in a desktop PC [31].<br>
+When the board is started, the bootloader performs the low-level hardware initialization, and it prints some messages to the console or to the serial line.<br>
+Then, the bootloader loads and boots the kernel.<br>
+Then, the bootloader transfers the control to the kernel and (the bootloader) ceases to exist.<br>
+[36] Linux requires a filesystem: a predefined set of directories and files with a specific layout.
+<p/>
+When the kernel initialization is terminated and the filesystem is mounted, the kernel spawns the <code>init</code> program.[37]<br>
+Before the <code>init</code> execution, the kernel was running, in kernel mode, where it is able to access all of the memory.<br>
+The <code>init</code> runs in user space.<p/>
+
+<h2>Memory Space</h2>
+Legacy embedded systems had one address space where all memory was mapped: DRAM, peripherals, Flash, etc.<br>
+Linux configures the Memory Management Unit (MMU)
+
+<h2>Terms</h2>
+<Ul>
+  <li><b>Native compilation</b>: </li>
+  <li><b>Stand-alone processors</b>: a processing chip that is solely dedicated to processing; a <i>chipset</i> or surrounding logic handles the peripherals.
+  <li><b>System on Chip(s) (SOC)</b><br>
+    ARM architecture:
+    <ul>
+    <li>TI ARM: OMAP family of integrated processors</li>		
+    <li>NXP i.MX</li>
+    </ul>
+  </li>
+  </li>
+</Ul>
+
+<hr>
+
+<h1> 8. Notes on OpenGL ES</h1>
+<ul>
+<li><b>Vertex shader</b>: a general purpose programmable method for operating on vertices.<br>
+  The shader program operates on the vertices.  It is written using the shading language<br>
+  Vertex shader inputs: the position of the vertices.
+  </li>
+<li>The output f the vertex shared is passed to the primitive assembly.<br> 
+    Primitives are assembled from vertices.<br>
+  </li>  
+<li><b>Rasterization</b> converts primitives into two-dimensional fragments.<br>
+  2D fragments are pizels with attributes like color, that can be drawn on the screen.<br>
+  The output of the rasterization process are 2D fragments.<br>
+  </li>  
+<li> <b>Fragment shader</b>: a general purpose programmable method for operating on fragments.
+  </li>  
+<li> <b>Per-Fragment</b> operations<br>
+  </li>  
+</ul>
+Open GL ES require a rendering context and a drawing surface.<br>
+<ul>
+  <li>The rendering context stores the appropriate OpenGL ES state.</li>
+  <li>The standard does not specify how the rendering context is attached to the windowing system.</li>
+  <li>EGL is the interface between the rendering context and the native window system.</li>
+</ul>
+
+Any Open GL application must perform the following tasks
+<ul>
+<li>Initialize the display.</li>
+<li>Create a rendering surface, either on-screen surface or off-screen surface</li>
+<li>Create a rendering context.</li>
+</ul>
+
+Typical steps in an OpenGL ES program:
+<ul>
+<li>Load and compile the shaders: the vertex and fragment shaders.</li>
+<li>Create the program object: all shaders are attached to the program, then the program is linked.</li>
+<li>  </li>
+</ul>
+
+Raspberry Pi has OpenGL 2.1 and OpenGL ES 2.0.
+
+<hr>
+<!-- LINKS ************************************************************************************* -->
+<hr> 
+<h1> 9. Links</h1>
+
+<ul>
+<li><a target="_blank" href="https://github.com/Nuand/bladeRF/wiki/Creating-Linux-based-Embedded-System-Images-with-Yocto">Creating Linux based Embedded System Images with Yocto</a></li>
+<li><a target="_blank" href="https://raspberrypi.stackexchange.com/questions/57155/how-do-i-used-yocto-to-build-an-sdcard-image-for-my-raspberry-pi-3-model-b">how-do-i-used-yocto-to-build-an-sdcard-image-for-my-raspberry-pi-3-model-b</a></li>
+<li><a target="_blank" href="http://www.cnx-software.com/2013/07/05/12mb-minimal-image-for-raspberry-pi-using-the-yocto-project/">12MB Minimal Image for Raspberry Pi using the Yocto Project (2013)</a></li>
+<li><a target="_blank" href="https://raspinterest.wordpress.com/2016/11/30/yocto-project-on-raspberry-pi-3/">https://raspinterest.wordpress.com/2016/11/30/yocto-project-on-raspberry-pi-3/</a></li>
+<li><a target="_blank" href="https://www.packtpub.com/books/content/building-our-first-poky-image-raspberry-pi">Building Our First Poky Image for the Raspberry Pi</a></li>
+<li><a target="_blank" href=""></a></li>
+<li><a target="_blank" href="https://community.nxp.com/thread/341117">Yocto Setting the Default Ethernet address and disable DHCP on boot.</a></li>
+<li><a target="_blank" href="https://lists.yoctoproject.org/pipermail/yocto/2014-December/022731.html">[yocto] how to set static ip in linux</a></li>
+
+<li><a target="_blank" href="https://layers.openembedded.org/layerindex/branch/master/layer/meta-python/">Open Embedded Layers</a></li>
+<li><a target="_blank" href=""></a></li>
+<li><a target="_blank" href=""></a></li>
+<li><a target="_blank" href=""></a></li>
+</ul>
+
+<p/>
+
+Pandaboard
+<ul>
+<li><a target="_blank" href="https://wiki.gentoo.org/wiki/Pandaboard">Gentoo on Pandaboard</a></li>
+<li><a target="_blank" href="http://omappedia.org/wiki/SD_Configuration">How to format the SD card for the PandaBoard</a></li>
+<li><a target="_blank" href="https://softswagen.wordpress.com/2013/02/21/how-to-install-ubuntu-12-04-lts-on-pandaboard-es/">How to install Ubuntu 12.04 LTS on PandaBoard ES</a></li>
+<li><a target="_blank" href="https://eewiki.net/display/linuxonarm/PandaBoard">Linux on ARM: Pandaboard</a></li>
+<li><a target="_blank" href="http://www.pingnu.org/index.php/Yocto_pandaboard">http://www.pingnu.org/index.php/Yocto_pandaboard</a></li>
+<li><a target="_blank" href="http://elinux.org/Panda_How_to_MLO_%26_u-boot">Panda How to MLO & u-boot</a></li>
+<li><a target="_blank" href="http://www.svtronics.com/support/pandaboard-es-b3-developers-guide/">http://www.svtronics.com/support/pandaboard-es-b3-developers-guide/</a></li>
+<li><a target="_blank" href="http://git.openembedded.org/openembedded/tree/contrib/angstrom/omap3-mkcard.sh">http://git.openembedded.org/openembedded/tree/contrib/angstrom/omap3-mkcard.sh</a></li>
+<li><a target="_blank" href="https://maniacbug.wordpress.com/2012/08/03/pandayocto/">Running Yocto on Pandaboard</a></li>
+<li><a target="_blank" href="https://eewiki.net/display/linuxonarm/PandaBoard#PandaBoard-WiFI"></a></li>
+<li><a target="_blank" href="http://omappedia.org/wiki/SD_Configuration">http://omappedia.org/wiki/SD_Configuration</a></li>
+<li><a target="_blank" href="http://omappedia.org/wiki/PandaBoard_Minimal-FS_SD_Configuration">Step by step</a></li>
+</ul>
+
+Raspberry Pi and Yocto
+<ul>
+<li><a target="_blank" href="http://www.instructables.com/id/Building-GNULinux-Distribution-for-Raspberry-Pi-Us/">Building GNU/Linux Distribution for Raspberry Pi Using the Yocto Project</a></li>
+<li><a target="_blank" href="http://www.jumpnowtek.com/rpi/Raspberry-Pi-Systems-with-Yocto.html">http://www.jumpnowtek.com/rpi/Raspberry-Pi-Systems-with-Yocto.html</a></li>
+<li><a target="_blank" href="http://git.yoctoproject.org/cgit/cgit.cgi/meta-raspberrypi/">Raspberry Pi source repository for the Yocto</a></li>
+</ul>
+
+Yocto Project and tools
+<ul>
+<li><a target="_blank" href="elinux.org/Bitbake_Cheat_Sheet">BitBake cheat sheet</a></li>	
+<li><a target="_blank" href="https://www.yoctoproject.org/documentation">Yocto Project Documentation</a></li>
+<li><a target="_blank" href="https://www.yoctoproject.org/">Yocto Project Homepage</a></li>
+<li><a target="_blank" href="http://www.yoctoproject.org/docs/2.3/dev-manual/dev-manual.html">Yocto Project Development Manual</a></li>
+<li><a target="_blank" href="http://git.yoctoproject.org/cgit/cgit.cgi">Yocto Project repository</a></li>
+<li><a target="_blank" href="http://www.yoctoproject.org/docs/2.3/sdk-manual/sdk-manual.html"> Yocto Project Software Development Kit (SDK) Developer's Guide</a></li>
+<li><a target="_blank" href="http://www.phytec.de/fileadmin/user_upload/images/content/1.Products/Software/L-813e_4.pdf">Yocto Reference Manual by PHYTEC</a></li>
+<li><a target="_blank" href="https://www.embeddedartists.com/sites/default/files/support/com/iMX6_Working_with_Yocto.pdf">Working with Yocto to Build Linux (by Embedded Artists)</a></li>
+<li><a target="_blank" href=""></a></li>
+<li><a target="_blank" href=""></a></li>
+<li><a target="_blank" href=""></a></li>
+<li><a target="_blank" href=""></a></li>
+<li><a target="_blank" href=""></a></li>
+<li><a target="_blank" href=""></a></li>
+<li><a target="_blank" href=""></a></li>
+<li><a target="_blank" href=""></a></li>
+<li><a target="_blank" href=""></a></li>
+<li><a target="_blank" href=""></a></li>
+</ul>
+
+Tricks and pitfalls:
+<ul>
+<li><a target="_blank" href="https://forum.openoffice.org/it/forum/viewtopic.php?t=2891">Installazione di Open Office su Linux (pacchetti DEB e RPM).</a></li>
+</ul>
+
+<hr>
+
+<!-- REFERENCES ******************************************************************************** -->
+<h2>References</h2>
+
+<table border="1">
+<tr>
+<td>OEPG14</td>
+<td><cite>OpenGL ES Programming Guide, 2nd Edition</cite>,</td>
+<td>Dan Ginsburg, Budirijanto Purnomo,</td>
+<td>2014</td>
+<td>Up to page: <code>43</code> </td>
+</tr>
+</table>
+
+<hr>
+
+</body>
+</html>
+
+/home/minguzzi/yocto/build-pi/tmp/work/raspberrypi3-poky-linux-gnueabi/rpi-basic-image/1.0-r0/rootfs
+
+
+
+
+
+
+
+
+https://github.com/agherzan/meta-raspberrypi/blob/master/conf/machine/raspberrypi2.conf
+
+https://github.com/agherzan/meta-raspberrypi
+
+VC4_CMA_SIZE ?= "cma-256"
+
+# RaspberryPi BSP default providers
+
+PREFERRED_PROVIDER_virtual/kernel ?= "linux-raspberrypi"
+PREFERRED_PROVIDER_virtual/xserver ?= "xserver-xorg"
+PREFERRED_PROVIDER_virtual/egl ?= "${@bb.utils.contains("MACHINE_FEATURES", "vc4graphics", "mesa", "userland", d)}"
+PREFERRED_PROVIDER_virtual/libgles2 ?= "${@bb.utils.contains("MACHINE_FEATURES", "vc4graphics", "mesa", "userland", d)}"
+PREFERRED_PROVIDER_virtual/libgl ?= "${@bb.utils.contains("MACHINE_FEATURES", "vc4graphics", "mesa", "mesa-gl", d)}"
+PREFERRED_PROVIDER_virtual/mesa ?= "${@bb.utils.contains("MACHINE_FEATURES", "vc4graphics", "mesa", "mesa-gl", d)}"
+PREFERRED_PROVIDER_libgbm ?= "${@bb.utils.contains("MACHINE_FEATURES", "vc4graphics", "mesa", "mesa-gl", d)}"
+PREFERRED_PROVIDER_jpeg ?= "jpeg"
+
+
+
+
+https://stackoverflow.com/questions/19162072/installing-raspberry-pi-cross-compiler
+https://stackoverflow.com/questions/19162072/installing-raspberry-pi-cross-compiler
+
+

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+  .source_code {
+    background-color: lightgray;
+    font-family: Courier New;
+    border-style: solid;
+    border-width: thin;
+    font-size: larger;
+  }
+  </style>
+  <title>Cpp Templates</title>
+</head>
+
+<body>
+  
+<h1>C++ Templates The Complete Guide-Addison-Wesley </h1>  
+(2018) David Vandevoorde, Nicolai M. Josuttis, Douglas Gregor, 820 pages<br>
+Read up to page (89).<p/>
+<h2>Chp 01: Function Templates</h2>
+The process of replacing template parameters with concrete types is called instantiation (40). It results in an instance of a template.<br>
+Templates are compiled in two phases: definition time: the syntax is checked, everything that does not depend in template parameters is checked. <br>
+At instantiation time the template is checked against the template parameters (41).<br>
+Overloading function templates: (51) the overload resolution process prefers the nontemplate over the function generated from the template. The syntax:
+<div class="source_code"> 
+<pre>::max&lt;&gt;( 7, 42); // Forces the use of the template.</pre>
+</div>
+<p/>
+Automatic type conversion is not considered for deduced template parameters, but it is considered for ordinary functions (52).<br>
+In templates, pass arguments by value (57).<br>
+In general, function templates do not have to be declared with <code>inline</code> (57).  
+The exception to this rule are full specializations for specific types (57). <br>
+<p/>
+
+<h2>Chp 02: Class Templates</h2>
+Suppose that the class template is <code>Stack&lt;T&gt;</code>code>. The Type of the class is <code>Stack&lt;T&gt;</code>code>.<br> 
+You have to use the class type <code>Stack&lt;T&gt;</code>code> whenever you use the type of the class in a declaration, except cases where the template parameters can be deduced.<br>
+For example when implementing the members (64).<br>
+Inside the class use simply the class name, so <code>Stack</code>.<br>
+<cite>(66) Code is instantiated only for template functions that are called.</cite> So, only those functions are checked (68).<br>
+(71) Specialization of Class Templates.  You can specialize a class template for certain template arguments.<br>
+Similar to the overloading of function templates, specializing class templates allows you to optimize implementations for certain types or to fix a misbehavior of certain types for an instantiation of the class template.<br> 
+However, if you specialize a class template, you must also specialize all member functions.<br>
+Suppose we define:
+<div class="source_code"> 
+<pre>using IntStack= Stack&lt;int&gt; ;</pre>
+</div>
+They become two <b>interchangeable</b> notations for the same type (79).<p/>
+Moreover, an using declaration can be parameterized (80).<br>
+See <b>Type Traits suffix_t</b> (81).<br>
+<p/>
+<b>Deduction guides</b><br>
+<div class="source_code"> 
+<pre>// Guides the type to be a string stack when constructed with a pointer to const char.   
+Stack(char const*) -&gt; Stack&lt; std::string &gt;</pre>
+</div>
+<hr>
+<b>Templetized Aggregates</b> (85) <br>
+Aggregate classes (classes/structs with no user-provided, explicit, or inherited constructors, no virtual, private, or protected base classes) <br>
+Aggregate classes can be templates (85).<p/>
+
+<h2>Chp 03: Nontype template parameters</h2>
+
+
+<div class="source_code"> 
+<pre>
+Abcd
+</pre>
+</div>
+
+
+</body>
+</html>

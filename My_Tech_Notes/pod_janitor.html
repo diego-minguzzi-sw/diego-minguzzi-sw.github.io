@@ -1,0 +1,76 @@
+<html>
+<title>Podcasts</title>
+<body>
+	
+Requisiti:
+<ul>
+<li>Gestione Utenti (CRUD)
+  </li>	
+<li>Gestione dei Feed (CRUD)
+  </li>
+<li>Gestione dello scheduling del download dei podcasts. <br>
+    Ci deve essere un unico scheduling, che fissa il momento in cui il podthing cerca nuovi podcast.</li>  
+<li>Ispezionare i podcasts scaricati</li>
+<li>Visualizzazione del log dei podcast scaricati quando e degli errori</li>
+<li>Se in un certo momento l'update dei podcast e' in corso, l'utente deve poterlo interrompere, in modo da preservare la banda</li>
+<li>L'utente deve poter ottenere un preview dei podcast disponibili, e scegliere se eseguire il download di qualcuno di questi podcasts.<br>
+    <ul>
+    <li>Il download deve poter essere eseguito con la massima banda oppure secondo la banda configurata.</li>
+    </ul>
+  </li>
+<li>L'utente deve aver modo di lanciare l'update in modo asincrono, indipendentemente dallo schedule</li>
+<li>Eseguire lo streaming di un podcast
+    <ul>
+    <li>Verso il telefonino</li>
+    <li>Nelle cuffie collegate al raspberry Pi</li>
+    </ul>
+  </li>
+<li>Copiare un insieme di podcasts selezionati su una unità esterna</li>
+<li>Eseguire la sincronizzazione verso un unità esterna.</li>
+<li>Testare un PodcastFeed : raggiungibile? Esiste? ecc.</li>
+<li>Backup and Restore di tutte le informazioni</li>
+<li>Impostazioni:
+    <ul>
+    <li>Massima quantità di banda occupata</li>
+    <li>Shutdown dopo avere scaricato tutti i podcasts</li>    
+    </ul>    
+  </li>
+</ul>	
+
+<hr>
+Entities
+<ul>
+<li>
+  PodcastFeed
+    <ul>
+    <li>Name</li>		
+    <li>path</li>
+    <li>URL</li>
+    <li>Update schedule: periodic / on demand</li>
+    <li>Number of items to download</li>
+    <li>Download priority</li>
+    </ul>  	
+  </li>
+<li>User
+    <ul>
+    <li>Name</li>
+    <li>Password</li>		
+    <li>Profile= Administrator / User </li>
+    </ul>
+  </li>  
+</ul>
+
+<hr>
+Links a informazioni	
+<ul>	
+<li><a target="_blank" href="http://pistache.io">Pistache C++ Rest framework</a></li>
+<li><a target="_blank" href="http://www.ogcnetwork.net/schemas/atom/2005/atom.xsd">Atom XSD</a></li>	
+<li><a target="_blank" href="https://en.wikipedia.org/wiki/RSS">RSS</a></li>
+<li><a target="_blank" href=""></a></li>
+<li><a target="_blank" href=""></a></li>
+<li><a target="_blank" href=""></a></li>
+<li><a target="_blank" href=""></a></li>
+</ul>
+
+</body>
+</html>

@@ -1,0 +1,659 @@
+<html>
+<body>
+<h1>Links</h1>
+<ul>
+  
+  <li><a href="https://elixir-lang.org/docs.html" target="_blank">Elixir Docs</a></li>
+  <li><a href="https://elixir-lang.org/" target="_blank">Home page</a></li>
+</ul>
+<hr>
+
+<h1>Elixir in Action SAŠA JURIC, Manning Publications Co., 2nd edition, 2019, 385 pages</h1>
+Scalable and reliable systems that constantly provide a service without downtime (1).
+A platform that provides support for: Concurrency, scalability, fault-tolerance, distribution, high-availability.<br>
+High availability>
+<ul>
+  <li>Concurrency: Erlang is a concurrency-oriented language. The basic concurrency primitive is the Erlang process (4).<br> 
+      The Erlang VM (BEAM) schedules and runs processes to the available CPU(s). Erlang processes are isolated from each other. 
+      A process crash does not crash the application.  </li>
+  <li>Fault tolerance</li>
+  <li>Scalability: processes communicate via asynch messages</li>
+  <li>Distribution: communication is the same regardless of whether the processes are local or remote</li>
+  <li>Responsiveness: the runtime improves the responsivness.  The scheduler is preempitive</li>
+  <li>Live Update: upgrade the system without stopping it</li>
+</ul>
+Erlang: language, VM, framework, tools. <br>
+Elixir macro: code that runs at compile time (11).
+
+(17).
+Variable names start with an underscore or lowercase character. The prevalent convention is lowercase letters and underscores.<br>
+Modules are like namespaces (20), a module must be defined in a single file.<br> 
+A file can contain multiple module definitions (21). <br>
+Module names are written in <b>CamelCase</b> The dot can be used to organize modules in a hierarchy: Geometry.Rectangle Geometry.Circle <br> 
+The dot character is only a convenience.  The language does not dictate that.<br>
+<b>Functions</b> are always part of a module.(21): the name starts with an lower case character. Conventions:
+<ul>
+  <li>If a function name terminates with a exclamation mark, it may raise a runtime error.</li>
+  <li>If a function name terminates with a question mark, it is because it returns a true or false.</li>
+</ul>
+These are conventions.<br>
+
+<hr>
+<!-- ******************************************************************************************* -->
+<h2>Documentation</h2>
+To access the documentation:
+<ul>
+  <li>Of a module: <code>h Circles</code></li>
+  <li>Of a module function: <code>h Circles.area</code></li>
+</ul>
+
+<hr>
+<!-- ******************************************************************************************* -->
+<h2>Modules</h2>
+
+<h3>Module attributes</h3>
+Attributes exist at compile time.
+Registered attributes can be queried at runtime.(28)<br>
+
+Modules docs can be accessed at runtime, example:
+<p>
+  <code>
+    <pre>
+      Code.fetch_docs(MyModule)
+    </pre>
+  </code>  
+</p>
+
+The compilation produces a Elixir.XYZ.beam file for each module (a source file can define multiple modules) (58).<br>
+A module is loaded when one of its function is called (58).<br>
+
+<b>Note:</b> it is possible to load compiled modules from one or more directories with the iex switch -pa:
+<code>
+  <pre>
+    iex -pa chp02_building_blocks/
+  </pre>
+</code>
+
+(59): functions can be called dynanically at runtime.<br>
+
+
+<hr>
+<!-- ******************************************************************************************* -->
+<h2>Functions</h2>
+<cite>Arity</cite> : the number of arguments of a function (25).<br>
+A function is identified by its module and arity.  Two functions with same module-name and different arity can exist, thanks to overloading (25).<br>
+Default argument exist (26). The definition of default arguments for a function creates multiple functions, with different arities.<p/>
+<code>
+  <pre>
+    # b and c have 0 default value.
+    defmodule Calculator do
+      def sum(a, b \\ 0, c \\ 0), do: a + b + c
+    end
+  </pre>
+</code>
+<p/>
+
+In Elixir, functions with variable numbers of arguments do not exist (26).<br>
+<pre>
+  def rectanglePerimeter(a, b), do: 2 * a + 2 * b
+</pre>
+
+<h3>Exported functions</h3>
+<b><code>def</code></b> defines a public function.<br>
+<b><code>defp</code></b> defines a private function, visible only inside the module.<br>
+
+Related to exported functions: imports and aliases (27).<br>
+
+<hr>
+<!-- ******************************************************************************************* -->
+<h2>Operators</h2>
+<h3>The pipeline operator</h3>
+The pipeline operator puts the return value of a function as first argument to the next function.<br>
+The pipeline operator is pipe greater (55).<br>
+
+<hr>
+<!-- ******************************************************************************************* -->
+<h2>Command line tools</h2>
+
+<h3>The project manager mix</h3>
+<code>
+  <pre>
+    minguzzi@mingux:~/elixir_wrkdir/chp02_building_blocks$ mix new my_project
+    * creating README.md
+    * creating .formatter.exs
+    * creating .gitignore
+    * creating mix.exs
+    * creating lib
+    * creating lib/my_project.ex
+    * creating test
+    * creating test/test_helper.exs
+    * creating test/my_project_test.exs
+
+    Your Mix project was created successfully.
+    You can use "mix" to compile it, test it, and more:
+
+        cd my_project
+        mix test
+
+    Run "mix help" for more commands.
+    minguzzi@mingux:~/elixir_wrkdir/chp02_building_blocks$ cd my_project/
+    minguzzi@mingux:~/elixir_wrkdir/chp02_building_blocks/my_project$ mix compile
+    Compiling 1 file (.ex)
+    Generated my_project app
+  </pre>
+</code>
+
+<h3>Code formatting tool</h3>
+<ul>
+  <li>cd to the project directory</li>
+  <li><code>mix format [filename]</code><br>
+    Example: mix format geometry.ex</li>
+</ul>
+
+<h3>The scripts executor</h3>
+<code>
+  <pre>
+    elixir script.exs # Runs a script
+  </pre>
+</code>
+
+<h3>Complier</h3>
+<pre>
+  elixirc 
+</pre>
+
+<h3>Module documentation</h3>
+Insert in code, for example:
+<code>
+  <pre>
+  defmodule Circles do
+    @moduledoc "Implements basic circles functions."
+    @pi 3.14159
+
+    # ------------------------------------------------------------------------------------------------
+    @doc "Returns the area of the circle of given radius."
+    def area(radius), do: radius * radius * @pi
+
+    # ------------------------------------------------------------------------------------------------
+    @doc "Returns the circumference of given radius."
+    @spec circumference(number) :: number
+    def circumference(radius), do: 2 * radius * @pi
+  end  
+  </pre>
+</code>
+
+<cite>Block comments are not supported (30).</cite> The pound/sharp marks the single line comment.<br>
+
+<hr>
+<!-- ******************************************************************************************* -->
+<h2>Data types</h2>
+Variables of different types can be compared.  There is an ordering between types (76) (!).<br>
+<p>
+  number &lt; atom &lt; reference &lt; fun &lt; port &lt; pid &lt; tuple &lt; map &lt; list &lt; bitstring.
+</p>
+
+<p>
+In Elixir, data is immutable, a function does not modify it arguments, rather it returns a new instance (34).<br>
+Immutability: side-effect-free and data consistency (40).<br>  
+  
+</p>
+
+<h3>Numbers</h3>
+(31) The division operator always returns a float number.<br>
+The integer division and the reminder are: div(5,2) and rem(5,2).<br>
+The underscore can be used as visual delimiter to numbers, e.g. 1_000_000. (31)<br> 
+There is no upper limit to an integer size .<br>
+
+
+<h3>Atoms</h3>
+<pre>
+  :anAtom
+</pre>
+
+Aliases: AnAtom becomes :"Elixir.AnAtom".  AnAtom is an alias to <pre>:"Elixir.AnAtom"</pre> <p/>
+
+There is no boolean, but atoms <code>:true</code> and <code>:false</code> (33). The logical operators are: and or not.<br>
+<b>NOTE</b> Logical expressions are short-circuited: it is a way to stop at the first function that returns a falsy value. (34)
+<p/>
+
+
+<p>
+  <code>nil</code> is an atom.
+</p>
+
+<cite>falsy</cite> values are <code>nil</code> and <code>false</code> <br>
+Short circuit operators are  double-ampersand and double-pipe. They return the expression (33).<br>
+Whereas boolean operators return true and false.<br>
+
+<h3>Tuples</h3>
+(34)
+<pre>
+  person = {"Bob", 25}
+</pre>
+Tuple elements are retrieved with elem(), set with put_elem() (34).<br>
+With tuples, shallow copies are made (38).<br>
+
+<h3>Lists</h3>
+Dynamic, variable sized collections of data.<br>
+<pre>
+  iex(15)> primeNumbers = [2,3,5,7]
+  [2, 3, 5, 7]
+  iex(16)> length(primeNumbers) 
+  4
+</pre>
+
+The List module exists (36).<br>
+<p/>
+
+<h4>Recursive List definitions</h4>
+A list is defined as head and tail (37).<br>
+The functions a re hd() and tl() (37)<br>
+<code>
+  <pre>
+  iex(18)> myList= [1 | [2,3,4,5]]                                                                                                                                                             
+  [1, 2, 3, 4, 5]
+  iex(19)> hd(myList)
+  1
+  iex(20)> tl(myList)
+  [2, 3, 4, 5]
+  iex(21)> myList = [0 | myList] 
+  [0, 1, 2, 3, 4, 5]    
+  </pre>
+</code>
+The last operation is O(1) 
+
+<h3>Maps</h3>
+(41)<br>
+
+<code>
+<pre>
+  iex(26)> otherSquares= Map.new([{1,1},{2,4},{3,9},{4,16}]
+  ...(26)> )
+  %{1 => 1, 2 => 4, 3 => 9, 4 => 16}
+  iex(27)> squares[2]
+  4
+  iex(28)> squares[5]
+  nil
+  iex(29)> Map.get(squares,2,:notFound)
+  4
+  iex(30)> Map.get(squares,6,:notFound)
+  :notFound
+
+  iex(31)> Map.fetch(squares,0)
+  :error
+  iex(32)> Map.fetch(squares,1)
+  {:ok, 1}
+</code>
+</pre>
+
+<h3>Structured Data</h3>
+Structured data to manage struct / record data types (42).<br>
+(43)
+<code>
+<pre>
+  iex(55)> bob = %{name: "Bob", age: 25, worksAt: "Initech"}
+  %{age: 25, name: "Bob", worksAt: "Initech"}
+  iex(56)> bob.name                                         
+  "Bob"
+  iex(57)> bob.other                                        
+  ** (KeyError) key :other not found in: %{age: 25, name: "Bob", worksAt: "Initech"}
+
+  iex(57)> modifiedBob = %{bob | age: 48}                                                                                                                                                      
+  %{age: 48, name: "Bob", worksAt: "Initech"}
+
+  iex(58)> yaModifiedBob = %{ bob | age: 22,  worksAt: "Intel"}                                                                                                                                
+  %{age: 22, name: "Bob", worksAt: "Intel"}
+</pre>  
+</code>
+
+<h3>Structs</h3>
+(109) Each module can define only one struct. The struct has the name of the module it is defined in.<br>
+Internally, structs are maps (111)<br>
+<code>
+  <pre>
+  defmodule Fraction do
+    defstruct a: nil, b: nil
+    
+    def new( a, b), do: %Fraction{ a: a, b: b}
+    
+    # The input type is enforced.
+    def value( %Fraction{ a: a, b: b }), do: a / b
+        
+    def add( %Fraction{ a: a1, b: b1 }, %Fraction{ a: a2, b: b2 } ), do: new( a1*b2 + a2*b1, b1*b2)
+  end
+
+  </pre>
+</code>
+
+<p>
+  How to update a struct (110).  
+</p>
+
+<h3>Records</h3>
+(112) Records are essentially tuples, faster than maps. They are not used often, only to interface with Erlang.<br>
+
+
+<h3>Binaries and bitstrings (43)</h3>
+A binary has size, in bits that is a multiple of 8, otherwise it is a bitstring (44).<br>
+
+<h3>Strings</h3>
+(44) Strings are represented as binaries or a list type.<br>
+<pre>
+  "This is represented as a binary."
+  iex(67)> i = 42
+  42
+  iex(68)> "An embedded string #{i}"
+  "An embedded string 42"
+  iex(69)> "An embedded string #i"  
+  "An embedded string #i"
+</pre>
+
+In lower case sigils it is possible to insert double quotes, while upper-case sigils are raw strings (45).<br>
+<code>
+<pre>
+  iex(75)> heredocString="""
+  ...(75)> A heredoc line string.
+  ...(75)> Another.
+  ...(75)> Yet another.
+  ...(75)> """
+  "A heredoc line string.\nAnother.\nYet another.\n"
+</pre>
+</code>
+
+<h3>Character lists</h3>
+(45)
+<p/>
+
+<h3>First-class fuctions</h3>
+<code>
+<pre>
+  iex(2)> square = fn x -> 
+  ...(2)> x*x
+  ...(2)> end
+
+  iex(3)> square.(4) # The dot is needed to call an anonymous function.
+  16
+</pre>
+</code>
+The function is not bound to a global name, so it is called anonymous function (46).<br>
+
+Example Enum each.
+<code>
+<pre>
+  iex(8)> Enum.each([1,2,3,4], fn x-> IO.puts(x) end)
+  1
+  2
+  3
+  4
+  :ok
+
+  # The same as the capture syntax:
+  Enum.each([1,2,3,4], &IO.puts/1)
+</pre>
+</code>
+
+<b>Capture operator</b>:
+<code>
+<pre>
+  iex(12)> aFunction = fn x, y, z -> x * y + z end
+
+  aFunction = &(&1 * &2 + &3)
+</pre>
+</code>
+
+Closures: a lambda can reference any variable from the outer scope.<br>
+<code>
+<pre>
+  iex(21)> outsideVar = 42
+
+  iex(26)> myLambda = fn -> IO.puts("outsideVar=#{outsideVar}") end
+  #Function<21.126501267/0 in :erl_eval.expr/5>
+  iex(27)> myLambda.()                                             
+  outsideVar=42
+</pre>
+</code>
+Note that the closure captures the value that outsideVar binds to, example 42.<br>
+The closure does not capture the reference itself.<br>
+If later outsideVar binds to something else, the closure is not affected.<br>
+
+<code>
+<pre>
+  iex(28)> outsideVar=45
+  45
+  iex(29)> myLambda.()  
+  outsideVar=42
+</pre>
+</code>
+
+<h3>Other built-in types</h3>
+(49) reference(s), pid(s), port identifier(s) .
+
+<!-- ******************************************************************************************* -->
+<h3>Higher level types</h3>
+(50) 
+<h4>Ranges</h4>
+<code>
+<pre>
+  iex(35)> aRange =  1..5
+  1..5
+  iex(36)> 3 in aRange
+  true
+  iex(37)> 100 in aRange
+  false  
+  
+  Enum.each(1..3, &IO.puts/1)                                                                                                                                                         
+  1
+  2
+  3
+  :ok
+</pre>
+</code>
+
+<h4>Keywords</h4>
+<code>
+  <pre>
+    iex(1)> days= [monday: 1, tuesday: 2, wednesday: 3]
+    
+    iex(3)>  Keyword.get(days, :monday, :notFound) 
+    1  
+    
+    iex(4)>  Keyword.get(days, :myOther, :notFound)
+    :notFound
+  </pre>
+</code>
+The search complexity is O(n).  The keyword module exists (51).<br>
+Keyword lists are used to pass arbitrary arguments to a function. 
+Elixir allows you to omit square brackets is the last argument of a function is a Keyword list.<br>
+In practice, this emulates variable/optional arguments functions (51).<br>
+<b>Note</b>: with Keyword, multiple values can be assigned to the same atom:
+<p/>
+
+<h4>Map Sets</h4>
+Map Sets are sets, stores of unique values (52).<br>
+
+<h4>Times and Dates</h4>
+(52) 
+ 
+<h4>IO Lists</h4>
+(54) Each element of an IO list can be: an integer in the range 0 to 255, a binary (a multiple of 8 bits), or an IO list.
+<code>
+  <pre>
+  iex(1)> ioList = [[['H','e'],"llo,"],"worl","d!"]
+  [[['H', 'e'], "llo,"], "worl", "d!"]
+  
+  iex(4)> IO.puts(ioList)
+  Hello,world!
+  :ok
+  </pre>
+</code>
+Appending to an IO list is O(1), whereas appending to a plain list is O(n) (54). 
+<hr>
+
+<!-- ******************************************************************************************* -->
+<h2>Operators</h2>
+(55) Most of the operators are defined in the Kernel module.  <br>
+When comparing integers and floats, there is strict equality (===) and inequality (!==), and weak equality (==) inequality (!=) (55).<br>
+
+<h3>Macros (56)</h3>
+Macro: Elixir code that can change the semantics of input code.  They are executed at compile time.<br>
+
+
+<h2>Control flow constructs</h2>
+
+<hr>
+<!-- ******************************************************************************************* -->
+
+<h3>Pattern Matching</h3>
+In an assignment, on the left side a pattern, on the right an expression called <cite>term</cite>(72) (64).<br>
+A variable always match the right side, there is a bound between the variable and the result of the expression.<br>
+
+Constants can be on the left side of the assignment, in the pattern side (65).<br>
+<code>
+  <pre>
+    iex(11)> person= {:person,"Bob",26}
+    {:person, "Bob", 26}
+    iex(12)> {:person,name,age}= person
+    {:person, "Bob", 26}
+    iex(13)> age                       
+    26
+  </pre>
+</code>
+<p>
+(66)<b><cite>By using contants in a pattern, you tighten the match, making sure some part of the right side has a specific value.</cite></b>
+</p>
+
+The underscore _ is the anonymous variable (66)<br>
+Patterns can be nested.<br>
+
+<p>
+  Matching against the content of a variable:
+  <code>
+    <pre>
+    iex(14)> expectedName = "Bob"               
+    "Bob"
+    iex(15)> person={:person,"Bob",25}          
+    {:person, "Bob", 25}
+    iex(16)> {:person, ^expectedName,age}=person
+    {:person, "Bob", 25}
+    </pre>
+  </code>
+</p>
+Matching lists (67)<br>
+Matching maps (68) <br>
+Match chaining (71) 
+  <code><pre>a = (b = 1+3)</pre></code> <br>
+<p/>
+
+Pattern matching works also when a function is executed.  The provided arguments are matched against the patterns of the function-
+
+Multiclause functions (e.g. function overloading) (73).  Multiclause functions are a way of doing branching (79).
+<code><pre>
+  defmodule Geometry do      
+    def area({:rectangle, w, h}), do: w*h
+    
+    def area({:square, s}), do: s*s
+    
+    def area({:circle, r}), do: r*r*3.14
+    
+    # Default case: a variable matches any argument.
+    def area(unknown), do: {:error, {:unknownShape, unknown}}
+    
+    def perimeter(:circle, r), do: 2*r*3.14
+  
+    def perimeter(:square, a), do: 4*a      
+  end    
+  
+  defmodule ListUtils do
+    def isListEmpty?([]), do: true    
+    def isListEmpty?([_|_]), do: :false
+    
+    def sum([]), do: 0  
+    def sum([head | tail]) when is_number(head), do: head + sum(tail)
+  end
+  </pre></code>  
+Note 1: function clauses are matched top to bottom, until a match is found.
+Note: the capture operator captures all function clauses (74).
+<p>
+Note: <b>guards</b> when (76) 
+</p>
+
+<p>
+Multiclause lambdas (78), also an example of guards (when).
+<code>
+  <pre>
+  testNum = fn
+    x when is_number(x) and x<0 -> :negative
+    0 -> :zero
+    x when is_number(x) and x>0 -> :positive    
+  end    
+  </pre>
+</code>
+
+</p>
+
+Classical branching constructs: If and Unless (81) Unless = if not.<br>
+<p>
+Cond is a if-else-if pattern (82).  It raises an error in case no expression is true.
+<code>
+  <pre>
+  cond do
+    expression_1 ->
+      ...
+    expression_2 ->
+      ...
+  ...
+  end    
+  </pre>
+</code>
+</p>
+<p>
+Case matches the provided expression to a set of patterns  
+</p>
+
+<b>With</b>
+<code>
+  <pre>
+  defmodule UserExtraction do
+    def extractLogin(%{:login => login}), do: {:ok,login}
+    def extractLogin(_), do: {:error,"Login field missing."}
+    
+    def extractEmail(%{:email => email}), do: {:ok,email}
+    def extractEmail(_), do: {:error,"Email field missing."}
+    
+    def extractUser(user) do
+      with  {:ok, login} <- extractLogin(user),
+            {:ok, email} <- extractEmail(user) do
+        {:ok, %{ login: login, email: email} }
+      end
+    end
+  end    
+  </pre>
+</code>
+
+<hr>
+<h3>Loops</h3>
+Recursion and tail-calls (90).<br>
+The tail call must be the last statemente executed in the function, it cannot be: <code>1 + another_fun(...)</code><br>
+Because when another_fun() terminates, the sum must be performed, so it is not a tail call.<p/>
+
+<hr>
+<h2>Data abstractions</h2>
+(102)
+<ul>
+  <li>A module abstracts some data</li>
+  <li>The module functions expect an instance of the data abstraction as the first argument</li>
+  <li>Modify functions return a new, modified, instance</li>
+  <li>Query functions return the result, some other type of data</li>
+</ul>
+
+<h3>Data Transparency (* * * * *)</h3>
+(112) In Elixir data is always transparent, not private. The only way is to override the <code>Kernel.inspect/1</code> function.<br>
+The only complex types in Elixir are tuples, lists and maps: any abstraction is built on top of these data types.<br>
+
+
+<!-- ******************************************************************************************* -->
+
+<hr>
+(115) 
+</body>
+</html>

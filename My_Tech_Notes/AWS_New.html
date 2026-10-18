@@ -1,0 +1,174 @@
+<html>
+ <head>
+  <style>
+  .source_code {
+    background-color: lightgray;
+    font-family: Courier New;
+    border-style: solid;
+    border-width: thin;
+  }
+  </style>
+  <title>AWS</title>    
+ </head>
+  
+
+<body>  
+<code>Last modified on 20220917</code>  
+<h1>. Hot Links</h1>    
+  <ul>
+  <li><a href="https://console.aws.amazon.com/console/home?nc2=h_ct&src=header-signin" target="_blank"></a></li>
+  <li><a href="" target="_blank"></a></li>
+  <li><a href="" target="_blank"></a></li>
+  <li><a href="" target="_blank"></a></li>
+  </ul>
+<!-- ******************************************************************************************* --><hr>      
+
+<!-- ******************************************************************************************* --><hr>  
+<h1>. Amazon EC2</h1>  
+<a href="https://docs.aws.amazon.com/ec2/?id=docs_gateway" target="_blank">EC2 documentation</a><br>
+From the PDF User Manual 1951 pages.<br>
+Read up to page 12
+<ul>
+  <li>Instances: virtual computers</li>
+  <li>Amazon Machine Image(s) AMI: preconfigured templates</li>
+  <li>Instance types: various configurations of CPU, memory, storage, etc</li>
+  <li>Instance store volumes: data that is lost when you terminate the instance</li>
+  <li>Elastic Block Storage volumes are persisted</li>
+</ul>
+
+It is possible to setup the instance manually, there are also services to configure instances: Auto Scaling, CloudFormation, etc. (2).<br>
+<b>CloudFormation</b>: (3) a JSON template describes the AWS resources: the AWS CloudFormation provisions and configures them for you (3).<br>
+
+<h2>Security Groups</h2>
+A Security Group is a firewall for instances.<br>
+
+
+In order to set the permissions for the private key file:
+<div class="source_code"> <pre>chmod 400 ec2_pair.pem</pre> </div>
+
+Example: my IP is : 77.108.39.98  
+
+An instance runs in an availability zone, it is related to a security group and a key pair (22).<br>
+<code><b>Instance name UbuxNew, Storage 16 GiB gp2, t2.micro. </b></code><br>
+Public IP address: 35.181.154.244
+
+
+
+
+
+
+<hr>  
+<h1>. AWS for Beginners The Complete Beginners Guide to Learn and Understand Amazon Web Services and Its Future in Modern World, V.Middleton</h1>
+  <h2>.. AWS Services Guide</h2>
+<b>Amazon Web Services (AWS)</b>: main services are EC2, Glacier (low cost storage) and S3 (20).<br>
+Companies pay for what they consume, so there is no need to forecast utilization.(22)<br>
+<ul>
+  <li>EC2: configuration and hosting of servers (25). Instances = virtual computers.  Different instace types:
+      <ul>
+      <li>Optimized for Computing</li>  
+      <li>Optimized for Memory</li>  
+      <li>Optimized for Storage</li>  
+      </ul>
+    </li>
+  <li>Simple Storage Service (S3): data storage (26).  There are different ways to define buckets:<br>
+      <ul>
+      <li><b>Standard Amazon Storage</b>: pay per gigabyte utilized and the amount of requests. 99.99 percent availability. Less than 1 hour downtime per year</li>
+      <li><b>Infrequent Access Storage</b> (IAS) 99.9 percent availability. Less than 9 hours downtime per year</li>
+      <li><b>Glacier Amazonia</b>: the retrieval of data can take up hours</li>
+      <li><b>Reduced Redundancy</b> from Amazon</li>
+      </ul>
+    </li>    
+  <li>
+      <ul>
+      <li><b>Elastic Load Balancing</b> (ELB) for Scalable performance (29).  There is :<br>
+          Classic Load Balancing<br>
+          Application Load balancing<br>
+        </li>
+      </ul>
+    </li>
+</ul>
+CloudFront (30): content delivery.<br>
+<b>Lambda</b>: optimized compute functions: pay only for the milliseconds of computing time the code requires.<br>
+<ul>
+  <li>AWS Configure: infrastructure management</li>
+  <li>CloudTrail</li>
+  <li>EFS</li>
+</ul>
+(39)
+
+<!-- ******************************************************************************************* --><hr>    
+  
+<h1>. Intro</h1>  
+From <a href="https://aws.amazon.com/getting-started/?ref=docs_gateway/index.html" target="_blank">Getting started</a><br>
+<a href="https://aws.amazon.com/getting-started/cloud-essentials/?pg=gs" target="_blank">Cloud essentials</a> <br>
+Cloud computing is the on-demand delivery of computing resources through a platform through the internet with pay-as-you-go pricing.
+Service models:
+<ul>
+  <li>IaaS: access to networking, computers (virtual or dedicated HW), data storage</li>
+  <li>PaaS: you do no manage the infrastructure, you focus on development and management of the applications</li>
+  <li>Saas: provides a complete product managed by the service provider, for example web-based email</li>
+</ul>
+The application can be deployed in multiple locations. Region is a physical location in the world where AWS has multiple Availability Zones. 
+Availability Zones are one or more discrete data centers, each housed in a separate facility.
+<p/>
+Developer tools: 
+<ul>
+  <li>AWS Management Console</li>
+  <li>AWS CLI.  There is also AWS CloudShell: browser based shell with command line access to resources.</li>
+  <li>SDK(s) allows you to interact with the AWS API programmatically</li>
+</ul>
+  
+<b>IaaC Infrastructure as a Code</b> AWS provides services that enable the creation, deployment, and maintenance of infrastructure in a programmatic way.<br>
+AWS Cloud Development Kit (CDK)
+
+<ul>  
+  <li><a href="https://docs.aws.amazon.com/" target="_blank">AWS documentation home page</a></li>
+  <li><a href="http://checkip.amazonaws.com/" target="_blank">Check IP: displays your IP address</a></li>
+  <li><a href="" target="_blank">Home page</a></li>
+  <li><a href="" target="_blank">Home page</a></li>
+  <li><a href="" target="_blank">Home page</a></li>
+  <li><a href="" target="_blank">Home page</a></li>
+  <li><a href="" target="_blank">Home page</a></li>
+  <li><a href="" target="_blank">Home page</a></li>
+</ul>  
+
+
+
+<!-- ******************************************************************************************* --><hr>  
+<h1>. Elastic Load Balancing</h1>  
+
+<h2>Tutorial: Get started with EC2 Linux Instances</h2>
+The instance is EBS-backed: the root volume is on EBS (9).
+To connect to the instance, for example:
+<pre>
+  ssh -i ec2_pair.pem ec2-user@15.237.160.82
+  ssh -i ec2_pair.pem ec2-user@13.38.95.133
+</pre>
+
+<b>NOTE</b>: the user name depends on the OS. AMI : ec2-user, Ubuntu: ubuntu.
+
+https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/TroubleshootingInstancesConnecting.html#TroubleshootingInstancesConnectingPuTTY
+
+<!-- ******************************************************************************************* --><hr>  
+<pre>
+eu-west-3 region is used.
+77.108.39.98 BBBell IP address
+
+Public IP address 
+35.180.119.220
+
+
+Home directory path: /home/ec2-user
+
+ssh -i ec2_pair.pem ubuntu@35.180.119.220
+root password: maiden23
+
+Public IP address 
+13.38.137.216 
+ssh -i ec2_pair.pem ubuntu@13.38.137.216
+
+</pre>
+(22)
+
+</body>
+</html>

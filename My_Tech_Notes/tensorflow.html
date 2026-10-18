@@ -1,0 +1,57 @@
+<html>
+<body>
+<h1>Installation on Anaconda 3</h1>
+<pre>
+(D:\Anaconda3) D:\tensorflow_wrkdir>conda create -n tensorflow python=3.5
+Fetching package metadata .........
+Solving package specifications: ..........
+
+Package plan for installation in environment D:\Anaconda3\envs\tensorflow:
+
+The following NEW packages will be INSTALLED:
+
+    pip:            8.1.2-py35_0
+    python:         3.5.2-0
+    setuptools:     27.2.0-py35_1
+    vs2015_runtime: 14.0.25123-0
+    wheel:          0.29.0-py35_0
+
+Proceed ([y]/n)? y
+
+Extracting packages ...
+[      COMPLETE      ]|##################################################| 100%
+Linking packages ...
+[      COMPLETE      ]|##################################################| 100%
+#
+# To activate this environment, use:
+# > activate tensorflow
+#
+# To deactivate this environment, use:
+# > deactivate tensorflow
+#
+# * for power-users using bash, you must source
+#
+
+
+(D:\Anaconda3) D:\tensorflow_wrkdir>
+</pre>
+Then, install using
+<pre>
+conda install -c conda-forge tensorflow
+</pre>
+
+In order to use TF:
+<pre>
+activate tensorflow
+</pre>
+Later:
+<pre>
+deactivate
+</pre> 
+
+There are specialized input nodes.
+
+<p>
+<b>Reinstalled on 20190112, followed instructions from </b> <a target="_blank" href="https://medium.com/@margaretmz/anaconda-jupyter-notebook-tensorflow-and-keras-b91f381405f8">here</a>
+</body>
+</html>

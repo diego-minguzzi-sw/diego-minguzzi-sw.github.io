@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+  .source_code {
+    background-color: lightgray;
+    font-family: Courier New;
+    border-style: solid;
+    border-width: thin;
+    font-size: normal;
+  }
+  </style>
+
+  <title>MongoDB, My Notes</title>
+  <link rel="icon"
+        type="image/x-icon"
+        href="https://pic.vsixhub.com/ae/db/570e6089-b871-41df-9cf4-a723cb34ef01-icon.png">
+</head>
+
+<body>
+
+<h1>. MongoDB Essential Training - LinkedIn Learning Course </h1>
+Author: Naomi Pentrel.<br>
+<li><a target="_blank" href="https://cheats.rs/"></a></li>
+<li><a target="_blank" href="https://cheats.rs/"></a></li>
+<li><a target="_blank" href="https://cheats.rs/"></a></li>
+<li><a target="_blank" href="https://cheats.rs/"></a></li>
+
+There is MongoDB Community and MongoDB Enterprise.<br>
+
+<h2>.. Installation on Linux</h2>
+<ul>
+  <li>Install <code>npm</code>.  Verify with npm --version</li>
+  <li>Install the tool called <code>m</code>:<br>
+    <code>sudo npm install -g m</code></li>
+  <li>Install MongoDB using the command:
+    <code>m latest</code></li>
+  <li>Installed MongoDB Shell and MongoDB tools from the mongodb.com site.</li>
+</ul>
+To check the installation:
+
+<div class="source_code">
+<pre>
+sudo dpkg -i mongodb-mongosh_2.3.4_amd64.deb
+
+sudo dpkg -i mongodb-database-tools-ubuntu2004-x86_64-100.10.0.deb
+
+(venv) minguzzi@mingux:~/repo/video_processing$ mongod --version
+db version v8.0.4
+Build Info: {
+    "version": "8.0.4",
+    "gitVersion": "bc35ab4305d9920d9d0491c1c9ef9b72383d31f9",
+    "openSSLVersion": "OpenSSL 3.0.2 15 Mar 2022",
+    "modules": [],
+    "allocator": "tcmalloc-google",
+    "environment": {
+        "distmod": "ubuntu2204",
+        "distarch": "x86_64",
+        "target_arch": "x86_64"
+    }
+}
+</pre>
+</div>
+
+<h2>.. Setup the database</h2>
+
+<div class="source_code">
+To run using local storage:
+<pre>
+cd /home/minguzzi/repo/video_processing
+mongod --dbpath mongod_only
+
+The syntax to run the daemon is:
+mongod --dbpath [directory where data will be stored]
+</pre>
+</div>
+
+<b>The default IP port where MongoDB listens for connections is:</b> 27017.<p/><br>
+
+<b>mongosh</b> is the MongoDB shell.<br>
+
+<div class="source_code">
+<pre>
+(venv) minguzzi@mingux:~/repo/video_processing$ mongosh
+Current Mongosh Log ID: 674c7bdb7d789b37b0e94969
+Connecting to:          mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.3.4
+Using MongoDB:          8.0.4
+Using Mongosh:          2.3.4
+
+[...]
+</pre>
+</div>
+
+Commands:
+<div class="source_code">
+<pre>
+  show databases
+</pre>
+</div>
+
+<h2>.. Replica set</h2>
+Replica set: multiple MongoDB instances providing access to the same dataset.<br>
+Instances have different roles.<br>
+There must be at least three instances in a replica set.<br>
+<ul>
+  <li>One instance is elected to be the Primary: it receives all write operations </li>
+  <li>Secondaries replicate the write operations asynchronously, one of the remaining will be elected as Primary.
+     It can do if it gets more than half of the DB nodes votes. So, at the beginning, there must be no at least three nodes.</li>
+  <li>Choose an uneven number of voting replica set members.</li>
+</ul>
+
+<h3>... Create the Replica Set from the command line</h3>
+Here we are using the CLI.
+<div class="source_code">
+<pre>
+  mkdir replica_set
+  cd replica_set_cmdline/
+  openssl rand -base64 755 > keyfile  # Create a keyfile. For production, use X.509 certificates instead.
+  chmod 400 keyfile # The keyfile can only be read by the owner user.
+
+  mkdir -pv  m{1,2,3}/db
+  mkdir: created directory 'm1'
+  mkdir: created directory 'm1/db'
+  mkdir: created directory 'm2'
+  mkdir: created directory 'm2/db'
+  mkdir: created directory 'm3'
+  mkdir: created directory 'm3/db'
+
+  # Starts, one by one the replicas.
+  mongod --replSet myReplSet --dbpath ./m1/db --logpath ./m1/mongod.log --port 27017 --keyFile ./keyfile --fork
+  mongod --replSet myReplSet --dbpath ./m2/db --logpath ./m2/mongod.log --port 27018 --keyFile ./keyfile --fork
+  mongod --replSet myReplSet --dbpath ./m3/db --logpath ./m3/mongod.log --port 27019 --keyFile ./keyfile --fork
+</pre>
+</div>
+
+Open a MongoDB shell:
+<div class="source_code">
+<pre>
+rs.initiate()
+use admin
+
+# Creates the user, must be root.
+db.createUser({user:"diego", pwd:passwordPrompt(), roles:["root"]})
+Enter password
+
+# Accesses the DB with the created user.
+db.getSiblingDB("admin").auth("diego",passwordPrompt())
+
+# Adds further replicas to the replicaset.
+rs.add("localhost:27018")
+rs.add("localhost:27019")
+
+# Gets information about the cluster.
+rs.status()
+
+# Everything
+db.serverStatus()
+
+# Only information about the replica set.
+db.serverStatus()["repl"]
+
+# To close, execute:
+killall mongod
+</pre>
+</div>
+
+<h3>... Create the Replica Set using a configuration file.</h3>
+Example, the file is called m1.conf; m2.conf and m3.conf are also created:
+<div class="source_code">
+<pre>
+storage:
+  dbPath: m1/db
+net:
+  bindIp: localhost
+  port: 27017
+security:
+  authorization: enabled
+  keyFile: keyfile
+systemLog:
+  destination: file
+  path: m1/mongod.log
+processManagement:
+  fork: true
+replication:
+  replSetName: mongod-essentials-rs
+</pre>
+</div>
+
+To start it:
+<div class="source_code">
+<pre>
+  mongod -f m1.conf
+  mongod -f m2.conf
+  mongod -f m3.conf
+</pre>
+</div>
+
+If there is no user, it is possible to create a user with no authentication, otherwise there must be an authentication.<br>
+So, the first user must be a root user, otherwise he cannot create other users.
+<p/>
+Open a MongoDB shell mongosh, and execute the commands to add the instances to the replica set:
+
+<div class="source_code">
+<pre>
+  use admin
+  config={ _id:"mongod-essentials-rs", members:[{_id:0, host:"localhost:27017"}, {_id:1, host:"localhost:27018"}, {_id:2, host:"localhost:27019"}]}
+  rs.initiate( config)
+
+  db.createUser({user:"diego", pwd:passwordPrompt(), roles:["root"]})
+  db.getSiblingDB("admin").auth("diego",passwordPrompt())
+
+  rs.status()               # Status of the replica set.
+  db.serverStatus()["repl"] # More succint way.
+
+  # To close, execute:
+  killall mongod
+</pre>
+</div>
+
+<h3>... Import sample data.</h3>
+Tools
+<ul>
+  <li>mongostat</li>
+  <li>mongodump (dumps to BSON) / mongorestore (import from BSON)</li>
+  <li>mongoexport (export to Json) / mongoimport (import from Json or CSV)</li>
+</ul>
+
+<div class="source_code">
+<pre>
+$ mongoimport -u=diego --authenticationDatabase=admin -d sample_data inventory.json
+Enter password for mongo user:
+
+2024-12-07T12:46:07.949+0100    no collection specified
+2024-12-07T12:46:07.949+0100    using filename 'inventory' as collection
+2024-12-07T12:46:07.970+0100    connected to: mongodb://localhost/
+2024-12-07T12:46:07.999+0100    1000 document(s) imported successfully. 0 document(s) failed to import.
+</pre>
+</div>
+
+<h3>... To Debug.</h3>
+<ul>
+  <li>Check the log files</li>
+  <li>Disable the fork option in the configuration file</li>
+  <li>Examine the Oplog. In the shell:<br>
+    use local
+    db.oplog.rs.find({ "o.msg":{ $ne: "periodic noop"  }  }).sort( { $natural: -1 }   ).limit(1).pretty()
+    </li>
+  <li>Increase the log level:</li>
+</ul>
+
+<h2>.. Working with MongoDB</h2>
+<h3>... The Document Model</h3>
+MongoDB natively works with Json documents.<br>
+Key-Value pairs. Keys must be strings. Values can be string, numbers, booleans, arrays, other Json objects.<br>
+MongoDB uses a binary encoded serialization of Json called BSON.<br>
+BSON is designed to be lightweight, traversable and efficient.<br>
+BSON can store binary data as images, timestamps and longs, etc.
+<p/>
+
+<h3>Namespaces, collections, documents</h3>
+So far, the MongoDB deployment is composed of e.g. three replicas.<br>
+Inside MongoDB, data is organized into databases. There is a database deployment, inside it there can be multiple databases.<br>
+Most of the time, all data related to an application is in a database.<br>
+In a database there are collections.<br>
+<ul>
+  <li>A database deployment contains one or more databases</li>
+  <li>A database contains one or more collections</li>
+  <li>A collection is a grouping of MongoDB documents</li>
+  <li>documents form the basic unit of data in MongoDB, each document contain one individual record</li>
+</ul>
+Example: the Authors collection; each document contains information about one author.<br>
+
+<div class="source_code">
+<pre>
+use blog # Creates/switches to a new database called blog.
+
+show collections
+# Inserted a document in the current DB.
+db.authors.insertOne({"name":"Mario","surname":"Rossi"})
+db.authors.insertOne({"name":"Claudio","surname":"Baricco"})
+db.authors.insertOne({"name":"Luisa","surname":"Verdi","age":37})
+db.authors.insertMany([ {"name":"Alberto","surname":"Poncarelli","age":37}])
+db.authors.insertMany([ {"name":"Alberto","surname":"Bianchi","age":37},
+                        {"name":"Rodney","surname":"Brooks","age":65}])
+db.authors.findOne()  # Collects the first document in the collection.
+db.authors.find()     # Reads all the documents in the collection.
+db.authors.find({"name":"Alberto"}) # All documents that match a given condition, there can be many.
+
+db.authors.find()     # Reads all the documents in the collection.
+
+db.authors.updateOne({name:"Mario"},{ $set:{ surname:"Verdi", age:42}})
+
+db.authors.updateMany({name:"Alberto"},{ $set:{ numLikes:0}})
+
+db.authors.updateMany({},{ $set:{ books:[]}})  # Adds a new field to all the Authors, which is an empty array.
+
+# Deleting is like finding documents, that match a condition.
+db.authors.deleteOne({name:"Alberto",surname:"Poncarelli"})
+db.authors.deleteMany({name:"Alberto",surname:"Poncarelli"})
+</pre>
+</div>
+
+<h3>... Indexes</h3>
+If you have no index associated with the document, the query have to search every document in the collection.<br>
+This is called collecton scan. Not efficient.<br>
+An index provides an organized way to look up data by storing a subset of the data with pointers to the location of the full records.
+<p/>
+Queries that can be answered only by looking at the index are called covered queries.
+Performance in access and update.<br>
+<p/>
+Indexes have a cost: 10% write overhead.<br>
+Different kind of indexes in MongoDB:
+<ul>
+  <li>Single field indexes</li>
+  <li>Partial indexes</li>
+  <li>Compound: combination of fields</li>
+  <li>Multi key indexes</li>
+  <li>Text indexes</li>
+  <li>Wildcard indexes</li>
+  <li>Geospatial indexes: geometric indexes, 2D, geostack indexes</li>
+  <li>Hashed indexes</li>
+</ul>
+
+Creates an index on the authors collections
+<div class="source_code">
+<pre>
+# Creates the index on the name field.
+db.authors.createIndex({ name: 1})
+name_1
+</pre>
+</div>
+
+Challenge.
+
+The database is called lookup. Collection name: records. Insert a few records. Create indexes as needed.
+<div class="source_code">
+<pre>
+use loopup
+db.records.insertOne({phoneNumber:"+390131237395",name:"Mario"})
+db.records.insertOne({phoneNumber:"+393473841781",name:"Diego"})
+db.records.createIndex({phoneNumber:1})
+</pre>
+</div>
+
+
+
+
+<p/>
+
+
+<h2>CRUD operations</h2>
+<ul>
+  <li><b>Durability</b>: acknowledged writes are permanently stored in the DB, even if part of it becomes temporarly unavailable. <br>
+      In MongoDB, this is specified by the <b>writeConcern</b> property:
+      <ul>
+      <li>High durabilty: slower writes</li>
+      <li>Low durability: faster writes</li>
+      </ul>
+<div class="source_code">
+<pre>
+      # wtimeout: the write operation will block for at most 100ms.
+      # j: true: it must write to disk, not just in memory, to acknowledge the write.
+      # w: majority:  the majority of the instances must acknowledge the write before saying that the write is completed.
+      db.records.insertOne( {name:"Alessandro",surname:"Manzoni"},
+                            { w:"majority", j:"true", wtimeout:100 } )
+</pre>
+</div>
+    w: majority is the default.<br>
+    Which write concern? If you do not want to lose data, w: majority, data survives failovers.<br>
+
+    </li>
+  <li>Consistency and  Availability: in some cases find() and findOne() must retrieve data that is majority committed.<br>
+    Otherwise, it is enough to read from the primary. This is specified by the <b>readConcern</b> property.<br>
+    Reading from the secondary is fine for analytics data.<br>
+    </li>
+</ul>
+
+<h3>findOne</h3>
+<div class="source_code">
+<pre>
+  db.movies.find({ "ratings.mndb":10})
+
+  db.movies.find({ "genres.0":"Adventure"}) # The condition in on the first item of the genres array.
+  db.movies.find({"ratings.mndb":10}).readConcern("majority")
+    .readPreference():
+      primary (default)
+      primaryPreferred
+      secondary
+      secondaryPreferred
+      nearest (reads from the lowest latency node)
+</pre>
+</div>
+
+<h3>Comparison operators</h3>
+<div class="source_code">
+<pre>
+  $eq equal to
+  $ne not equal to
+  $gt greater than
+  $gte greater or equal
+  $lt
+  $lte
+
+  $in   (whether a field is in a set of values)
+  $nin  (whether a field is not in a set of values)
+
+Examples:
+  db.inventory.find({ "variations.quantity": { $gte:8}})
+  db.inventory.find({ "variations.quantity": {    $gte:25, $lte:30 }    } )
+  db.inventory.find({ "price": {    $gte:5000}})
+  db.inventory.find({ "price": {    $gte:19000}})
+
+  # We are searching for a car where the variation is either Blue or Red:
+  db.inventory.findOne({ "variations.variation": { $in: ["Blue", "Red"] } })
+</pre>
+</div>
+
+<h3>Logical Operators</h3>
+<div class="source_code">
+<pre>
+  $and
+  $or
+  $nor Not OR operator
+  $not
+
+  They accept an array of conditions, each condition is a document.
+  db.inventory.find({ $and: [ { "year": 2006 }, { "sale_frequency":"Monthly"}]})
+  db.inventory.findOne( { $and:[ { "variations.quantity": { $ne: 0} },
+                                 { "variations.quantity": { $exists: true} }
+                               ]
+                        }
+                      )
+
+  db.movies.find().sort( {"gross":1})
+  db.movies.find().skip(100)
+  db.movies.find().limit(100)
+</pre>
+</div>
+
+<h3>Sort, skip, limit</h3>
+
+<div class="source_code">
+<pre>
+  db.movies.find().sort( {"gross":1})
+</pre>
+</div>
+
+When sort is common, use an index.  If you have no index, sort and limit is faster.<br>
+You can specify sort, skip and limit in any order, but MongoDB will perform the operations in the order: sort, skip, limit.
+<p/>
+
+<h3>Update One and Update Many</h3>
+Examples:
+<div class="source_code">
+<pre>
+  db.authors.updateOne({name:"Luisa"},{ $set:{ name:"Luidi", address:"My place"}})
+  db.authors.updateOne({name:"Luidi"},{ $set:{ name:"Luigi"}})
+  db.authors.updateOne({name:"Luigi"},{ $set:{ message:"Hello World!"}})
+
+  # Adds a field to all documents.
+  db.authors.updateMany({},{ $set:{ message:"Hello"}})
+
+  # unset removes a field from the selected documents. The content of address does not matter.
+  db.authors.updateMany({name:"Alberto"},{ $unset:{ address:""}})
+  db.authors.updateMany({name:"Luigi"},{ $unset:{ address:""}})
+</pre>
+</div>
+
+Common update operators : $set, $unset, $inc increases a field of an amount, $mul.
+
+<h3>Arrays</h3>
+The field genres is an array.  Here it shows how to query an array field.
+<div class="source_code">
+<pre>
+# Finds all movies with the genre Comedy, no matter where the Comedy is in the array (first, last item, etc.).
+db.movies.find({genres:"Comedy"})
+
+# Here, the array must match exactly.
+db.movies.find({genres:["Comedy"]})
+
+# All the specified genres must be present, there can be more.
+db.movies.find({genres:{$all:["Comedy","Drama","Romance"]}})
+db.movies.find({genres:{$all:["Comedy","Crime","Drama", "War"]}})
+
+# In inventory, variations is an array that contains documents
+
+# Select documents where in the variations array there is at least an item that satisfies Crimson and quantity 13.
+db.inventory.find({ variations:{ $elemMatch: { variation:"Crimson", quantity:13 } } })
+
+db.inventory.find({ variations:{ $elemMatch: { variation:"Blue", quantity:{$gt: 27} } } })
+</pre>
+</div>
+
+How to update arrays?
+<div class="source_code">
+<pre>
+  # $push adds the genre Romance to the genres
+  db.movies.updateOne({_id: ObjectId('675dc9d9f00fdf620277d45a')}, { $push: { genres:"Romance"}})
+
+  # $addToSet adds an item to the array, if it does not exists in the array.
+  db.movies.updateOne({_id: ObjectId('675dc9d9f00fdf620277d45a')}, { $addToSet: { genres:"Romance"}})
+  db.movies.updateOne({_id: ObjectId('675dc9d9f00fdf620277d45a')}, { $addToSet: { genres:"Romance"}})
+  db.movies.updateOne({_id: ObjectId('675dc9d9f00fdf620277d45a')}, { $pull: { genres:"Romance"}})
+</pre>
+</div>
+
+<h3>Transactions</h3>
+An operator on a single document is atomic.  <br>
+However, if a client issues an operation on multiple documents, and another client issues a query, this is a race condition.<br>
+<p/>
+Transactions guarantee atomicity or reads an writes to multiple documents.<br>
+<ul>
+  <li>Either all or none write happends.</li>
+  <li>Read returns all documents in the state when the read begins.</li>
+</ul>
+
+<div class="source_code">
+<pre>
+  use blog
+  session= db.getMongo().startSession({ readPreference: { mode: "primary" } })
+  session.startTransaction()
+
+  # Retrieves the database, and performs the operations as above.
+  session.getDatabase("blog").authors.updateMany({},{ $set:{ message: "Transaction occurred."}})
+  session.commitTransaction()
+</pre>
+</div>
+
+<b>Word of Warning</b>:
+<ul>
+  <li>Use transactions when you absolutely need them: otherwise performance degradation</li>
+  <li>If you need transactions more than a few times, check the data model: update operations should update single documents,
+      that way they are atomic.</li>
+</ul>
+
+<h3>The $expr</h3>
+<div class="source_code">
+<pre>
+  use sample_data
+
+  # Shows only the title and the ratings.
+  db.movies.find({},{ title:1, ratings:1})
+
+  # mndb is moltipled by 10 and compared to soft_avocados
+  db.movies.find({ $expr:{  $gt: [ {$multiply:["$ratings.mndb",10]},"$ratings.soft_avocados"]}},{ title:1, ratings:1})
+
+  db.movies.find({ $expr:{  $gt: [ {$multiply:["$ratings.mndb",2]},"$ratings.soft_avocados"] } },{ title:1, ratings:1})
+</pre>
+</div>
+
+An App to order food.
+an orders collection with a few documents, each should have:
+. user: name, address, phone, number, email, account balance
+. restaurant: name, address and phone number
+. order tme, order items, each items has a price
+. think about the indexes that are needed
+
+Write queruies
+What is the most expensive order?
+Sort orders by the name of the restaurant
+Return orders where the order total is bigger than the balance
+Apply a 10% discount to all order totals
+
+<!-- ******************************************************************************************* -->
+<hr>
+
+<h1>Recap of the operations to setup a MongoDB cluster</h1>
+
+
+<div class="source_code">
+<pre>
+  mkdir -pv m{1,2,3}/db
+
+  mongod -f m1.conf
+  mongod -f m2.conf
+  mongod -f m3.conf
+
+  mongosh
+  # Inside the mongosh
+  use admin
+
+  # Only the first time:
+  db.createUser({user:"diego", pwd:passwordPrompt(), roles:["root"]})
+
+  # Wait for a while.
+  config={ _id:"mongod-essentials-rs", members:[{_id:0, host:"localhost:27017"}, {_id:1, host:"localhost:27018"}, {_id:2, host:"localhost:27019"}]}
+
+  rs.initiate( config)
+
+  # Authenticates as admin user.
+  db.getSiblingDB("admin").auth("diego",passwordPrompt())
+
+  # Status of the replica set.
+  rs.status()
+  db.serverStatus()["repl"] # More succint.
+  # Exit from the mongosh
+
+  mongoimport -u=diego --authenticationDatabase=admin -d sample_data inventory.json
+  mongoimport -u=diego --authenticationDatabase=admin -d sample_data movies.json
+  mongoimport -u=diego --authenticationDatabase=admin -d sample_data orders.json
+
+</pre>
+</div>
+
+
+</body>
+</html>

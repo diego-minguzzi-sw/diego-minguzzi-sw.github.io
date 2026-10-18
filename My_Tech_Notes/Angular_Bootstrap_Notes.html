@@ -1,0 +1,610 @@
+<html>
+<body>
+<a href="https://www.interaction-design.org/literature/article/a-simple-introduction-to-lean-ux" target="_blank">A Simple Introduction to Lean UX </a><br>
+
+<h1>Essential Typescript</h1>
+To create a new project into a directory ():
+<pre>npm init --yes</pre>
+The project name becomes the one of the containing directory.
+<p/>
+To install a package that will automatically execute the JavaScript file when its contents change (the package in installed in the current project):
+<pre>npm install nodemon@1.18.10</pre>
+To have the daemon to monitor changes on a given file:
+<pre>npx nodemon index.js</pre>
+
+Javascript built in types (44): number, string, boolean, symbol, null, undefined, object.
+In Javascript values have types, variables have values.<br>
+
+Type coercion, or conversion: (47) when a string is compared to a number, the string is converted into number.<br>
+In JS, cast is done with, example: <code>Number(myVar)</code><br>
+(48) null or unassigned values are coerced into booleans of value false, so it is possible to manage default or fallback values:
+<pre>
+let firstCity;
+let secondCity= firstCity || "London";
+</pre>
+
+(54): example of function value used as lambda function.<br>
+(55): useful array methods.<br>
+(56) Working with objects <br>
+
+There are no private properties in JS, there is the convention of using the underscore to mark private properties.
+<pre>
+let otherHat= {
+    name: "Hat",
+    _price: 100,
+    priceInclTax: 100*1.2,
+
+    set price(newPrice){
+        this._price= newPrice;
+        this.priceInclTax= this._price*1.2;
+    },
+
+    get price(){
+        return this._price
+    },
+
+    writeDetails: function() {
+        console.log(`${this.name} ${this.price}`)
+    },
+
+    increasePrice( incrPrice){
+        this.price= this.price+ incrPrice
+        return this.price
+    }
+};
+</pre>
+<b>NOTE</b> (65) JS defines a global object, called <code>this</code>.<br>
+In case a value is assigned without the <code>let</code>, <code>const</code>, or <code>value</code> keyword, it is assigned to the global object.<br>
+Each function is implicitly passed the global object.<br>
+When a function is invoked as an object method, <code>this</code> is set to the object.<br>
+(68) Arrow functions inhert the closest <code>this</code> that they can find when they are invoked.<br>
+<hr>
+
+<h2>JS Primer, part 2</h2>
+All JS object inherit from a prototype object: the root of the hierarchy is Object.<p/>
+Example of a JS class implementing an iterator.
+<pre>
+class GiftPack {
+    constructor( name, prod, prod2, prod3) {
+        this.name= name;
+        this.prod= prod;
+        this.prod2= prod2;
+        this.prod3= prod3;
+    }
+
+    *[Symbol.iterator](){
+        yield this.prod;
+        yield this.prod2;
+        yield this.prod3;
+    }
+
+    getTotalPrice(){
+        return [...this].reduce( (total,p) => total+ p.price, 0 );
+    }
+}
+</pre>
+<p/>
+
+<H3>Modules</H3>
+` 
+<b>Modules</b>: to install a package to manage modules:
+<pre>npm install esm@3.2.22</pre>
+
+To start the daemon, including the ESM package:
+<pre>npx nodemon --require esm index.js</pre>
+By default, module functions are private, unless <code>export</code> is specified.<br>
+Example of import:
+<pre>import calcTax from "./tax"</pre>
+<code>calcTax</code> is the name of the default function when used in this source file.<br>
+In case no <code>.</code> or <code>..</code> starts the file name, 
+the module is searched in the <code>node_modules</code> directory.<br>
+<pre>import {calculateTax} from "./tax"</pre>
+
+<h2>The Typescript compiler</h2>
+<pre>npm init --yes</pre> creates the package.json file.<br>
+<pre>
+npm install --save-dev typescript@3.5.1
+npm install --save-dev tsc-watch@2.1.2
+</pre>
+
+<code>save-dev</code> means that packages are used for development but not deployed.<br>
+<pre>
+tsc                # Compile
+node dist/index.js # Run
+</pre>
+npm= Node package Manager.<br>
+
+It is possible to execute a local package install and a global package install. Local is related to the current project.<br>
+(107): package version numbering system.<br>
+The project folder containes the package.json file.<p/>
+
+<b>Typescript compiler file.</b> (109) <br>
+<pre>
+{
+  "compilerOptions": {
+    "target": "es2018",
+    "outDir": "./dist",
+    "rootDir":"./src",
+    "noEmitOnError": true,
+    "module": "commonjs"
+  }
+}
+</pre>
+Note that the TSC compiler continues compiling even if it finds an error.
+Compiler in watch mode.
+<pre>tsc --watch</pre>
+To run the TSC in watch mode and execute the result automatically:
+<pre>npx tsc-watch --onsuccess "node dist/index.js"</pre>
+<p/>
+
+ECMAScript version 6 (2015) is the <i><b>modern Javascript</b></i>. From 2015 there are annual updates to the specification
+<p/>
+
+<b>The Typescript linter</b>
+(133) To install:
+<pre>npm install --save-dev tslint@5.16.0</pre>
+TS Lint needs a configuration file written in JSon, called for example <code>tslint.json</code>:
+<pre>
+{
+  "extends": ["tslint:recommended"],
+  "linterOptions": {
+    "format": "verbose"
+  },
+  "rules": {
+    "eofline": false,
+    "no-console": false
+  }
+}
+</pre>
+The <code>rules</code> section disables a set of linting rules.
+
+In order to run on the project, with the configuration file:
+<pre>npx tslint --project tsconfig.json --config tslint.json</pre>
+<p/>
+
+<b>Unit testing in Typescript</b>
+(137) Uses the Jest package. To install:
+<pre>
+npm install --save-dev jest@24.7.1
+npm install --save-dev @types/jest
+npm install --save-dev ts-jest@24.0.2
+</pre>
+
+Jest needs a configuration file, called <code>js.config.js</code>:
+<pre>
+module.exports = {
+    "roots": ["src"],
+    "transform": {"^.+\\.tsx?$": "ts-jest"}
+}
+</pre>
+(139 )If the implementation is called <code>calc.ts</code>, the unit test file must be called <code>calc.test.ts</code>.  Example of a simple unit test:
+<pre>
+import {sum} from "./calc"
+
+test("check sum result", () => {
+    let result = sum( 10, 20, 30);
+    expect(result).toBe(60);
+});
+</pre>
+
+To run Jest in watch mode:
+<pre>npx jest --watchAll</pre>
+<hr>
+
+<h2>Understanding Static Types</h2>
+<pre>
+{
+  "compilerOptions": {
+    "target": "es2018",
+    "outDir": "./dist",
+    "rootDir":"./src",
+    "noEmitOnError": true,
+    "module": "commonjs",
+    "declaration": true,
+    "noImplicitAny": true
+  }
+}
+</pre>
+The line <code>declaration= true</code> enables the production of a file that has extension .d.ts, containing the inferred type for each symbol (153).<br>
+The <b><code>any</code></b> type allows to assign any type or constant to a variable or function parameter. The compiler no longer validates the types.<p/>
+
+<b>noImplicitAny</b> disables the implicit use of any made by the tsc compiler.<br>
+
+<b>Type Unions</B> example: 
+<pre>string | number</pre>
+(158) you can only use the properties and methods defined by all the types of the union. That is, you can use only the properties and methods that exist in all the types of the union.<p/>
+
+<b>Type assertions</b> : <i>they are type casts</i><p/>
+<pre>let myVar = myFunction( aValue ) as number;</pre>
+No type conversion is performed.  The compiler just treats the value with the asserted type. The asserted type must be one of the types of the union.
+<p/>
+
+
+The <b><code>never</code> type</b>: when a variable is assigned the never type, its value can no more be accessed (164). It means that all other conditions are already tested.
+<p/>
+
+the <b><code>unknown</code> type</b>: (164) a variable of unknown type can be assigned to:
+<ul>
+<li>any</li>
+<li>unknown</li>
+<li>another type, using the type assertion (cast)</li>
+</ul>
+
+<b>Nullable types</b> null and undefined are legal for all types (166).
+<code>null</code> and <code>undefined</code> are values of all data types, so they can be assigned to them.<br>
+
+<pre>
+{
+  "compilerOptions": {
+    "target": "es2018",
+    "outDir": "./dist",
+    "rootDir":"./src",
+    "noEmitOnError": true,
+    "module": "commonjs",
+    "declaration": true,
+    "strictNullChecks": true
+  }
+}
+</pre>
+strictNullChecks makes sure that the compiler does not accept assignments to nullable types.
+
+<a href="" target="_blank"></a>
+<a href="" target="_blank"></a>
+<a href="" target="_blank"></a>
+<a href="" target="_blank"></a>
+
+
+(168)
+<hr>
+
+<h2>Defining Functions</h2>
+A function with an <b>optional</b> parameter can be defined as:
+<pre>
+function calculatePrice( amount: number, discount?: number ) :number {
+    [...]
+}
+</pre>
+
+A function parameter can be gived a default value:
+<pre>
+function calculatePrice( amount: number, discount=0 ) :number {
+    [...]
+}
+</pre>
+<b>Note</b>: default parameters and optional parameters must be defined after required parameters.<br>
+Example of <b>rest parameter</b>:
+<pre>
+function functionWithRestParameter( amount, discount=0, ...extraFees) :number {
+  [...]
+}
+</pre>
+(180) The rest parameter is prefixed by the ellipsis.<br>
+It is possible to annotate function arguments with data types, for example:
+<pre>function functionWithRestParameter( amount: number, discount:number=0, ...extraFees: number[]) :number</pre>
+<br>
+(182) null and undefined can be used as values for all types.
+
+(184) Using the <code>noImplicitReturns: true</code> flag in the tsconfig.json file, means that the compiler will check that all exit paths from a function have a return statement.<p/>
+The return type can be annotated, a function can return a void type.<br>
+
+(187) <b>type overload</b>: a function have only one implmentation, but it is possible to express the relationship between argument types and returned type.<br>
+<hr>
+
+<h2>Working with Arrays, Tuples, etc.</h2>
+<h3>Arrays</h3>
+Example of array declaration and initialization:
+<pre>let prices: number[]= [100, 75, 42]</pre>
+
+<h3>Tuples</h3>
+(196) Tuples : a tuple is a fixed length array where each item is given a data type.
+<pre>let hat:[string, number]= ["Hat", 120]</pre>
+
+<h3>Enums</h3>
+(199) Enumerations: example of declaration of an enumeration:
+<pre>enum Product { Hat, Gloves, Umbrella}; </pre>
+They are a Typescript only feature, they are implemented as numbers and can be converted into numbers. It is also possible to force specific values:
+<pre>enum Types { Hat=1, Gloves=2, Umbrella=3};</pre>
+The underlying type can also be a string:
+<pre>enum City { London="London", NewYork="New York"}; </pre>
+<p/>
+(207) <b>Restricted value types</b>: using literal value types. 
+<pre>let retrictedValue: 1 | 2 | 3= 3;</pre>
+
+(211) <b>Type Aliases</b>
+The syntax is <code> type nametype = ...</code><br>
+<hr>
+
+<h2>Objects</h2>
+(218) Optional properties can be used with objects.
+<hr>
+
+<h2>Classes and Interfaces</h2>
+Example of class declaration. Access specifiers are supported: public, protected, private.<br>
+A member can also be declared as <code>readonly</code>.<br>
+<pre>
+class OtherEmployee {
+    private id: number;
+    private name: string;
+    private city: string;
+
+    constructor( id: number, name: string, city: string) {
+        this.id= id;
+        this.name= name;
+        this.city= city;
+    }
+
+    dumpToConsole() {
+        console.log(`${this.id}, ${this.name}, ${this.city}`);
+    }
+}
+</pre>
+It is possible to specify the access control in the constructor, to create properties= fields = data members.<br>
+<h3>Inhreritance</h3>
+Note that to create an array of super-class objects, it is better to specify the data type.<br>
+<pre>
+class User { [...] }
+
+class Customer extends User { [...] }
+
+class Admin extends User { [...] }
+
+let users: User[]= [new Customer( 41, "Mario", "Pisa"),  new Admin( 73, "Luisa", "Bologna") ]
+</pre>
+<p/>
+Abstract class with abstract method:
+<pre>
+abstract class User { 
+    [...]
+    abstract getSpecificDetails() : string;
+}
+</pre>
+<h3>Interfaces</h3>
+Example:
+<pre>
+interface MyAccount {
+  name: string;
+  password: string;
+  asString() :string;
+}
+
+class MyUser implements MyAccount { [...] }
+</pre>
+Shape types and interfaces can often be used interchangeably (263).
+<i>A class can implement multiple interfaces</i>. Example (261):
+<pre>class Customer implements Person, DogOwner { [...] }</pre>
+Interfaces are listed after the <code>implements</code> keyword, separated with commas(262). <p/>
+Interfaces, as classes, can be extended.<br>
+(264) Interfaces can define optional properties and methods, with the ?. Question mark character after the name. (264).<br>
+It is possible to dynamically creating properties (269).
+
+<p/>
+<hr>
+
+<h2>Generic Types</h2>
+The basic syntax is:
+<pre>class DataCollection < T > { [...] }</pre>
+With type narrowing:
+<pre>class DataCollection < T extends (Person | Product )> { [...] } </pre>
+It is better to narrow with a type shape:
+<pre>class DataCollection< T extends { name: string } > { [...] }</pre>
+
+Generic types can also be constrained with type aliases and interfaces (281).<p/>
+
+<b>Generic functions</b> (283): type parameters can be applied to methods. Example:
+<pre>collate< U >(targetData: U) void { [...] }</pre>
+(285): the compiler is able to infer types.<br>
+(294 )Interfaces can have generic types.<br>
+(301)
+<b><cite>Read until page 301.</cite></b>
+<p/>
+<hr>
+
+<h2>Creating Web Applications - Creating a Stand-alone Web App, Part.1</h2>
+Preparation:
+<pre>
+npm init --yes
+npm install --save-dev typescript@3.5.1
+</pre>
+
+<h3>Toolchain</h3>
+A toolchain must be installed.  Such tools aid the delivery and execution.<br>
+<b>The bundler</b>: the javascript runtime resolves all imports, when executed in the development environment.  This does not work well when the webapp is deployed.
+<h4>Bundler</h4>
+The bundler packs all files into a single file. <b>webpack</b> is a popular bundler.
+<br>
+The commands to add the packages related to webpack are:
+<pre>
+npm install --save-dev webpack@4.31.0
+npm install --save-dev webpack-cli@3.3.2
+npm install --save-dev ts-loader@6.0.0
+</pre>
+<cite>A webpack js configuration file is requested</cite> (page 364).
+To run webpack:
+<pre>npx webpack</pre>
+
+<h4>A development web server.</h4>
+WDS: Webpack Dev Server.
+<pre>npm install --save-dev webpack-dev-server@3.3.1</pre>
+To run the WDS:
+<pre>npx webpack-dev-server</pre>
+The WDS as any source file changes, packs the bundle and make it available at:
+<a href="http://localhost:4500/">http://localhost:4500/</a>
+<p/>
+
+
+<h4>The Bootstrap CSS styles</h4>
+In order to add support for Bootstrap:
+<pre>
+npm install bootstrap@4.3.1
+npm install --save-dev css-loader@2.1.1
+npm install --save-dev style-loader@0.23.1
+</pre>
+
+Note: the following configurations were removed from tsconfig.json <br>
+<pre>
+"strictNullChecks": false,
+"strictPropertyInitialization":false
+"noImplicitReturns": true,
+</pre>
+(377)
+
+<h4>JSX files</h4>
+JSX files have tsx extension.<br>
+(377) there is a <code>props</code> section,a <code>getContent()</code> function.<br>
+The compiler replaces each HTML element into a call to a <i>factory function</i>
+The factory function will create the element at runtime.<br>
+The factory function is conventionally called <code>createElement()</code><br>
+The elements in the JSX are not standard HTML, in particular they use the attributes defined by the DOM API. The DOM API uses <code>className</code> instead of <code>class</code>. <p/>
+In order to use the JSX, configure the compiler as (380):
+<pre>
+{
+  "compilerOptions": {
+    "target": "es2018",
+    "outDir": "./dist",
+    "rootDir":"./src",
+    "noEmitOnError": true,
+    "module": "commonjs",
+    "declaration": false,
+    "noUnusedParameters": true,
+    "jsx": "react",
+    "jsxFactory": "createElement"
+  }
+}
+</pre>
+<h3>Summary of the application structure</h3>
+<ul>
+<li>The index.ts is the entry point, at some point it creates the 
+HtmlDisplay() instance</li>
+<li>HtmlDisplay has getContent and updateContent(): updateContent() can change the inner html of the page, changing specific parts without reloading the page.</li>
+</ul>
+
+<h2>Creating Web Applications - Creating a Stand-alone Web App, Part.2</h2>
+Other packages to be installed:
+<pre>
+npm install --save-dev json-server@0.14.2
+npm install --save-dev npm-run-all@4.1.5
+</pre>
+
+The JSON server (json-server) package allows you to publish JSON data on URL(s) like:
+<pre>
+http://localhost:4600/products
+http://localhost:4600/orders
+</pre>
+
+A package was installed to make HTTP requests to the remote service:
+<pre>npm install axios@0.19.0</pre>
+
+<h3>Adding the production HTTP server package  </h3>
+(409)
+<pre>
+npm install --save-dev express@4.16.4
+</pre>
+It is a server that stores data into JSon format.
+<br>
+Both requests, for the Web App and for the server are server from the same URL.
+<p/>
+In order to deploy the application:
+<pre>npx webpack --mode "production"</pre>
+To run the application in deployment mode:
+<pre>
+node server.js
+</pre>
+
+(391)
+
+The chapter also contains instructions to create the container for the application (e.g. <i><b>Docker</b></i>).
+See page 414.<p/>
+
+<hr>
+
+<h2>Creating an Angular App, Part.1</h2>
+Angular projects are created using the angular-cli package:
+<pre> npm install --global @angular/cli@8.0.2 </pre>
+Angular package names are prefixed with a <pre>@</pre>
+To create a new project:
+<pre>ng new angularapp </pre>
+<pre>ng new 09_angular_app </pre>
+Choose Angular routing Yes and CSS.<br>
+After Angular is installed:
+<pre>
+cd angularapp
+npm install --save-dev json-server@0.14.2
+npm install --save-dev npm-run-all@4.1.5
+npm install bootstrap@4.3.1
+</pre>
+Page 422: how to incorporate Bootstrap in the Angular application.<br>
+To start the application execute the command:
+<pre>npm start</pre>
+The application is available at the link <a href="http://localhost:4200/">http://localhost:4200/</a> <p/>
+
+Angular make use of decorators.<br>
+There are two compilation stages in Angular: the first is the tsc.
+It terminates with :
+<pre>
+Date: 2020-10-17T13:42:44.133Z - Hash: 39ea808b9f2703a11a0f - Time: 196ms
+5 unchanged chunks
+i ｢wdm｣: Compiled successfully.
+</pre>
+
+The second compilation stage happens when the bundle is received by the browser:
+<ul>
+<li>HTML files are extracted from the bundle</li>
+<li>HTML files are compiled, the directives are translated into javascript that the browser can execute </li>
+</ul>
+
+This two phase compilation can slow the application the first time it is executed.<br>
+The alternative is <cite>ahead-of-time (AOT)</cite> compilation: 
+all the stuff is compiled in advance and included in the bundle.<br>
+
+Dependency injection: a class depend on an abstract class, that is declared  in the constructor. 
+In the costructor the injected class object is declared as a member, that is then used in the body of the class.<p/>
+
+(431) With web application frameworks, updates are handled automatically.<br>
+Angular uses RxJS to manage updates.<br>
+The <code>Observable</code> class is a replacement of the JS <code>Promise</code>.<p/>
+Angular splits the generation of HTML content into:
+<ul>
+<li>A typescipt class that has the Component decorator:  
+  </li>
+<li>An HTML template that is annotated with directives.
+  </li>
+</ul>
+The role of the class is included in the filename.<br>
+The Component decorator configures the component:
+<pre>
+@Component({
+  selector: "product-item",
+  templateUrl: "./productItem.component.html"
+})
+</pre>
+The <code>selector</code> specifies the selector that Angular will use to apply the component to the application HTML.<br>
+The <code>templateUrl</code> specifies the HTML template.<p/>
+The Input decorator allows a component to receive input as HTML attributes.<br>
+The Output decorator specifies the output as an event.<p/>
+
+Angular templates uses double curly braces to include results of Typescript expressions:
+<pre>{{ product.name }}</pre>
+Events are specified using parenthesis around the event name:
+<pre>< button class="btn btn-success btn-sm float-right" (click)="handleAddToCart()" >Add To Cart < / button > </pre>
+<p/>
+
+The Application module: <code>app.module.ts</code> configures all modules and components.
+<p/>
+<b>Routing</b>: see page 445.<br>
+A button can cause the router to route the application to a given fixed URL path:<br>
+<pre>
+< button class="btn btn-secondary m-1" routerLink="/products" > Back < /button >
+</pre>
+
+  
+
+
+(458)
+<hr>
+
+<h1>Hints</h1>
+<ul>
+<li>Install Node packages outside of the Visual Studio Code terminal prompt.</li>
+</ul>
+</body>
+</html>

@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+  .source_code {
+    background-color: lightgray;
+    font-family: Courier New;
+    border-style: solid;
+    border-width: thin;
+    font-size: larger;    
+  }
+  </style>
+  
+  <title>Deep Reinforcement Learning</title>
+  <link rel="icon" type="image/x-icon" href="https://pic.vsixhub.com/ae/db/570e6089-b871-41df-9cf4-a723cb34ef01-icon.png">
+</head>
+<!-- ******************************************************************************************* -->  
+<body>
+<h1>. DRL-Theory. Deep Reinforcement Learning Hands-On, Maxim Lapan, Packt publishing, 2020</h1>  
+118 of 827 pages.
+<p/>
+
+<h2>.. How to start the development environment</h2>
+<div class="source_code"> 
+<pre>  
+  eval "$(${HOME}/anaconda3/bin/conda shell.bash hook)" 
+  conda activate drl
+  export PYTHONPATH=/home/minguzzi/repo/reinforce_learning/source/module:${PYTHONPATH}
+  export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6
+  nohup spyder > /dev/null & 
+  # To deactivate an active environment, use
+  # $ conda deactivate
+</pre>
+</div>
+
+<h2>.. DRL-Theory. Terms: agent, reward, environment, etc.</h2>
+(4) In RL, observation is the result of actions.  If the agent does nothing, or it always makes the wrong thing, 
+    there is no way of collecting better results.<br>
+(5) There must be a balance between exploration and exploitation.<br>
+Terms:
+<ul>
+  <li><b>Reward</b>: a scalar value obtained periodically from the environment, it can be positive or negative.<br>
+      It is possible that the agent receives zero rewards, except the last one (6).<br>
+      Reward is <b>local</b>, it reflects the recent activity of the agent.<br>
+      Reward can be found in lots of practical problems, or artificially injected.<br>
+      </li>
+  <li><b>Agent</b>. The agent makes actions, observations and receives reward: <br>
+      it tries to accumulate the largest reward over its sequence of actions. <br>
+      </li>
+  <li><b>Environment</b>: the agent makes actions on the environment, the agent also receives reward and observations from the environment.<br>
+      The environment has a state, which can be observable or hidden<br>  
+    </li>
+  <li><b>Actions</b>: they can be discrete or continuous</li>
+  <li><b>Observations</b>: information provided by the environment, describing what is going on around the agent</li>
+  <li><b>Policy</b>: (23) some set of rules that control the agent's behavior</li>
+</ul>
+
+<h2>.. DRL-Theory. the Markov Process (MP)</h2>
+(12) MP is simpler than MDP.<br>
+<ul>
+  <li>States: a set of finite states</li>
+  <li>The system can switch between states with a given law, you cannot influence it</li>
+  <li>Chain: a sequence of states </li>
+  <li>Markov property: the next system state only depends on the current state.<br>
+      Suppose that the system state is sunny/rainy. <br>
+      Given the current state (e.g. summy), we can say: the next state is 60% sunny and 40% rainy, but it only depends on the current state.
+    </li>
+  <li>There is a <b>transition matrix</b>: the matrix item (<b><code>i</code></b>,<b><code>j</code></b>) is the probability of switching from the state <b><code>i</code></b> into the state <b><code>j</code></b>.
+    </li>
+</ul>
+Also, Markov implies stationarity (16). <b>Stationarity</b>: in case of MP, it happens when the transition matrix never changes.<br>
+(16) In some cases, we have observations instead of probabilities: they are called <b>episodes</b>. <br>
+We can estimate the matrix from the observations: we count all the transitions and then we normalize to 1 (one).<br>
+The more data we have, the more the resulting table is close to the underlying model.<p/>
+The concrete observed episodes are sampled from the distribution of the model (16).
+<p/>
+(17) The MP model can be extended to include reward. <br>
+We can add another matrix, with a reward for every transition from state i to state j.  The reward can be also simply a function of the target state.<br>
+In that case the function is <code>r=reward(state)</code>, otherwise <code>r=reward( src-state, target-state)</code>.<br>
+We also add a discount factor, called <b>gamma</b> (17)
+The return at time <code><b>t</b></code>:<p/> 
+Gt= sum k=0 ( gamma^k * R[t+k+1] )
+<p/> 
+Gamma is usually 0.9 or 0.99.<br>
+
+<b>Expected value of a state</b>.  We can calculate the mathematical expectation of return from every state:
+<p/>
+v(s)= E[G | St = s]
+<p/>
+V(s) is the expected value of a given state.<br>
+
+<h3>... Adding Actions to the MP</h3>
+(20) In the simple case, the matrix has N rows and N columns.  The i,j item contains the probability of switching from i to j.<br>
+Now the matrix has a depth corresponding to the number of possible actions (21).<br>
+<ul>
+  <li>the source state is the height i</li>
+  <li>the target state is the width j</li>
+  <li>the action is the depth k</li>
+</ul>
+
+<h3>... Policy</h3>
+The rules that control the agent behavior.<br>
+The probability of executing an action when in a given state (23).<br>
+<p/>
+pi(a|s) = P[ At = a | St = s] (23)
+<p/>
+If the policy is fixed, then the MDP becomes a Markov reward process.<br>
+
+
+<h2>.. DRL-Theory. RL methods</h2>
+
+<h3>... DRL-Theory. RL methods: classification </h3>
+<ul>
+  <li>Model-free or model based: model-free: the agent does not build a model of the environment.  <br>
+    Model-based agents are mostly for deterministic environments, like boards games.</li>
+  <li>Value-based or policy-based: <br>
+      policy-based methods directly approximate the actions that the agent should carry-out, with a probability distribution over the available actions.<br>
+      value-based methods approximate the value of each action and choose that action with the best value
+    </li>
+  <li>On-policy or Off-policy: off-policy is when the agent can learn from historical data
+    </li>
+</ul>
+
+<!-- **************************************************************************************** ***-->
+<h1>. Methods</h1>
+
+<h2>.. Method: The Cross-Entrophy method</h2>
+(83) Part of the category: model-free, policy-based methods.<br>
+Pros: the method is simple, good convergence, for simple environments without complex, multistep policies.<p/>
+We create a non-linear, trainable function, that maps observations to probability over the actions.<p/>
+
+(86) During the agent lifetime, its experience is presented as episodes. <br> 
+Every <b>episode</b> is a sequence of observations, rewards and performed actions.<br>
+<h3>... Method: The Cross-Entrophy method. The Steps </h3>
+Hyper-parameters: the number of episodes N, the reward boundary
+<ul>
+  <li>Play N episodes using the current model and the environment</li>
+  <li>Calculate the total reward on every episode. </li>
+  <li>Throw away the episodes the a reward less than the 50th percentile or 70th percentile</li>
+  <li>Train on the remaining <cite>elite</cite> episodes, above the reward boundary</li>
+  <li>Repeat</li>
+</ul>
+
+
+<h2>.. Method: Tabular Learning and the Bellman Equation (Q-Learning)</h2>
+(107) The Value of a state is the expected total reward (optionally discounted) that is obtainable from that state.<br>
+The value is calculated with respect to a policy that the agent follows.<br>
+Optimal policy: the one that chooses the states with the highest value.<br>
+
+<h3>... Tabular Learning and the Bellman Equation (Q-Learning): the Bellmann equation of optimality</h3>
+<ul>
+  <li>The agent is in state s0, it has N actions: a1, a2, ..., aN.   </li>
+  <li>Each action leads to a state, that has a reward: r1, r2, ..., rN.</li>
+  <li>The value of V0 depends on the next action V0(a=ai)=ri+Vi</li>
+  <li>The best action is ai such that i: max ri+Vi.  In case gamma is used, the optimal action a: <br>
+      V0= max ra+gamma*Va.<br>
+      It must be chosen the action that maximizes: ra + gamma*Va.  This is for the deterministic case, where actions are deterministic.(111)<br>      
+      </li>
+  <li>In the non deterministic case:<br>
+      V0=p1*(r1+gamma*V1)+ p2*(r2+gamma*V2)+ p3*(r3+gamma*V3)<br> 
+      V0= sum(pi*(gamma*Vi)) <cite>This is the value of s0 when there is only one action, but the outcome it a distribution of probabilities.</cite><br>      
+      </li>
+  <li>Using Bellman on the non deterministic case:<br>
+      Choose the action :<br>
+      V0= max a: sum(p(a,0,s)*(ri+ gamma*Vi)) (112)<br>
+      p(a,0,s): the probability is issuing the action a and switching from the state 0 to the state s.<br>
+  </li>
+
+</ul>
+<p/>
+Other quantities:
+<ul>
+  <li>V(s): the value of a state, given a policy</li>
+  <li>Q(s,a): the total reward we get from choosing the action <b>a</b> when in state <b>s</b></li>
+  <li>We try to evaluate Q(s,a) for every state and action. Q(s,a) takes into accout:
+      <ul>
+        <li>Immediate reward</li>
+        <li>Probabilities of the next states, following the action a</li>
+        <li>Discounted value of every next state</li>
+        <li>It is also possible to define V(s)= max(a:Q(s,a)). The value of <b>s</b> is defined as the <b>Q</b> of the best action <b>a</b> in the state <b>s</b>.</li>
+        <li>Q(s,a)= r(s,a)+ gamma*max(a',Q(s',a'))</li>
+      </ul>
+    </li>
+</ul>
+Example: initial state s0, possible next states: s1, s2, s3, s4.<br>
+Every action has a probability and a 
+<ul>
+  <li>Q(s0,up)= 0.33*r1 + 0.33*r2+0.33r4</li>
+  <li>Q(s0,up)= 0.33*r1 + 0.33*r2+0.33r4</li>
+</ul>
+So, Q is used in practice.  On a given state, calculate Q for all possible actions and choose the action with the highest Q (115).<br>
+The agent must also know the probabilities for each action-state pair.<br>
+Given that gamma &lt; 0, we can stop after 50 iterations and still get a precise value.<br>
+We have the history of the interaction of the agent with the environment. The data structures are (117):
+
+<ul>
+  <li>Reward table: a map from : source state, action, target state , to reward.  
+    </li>
+  <li>Transition table: for each (action, state), keeps track of the each actual target state and a counter.<br>
+    For each couple there is a dictionary that maps: state to counter.    
+    </li>    
+  <li>Value table: maps each state to its value</li>
+</ul>
+
+<h2>.. Open AI Gym</h2>
+Open AI Gym was replaced by <a target="_blank" href="https://gymnasium.farama.org/">Gymnasium</a>
+<h3>... Open AI Gym Links</h3>
+<ul>
+  <li> <a target="_blank" href="https://gymnasium.farama.org/">Gymnasium</a> </li>
+</ul>
+
+<p/>
+
+
+<h3>... Open AI Gym: API structure</h3>
+Actions: contiguous or discrete actions, Observations.<br>
+Classes:
+<ul>
+  <li>Space (32):
+    <ul>
+      <li>Discrete: a discrete set of items</li>
+      <li>Box: an n-dimensional tensor of rational numbers, with interval [low,high]</li>
+      <li>Tuple: it allows us to combine Space objecs</li>
+    </ul>    
+  </li>  
+  <li>Wrappers (41) </li>
+</ul>
+Box, Discrete and Space are used to implement actions and observations (33).<br>
+Every environment (<code>Env</code> class) has an <code>action_space</code> and <code>observation_space</code> <br>
+<p/>
+In Gym, sessions are called <b>episodes</b> (34)
+
+<h3>... Open AI Gym Record a session on video</h3>
+<div class="source_code"> 
+<pre>
+  conda install ffmpeg          # Packages needed to be able to record sessions.
+  conda install imageio-ffmpeg  # Packages needed to be able to record sessions.
+  rm -rfv recording/ # Removes the previous
+  xvfb-run -s "-screen 0 640x480x24" python3 main.py # Runs the command and record the screen.
+</pre>
+</div>  
+
+<p/>
+
+<h2>.. Installation of all SW</h2>
+<h3>... Installation: CUDA</h3>
+The properietary NVIDIA drivers must be deinstalled first, before installing anything.<br>
+<div class="source_code"> 
+<pre>
+  https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html
+  /home/minguzzi/tmp/repo
+
+  https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html
+  Installed CUDA 11.7.0
+
+  wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-ubuntu2204.pin
+  sudo mv cuda-ubuntu2204.pin /etc/apt/preferences.d/cuda-repository-pin-600
+  wget https://developer.download.nvidia.com/compute/cuda/11.7.0/local_installers/cuda-repo-ubuntu2204-11-7-local_11.7.0-515.43.04-1_amd64.deb
+  sudo dpkg -i cuda-repo-ubuntu2204-11-7-local_11.7.0-515.43.04-1_amd64.deb
+  sudo cp /var/cuda-repo-ubuntu2204-11-7-local/cuda-*-keyring.gpg /usr/share/keyrings/
+  sudo apt-get update
+  sudo apt-get -y install cuda
+</pre>
+</div>
+<p/>
+
+<h2>.. Pytorch</h2>
+
+<h3>... PyTorch Installation: Anaconda</h3>
+<div class="source_code"> 
+<pre>
+  You have chosen to not have conda modify your shell scripts at all.
+  To activate conda's base environment in your current shell session:
+
+  eval "$(/home/minguzzi/anaconda3/bin/conda shell.YOUR_SHELL_NAME hook)" 
+  eval "$(/home/minguzzi/anaconda3/bin/conda shell.bash hook)" 
+
+  To install conda's shell functions for easier access, first activate, then:
+
+  conda init # DONT DO THAT.
+
+  # To activate this environment, use
+  #
+  #     $ conda activate drl
+  #
+  # To deactivate an active environment, use
+  #
+  #     $ conda deactivate
+</pre>
+</div>
+<p/>
+
+<h3>... PyTorch Install: Final assault on Pytorch with CUDA on Anaconda</h3>
+<a target="_blank" href="https://pytorch.org/get-started/locally/">PyTorch site: start locally</a>. <br>
+
+<div class="source_code"> 
+<pre>
+  conda install pytorch torchvision torchaudio pytorch-cuda=11.7 -c pytorch -c nvidia
+  
+  # ################################################################################################
+  # NOTE: it is better to not install pytorch, as it installs the CPU version. 
+  # Check:
+  conda list | grep pytorch
+  pytorch                   1.13.1          py3.10_cuda11.7_cudnn8.5.0_0    pytorch
+  pytorch-cuda              11.7                 h67b0de4_1    pytorch
+  pytorch-mutex             1.0                        cuda    pytorch
+  torchaudio                0.13.1              py310_cu117    pytorch
+  torchvision               0.14.1              py310_cu117    pytorch
+  
+  # If the pytorch-cpu is listed, then uninstall pytorch:
+  conda uninstall pytorch
+  # and then:
+  conda install  torchvision torchaudio pytorch-cuda=11.7 -c pytorch -c nvidia
+  # ################################################################################################
+</pre>
+</div>
+
+
+<h3>... PyTorch Installation: Pytorch with GPU</h3>
+<div class="source_code"> 
+<pre>
+  conda install pytorch torchvision -c pytorch
+  conda install -c conda-forge gym
+</pre>
+</div>
+
+<h3>... PyTorch Introduction</h3>
+(49) Tensor: multidimensional array.
+<div class="source_code"> 
+<pre>
+  a= torch.FloatTensor(3,2) # 3 rows, 2 columns.
+  a.zero_() # In place operation.
+</pre>
+</div>
+
+(53) Most operations are contained in the <code>torch</code> package and the tensor class.<br>
+(55) All gradients are calculated, backpropagated and applied to the network.  To do that, the NN architecture must be defined in terms of the DL library.<br>
+Different approaches in calculating the gradients: (55)
+<ul>
+  <li><b>Static graph</b>: all calculations are defined and optimized in advance, it is no more possible to change them  </li>
+  <li><b>Dynamic graph</b>: execute the operations, the library records the operations.  Then it unrolls the operations and accumulate the gradients of the network parameters.<br>
+      This method is used by PyTorch.</li>
+</ul>
+PyTorch tensors have built-in gradient calculation (56).<br>
+Every tensor has some characteristic:
+<ul>
+  <li><code>grad</code>: every tensor has a tensor of same shape with its gradient </li>
+  <li><code>is_leaf</code>: <code>true</code> if the tensor was constructed by the user, 
+      <code>false</code> if it is the result of a transformation</li>
+  <li><code>required_grad</code>: if this tensor require the gradient to be calculated. By default <code>false</code>. </li>
+</ul>
+
+Example of layer construction: <code>nn.Linear(2,5)</code> it means 2 inputs, 5 outputs (60).<br>
+The <code>nn.Module</code> is the superclass of all NN building blocks.<br>
+
+<h3>... PyTorch: Example of Custom Module</h3>
+<div class="source_code"> 
+<pre>
+import torch.nn as nn
+
+class MyModule(nn.Module):
+    def __init__(self, numInputs: int, numClasses: int, dropoutProb=0.3):
+        super(MyModule, self).__init__()
+        self._pipe= nn.Sequential( 
+                        nn.Linear(numInputs,5),
+                        # [...]
+                        nn.Linear(20,numClasses),
+                        nn.Dropout(p=dropoutProb),
+                        nn.Softmax(dim=1))
+    # This method must exist.    
+    def forward(self, x):
+        return self._pipe(x)
+</pre>
+</div>      
+
+<h3>... PyTorch: Loss functions and optimizers</h3>  
+<h4>... PyTorch: Loss functions</h4>  
+(64) Besides the neural network, we need a <b>loss function</b>.<br>
+The loss function produces the loss value: how close is the prediction to the desired result (64).<br>
+Starting from the loss value, we calculate the gradients and adjust parameters.<br>
+<ul>
+  <li><code>nn.MSELoss</code> Mean square error</li>
+  <li><code>nn.BCEWithLogits</code> Binary cross-entropy loss</li>
+</ul>
+
+<h4>... PyTorch: Optimizers</h4>  
+(65) The package is <code>torch.optim</code>: SGD, RMSprop, Adagrad (adaptive gradients optimizer), Adam (popular combination of RMSprop and Adagrad.
+
+<h4>... PyTorch: pseudocode of training loop</h4>  
+(65)
+
+<h4>... PyTorch: TensorBoard 101</h4>  
+(68) TensorBoard is a Python web service.  The port is usually <code>6006</code>
+In order to run tensorboard:
+<div class="source_code"> 
+<pre>
+  tensorboard --logdir runs
+</pre>
+</div>
+<hr>
+
+<h2>.. Ignite</h2>
+<a target="_blank" href="https://pytorch.org/ignite">PyTorch Ignite</a>.<p/>
+Installation from conda:
+<div class="source_code"> 
+<pre>
+conda install ignite -c pytorch
+</pre>
+</div>
+
+<h1>. Links</h1>
+<ul>
+  <li>Reference
+    <ul>
+      <li>   </li>
+      <li> <a target="_blank" href="https://www.gymlibrary.dev/">Gym Library Dev documentation</a> </li>
+      <li> <a target="_blank" href="http://pytorch.org/docs/">Pytorch documentation </a> </li>      
+    </ul>
+  </li>
+</ul>
+
+</body>
+</html>

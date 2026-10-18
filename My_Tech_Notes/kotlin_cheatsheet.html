@@ -1,0 +1,56 @@
+<html>
+<title>Kotlin Cheatsheet</title>
+<body>
+
+<h1>Fields and variables in Kotlin</h1>
+<h2>lazy initialization</h2>
+Example:
+<pre>
+  val name by lazy { getName() }
+</pre>
+<code>getName()</code> is executed when <code>name</code> is accessed the first time. Lazy initialization can be used only with immutable references (18).<br>
+<h2>Late initialization<h2>
+Works with mutable references:
+<pre>
+  lateinit var otherName: String
+</pre>
+<br>
+<h2>Functions</h2>
+(24): in Kotlin it is possible to write functions at package level, or creating a companion object.<br>
+There are regular functions and functions defined with the expression syntax. Example:<br>
+<pre>fun add2( a:Int, b:Int) = a+b</pre>
+
+<b>Local functions:</b> (29) functions that are defined within other functions.<br>
+
+<h3>Extension functions</h3>
+(30): Syntax: <code>fun</code> ClassName.<code>method</code>(args...) .  Example:
+<pre>fun MyClass.retrieveName():String = this.name</pre>
+
+<h3>lambda functions</h3>
+(31). (32): when a lambda has a single paramter, it can be omitted, but it is named <code><b>it</b></code>.<br>
+
+<h2>Nulls in Kotlin</h2>
+(33) any nullable type is a child of the corresponding nullable type.<br>
+Safe call operator (33): <pre>obj?.method()</pre><br>
+Elvis Operator (34): <pre>obj?.method() ?: alternativeValue</pre><br>
+
+<p/>
+
+<h2>Collections</h2>
+By default collections are immutable (26).<br>
+
+<h2>Packages</h2>
+In Kotlin, the package does not have to correspond to a directory structure and classes do not have to be in a file with the same name (27).<br>
+
+
+<h2>Data types and Casts</h2>
+Smart casts using the <code>in</code> keyword (39). <br>
+
+
+<p/>
+(62)
+
+The Joy of Kotlin, P.Y.Saumont, Manning, 2019.
+<p/>
+</body>
+</html>

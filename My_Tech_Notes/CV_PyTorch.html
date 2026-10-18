@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+  .source_code {
+    background-color: lightgray;
+    font-family: Courier New;
+    border-style: solid;
+    border-width: thin;
+    font-size: larger;
+  }
+  </style>
+  <title>Computer Vision with PyTorch</title>
+</head>
+<body>
+
+<!-- ****************************************************************************************** -->
+<!-- ****************************************************************************************** -->
+<h1>Deep Learning with PyTorch<br>
+    E.Stevens, L.Antiga, T.Viehmann</h1>
+522 pages. Read until page: 16 (46/522)<br>
+
+<ul>
+  <li>Tensors: multidimensional arrays</li>
+  <li>The core PyTorch modules for building neural networks are located in <code>torch.nn</code></li>
+  <li>ONNX is a standardized format to serialize a model</li>
+</ul>
+<hr>
+
+<!-- ****************************************************************************************** -->
+<!-- ****************************************************************************************** -->
+<h1>Learning PyTorch 2_0 -- <br>
+    Matthew Rosch 2nd Edition, 2024</h1>
+GitforGits. 314 pages. Read until page: 57<br>
+
+Gradient descent:
+<ul>
+<li>Batch Gradient calculates the gradient using the entire dataset</li>
+<li>Stochastic gradient descent: uses one data point to calculate the gradient</li>
+<li>Minibatch: a small batch of data is used</li>
+</ul>
+
+Advanced techniques in neural network training:
+<ul>
+<li>Regularization tecniques: L2, dropout to prevent overfitting</li>  
+</ul>
+
+<b>Elasticity Support</b>: training adjusts to the available resources.  Training can continue even when a GPU fails.<br>
+<b>ONNX</b> <br>
+<b>TorchServe</b> (deprecated).<br>
+
+<hr>
+<!-- ****************************************************************************************** -->
+<!-- ****************************************************************************************** -->
+<h1>Mastering Computer Vision with PyTorch 2_0 </h1>
+M.A.Siddiqui, Orange AVA     <br>
+402 page. Read up to page: 113   <br> 
+
+Dynamic paradigm graphs: 
+<ul>
+  <li>Static: define and run: the graph is defined before running the session</li>
+  <li>Dynamic define-by-run graph paradigm.  Each forward pass defines a new computation graph.</li>
+  
+</ul>
+
+<b>Always remember to move both your model and your data to the GPU</b> (page.48).<br>
+
+TorchScript is a way to serialize PyTorch models, to be run in a non Python environment. TorchScript uses a static graph representation, that can be optimized for a specific HW.<br>
+A PyTorch C++ API exists (page 53).<br>
+
+<h2>Chp.2 PyTorch Basics</h2>
+define-by-run mode: computations are executed immediately.   <br>
+Whereas, in the define-and-run paradigm, first the computational graph is constructed, then data is run through it.<br>
+In the define-and-run, it is not possible to modify the graph dynamically.<br>
+<p/>
+
+(61) <h3>Broadcasting</h3>
+<ul>
+  <li>Align dimensions from the right</li>
+  <li>For each dimensions, two sizes are compatible if: they are equal, or one of them is one so it will be stretched.</li>
+</ul>
+
+Broadcsting is executed before the operation.  For example, addition in PyTorch can be executed if the tensors have the same shape.<br>
+Note that some operations create a view of the underlying storage.<br>
+The operations: <code>add(), sub(), mul(), div()</code> are performed element-wise.<br>
+<p/>
+In squeeze and unsqueeze, the returned tensor shares the same underlying data with this tensor.<br>
+Given that in PyTorch computational graphs are dynamic, they are rebuild from scratch every time the <code>.backward()</code> function is called.
+<br>
+Gradients consume memory.  Once they have been used, it is better to zero them out.
+
+<h2>Chp.3 Transitioning from PyTorch 1.x to 2.x</h2>
+
+It is possible to compile a module using <code>torch.compile(model)</code>: 
+<a target="_blank" href="https://docs.pytorch.org/tutorials/intermediate/torch_compile_tutorial.html">see the compile tutorial</a><br>
+<a target="_blank" href="https://docs.pytorch.org/docs/stable/generated/torch.compile.html">torch.compile() documentation</a><br>
+
+Other improvements:
+<ul>
+  <li>TorchDynamo : accelerates unmodified PyTorch programs, using a JIT compiler.</li>
+  <li>AOTAutograd :  </li>
+  <li>PrimTorch</li>
+</ul>
+
+Page 101: example of arguments to torch.compile()
+
+
+<div>
+<h2>Chp.4 Venturing into Artificial Neural Networks</h2>
+Perceptron:
+<div class="source_code">
+  output= activation( weight * input + bias)
+</div>
+
+
+</div>
+
+</body>
+</html>
+

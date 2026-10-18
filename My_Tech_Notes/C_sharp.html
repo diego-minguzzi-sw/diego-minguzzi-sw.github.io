@@ -1,0 +1,136 @@
+<html>
+<head>
+  <!--
+  <style>
+  
+  .source_code {
+    background-color: lightgray;
+    font-family: Courier New;
+    border-style: solid;
+    border-width: thin;
+    font-size: normal;
+  }
+    
+  </style>
+  -->
+
+  
+  <style>
+  .source_code {
+    background-color: #e0e0e0;   /* light gray */
+    font-family: "Courier New", Courier, monospace;
+    border: 1px solid #888;
+    padding: 10px;
+    display: block;
+    white-space: pre;            /* preserves formatting */
+  }
+  </style>  
+  <title>C# and .NET</title>    
+
+</head>
+
+<body>
+<h1>Links</h1>
+
+<ul>
+<li>.NET
+    <ul>
+    <li><a target="_blank" href="https://learn.microsoft.com/en-us/docs/">Microsoft Learn Technical documentation</a>
+      </li>
+    <li><a target="_blank" href="https://learn.microsoft.com/en-us/dotnet/api/">Microsoft Learn .NET API</a>
+      </li>
+      
+      
+    </ul>
+  </li>
+<li>C Sharp
+    <ul>
+    <li><a target="_blank" href="https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/coding-conventions">C Sharp Coding Style</a>
+      </li>
+    </ul>
+  </li>  
+</ul>
+
+<h1>Classes</h1>
+<h2>Classes: Object creation</h2>
+There is a new syntax to create objects.
+
+<pre class="source_code">
+Person bob;
+bob= new("Bob", "Smith", 45);
+</pre>
+
+See page.208.<br>
+
+<h1>Numbers</h1>
+The underscore character can be used as a digit separator , it can also be used with binary literals.<br>
+
+<h1>Pattern matching in C#</h1>
+<ul>
+<li><a target="_blank" 
+       href="https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/patterns#declaration-and-type-patterns">Declaration and Type patterns
+</a></li>
+</ul>
+
+<pre class="source_code">
+  object greeting = "Hello, World!";
+  if (greeting is string message)
+  {
+      Console.WriteLine(message.ToLower());  // output: hello, world!
+  }
+</pre>
+greeting must be assignable to a string. If it is, a new variable, named message, is created.<br>
+
+
+<h1>Operators</h1>
+<ul>
+<li><a target="_blank" href="https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/null-coalescing-operator">Null coalescing operators ?? and ??=</a></li>
+</ul>
+
+<h1>Strings</h1>
+<ul>
+<li>Verbatim literal strings are prefixed by the character @. Characters are not escaped.</li>
+<li>Raw strings are surrounded by triple quotes.<li>
+<li><a target="_blank" href="https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/tokens/interpolated#interpolated-raw-string-literals">Interpolated raw string literals</a></li>
+</ul>
+Summarizing options for storing text: 
+<ul>
+  <li>Literal strings: it can contain excaped characters</li>
+  <li>Raw string literal: triple quote, it can also contain embedded expressions</li>
+  <li>Verbatim string: @</li>
+  <li>Interpolated string: Dollar sign</li>
+</ul>
+
+<h1>Visual Studio Shortcuts</h1>
+<ul>
+  <li>F12: go to definition, with the mouse over a data type</li>
+  <li>Ctrl+ F12 : go to implementation</li>
+  <li>Ctrl+ . : show potential fixes to a problem</li>
+  <li>Ctrl+k Ctrl+f : format a section of code</li>
+</ul>
+
+
+<h1>C# 13 and _NET 9 - Modern Cross-Platform Development - Mark J. Price</h1>
+
+.NET virtual machine is called CoreCLR (Common Language Runtime).<br>
+Modern .NET C#8 to C#13
+
+List information about the installed .NET SDK and runtime
+<pre class="source_code">
+  dotnet --list-sdks
+  dotnet --list-runtimes
+  dotnet --info
+  
+  
+  dotnet build -h   # Shows the CLI help about a given command.
+  dotnet help build # Opens the browser with the help page for the given command.
+</pre>
+
+C sharp keywords are all lowercase, so your should not use all-lowercase for your data types [151].<br>
+It is possible to use a reserved word for a variable, by prefixing it with the @ symbol (at).[152]<br>
+
+<h2>Using and namespaces</h2>
+In C#
+
+</body>
+</html>

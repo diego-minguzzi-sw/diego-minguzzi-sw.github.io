@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+.source_code {
+  background-color: lightgray;
+  font-family: Courier New;
+  border-style: solid;
+  border-width: thin;
+  font-size: larger;
+}
+</style>
+
+<title>Dart and Flutter</title>
+<link rel="icon" type="image/x-icon" href="https://pic.vsixhub.com/3a/a8/f97c0874-41f7-448b-bf52-676617972a79-icon.png">
+</head>
+
+<body>
+
+<script type="text/javascript">
+  var indxHeader01=1;
+  var indxHeader02=0;
+  var indxHeader03=1;
+</script>
+
+<!--
+<li><a target=_blank" href=""> </a></li>
+<li><a target=_blank" href=""> </a></li>
+-->
+
+<h1>Links</h1>
+<ul>
+<li> Dart
+    <ul>                
+    
+    <li> <a target=_blank" href="https://dart.academy/">Dart Academy</a> </li>
+    <li> <a target="_blank" href="https://dart.dev/guides">Dart Documentation at Dart Dev</a> </li>
+    <li> <a target="_blank" href="https://dart.dev/guides">Dart Guide</a></li>
+    <li> <a target="_blank" href="https://dart.dev/">Dart Home page</a> </li>
+    <li> <a target="_blank" href="https://dart.dev/guides/language/language-tour">Dart language tour</a> </li>
+    <li> <a target="_blank" href="https://api.dart.dev/stable/2.16.2/index.html">Dart SDK</a></li>
+    <li> <a target="_blank" href="https://pub.dev/">Pub.Dev Package manager</a> </li>
+    <li> <a target="_blank" href="https://dart.dev/guides/language/language-tour">Tour of the language</a> </li>    
+    <li> <a target="_blank" href="https://pub.dev/packages/test">Unit tests in Dart (test package)</a> </li>
+    </ul>
+  </li>
+<li> Flutter
+    <ul>    
+    <li> <a target="_blank" href="https://pub.dartlang.org/flutter">https://pub.dartlang.org/flutter</a> 
+          where packages can be found</li>
+    <li> <a target="_blank" href="https://flutter.dev/docs/development/ui/widgets/material">
+          Flutter doc: Material Components widgets</a></li>
+    <li> <a target="_blank" href="https://placeholder.com/">Placeholder images from URL(s)</a> 
+        </li>
+    </ul>
+  </li>
+<li> Misc
+    <ul>         
+    <li> <a target="_blank" href="https://www.cplusplus.com/reference/regex/ECMAScript/">ECMA Script Regexp syntax</a></li>
+    </ul>
+  </li>  
+</ul>
+<hr>
+
+<!-- ****************************************************************************************** -->
+<center>
+<h1 id="h1DartApprendice"></h1>
+<script>  
+  document.getElementById("h1DartApprendice").innerHTML = `${indxHeader01} Dart Apprentice Beginning Programming with Dart, J.Sande, M.Galloway 2020 Razeware LLC (410 pages)`;
+  indxHeader02=0;
+</script>
+</center>
+<p>
+  Up to page: 28. 
+</p>
+<h2 id="h2Bestpractices"></h2> 
+<script>
+  document.getElementById("h2Bestpractices").innerHTML = `${indxHeader01}.${++indxHeader02} Best Practices`;
+  </script>
+  <h3>... Coding Guidelines</h3>
+Dart prefers lowerCamelCase for variables (61). Treat abbreviations like words (for example, sourceUrl and urlDescription).<br>
+
+<!-- ****************************************************************************************** --><hr>
+<h2 id="h2Syntax"></h2> 
+<script>document.getElementById("h2Syntax").innerHTML = `${indxHeader01}.${++indxHeader02} Syntax`;</script>
+  <h3>... Operators</h3>
+Increment and decrement operators are supported. 
+<div class="source_code"> 
+<pre>
+  var aValue= 15;
+  aValue += 5;
+  aValue++;
+  ++aValue;
+</pre>
+</div>
+
+  <h3>... Comments</h3>
+Dart allows C-like comments, <cite>nested comments</cite> (41), and documentation comments (41).<br>
+Dart supports <a target="_blank" href="https://commonmark.org">Commonmark markup</a> <br>
+
+  <h3>... Expressions</h3>
+<div class="source_code"> 
+<pre>
+  print(22 ~/ 7); // Integer division.
+</pre>
+</div>
+
+  <h3>... Exceptions: try, catch, finally</h3>
+Example (374):
+<div class="source_code"> 
+<pre>
+  try {
+    final todoItem = await httpRequest('https://jsonplaceholder.typicode.com/todos/1');
+  } on io.HttpException catch (httpException) {
+    print('HttpException detected: $httpException');
+  } catch (exception) {
+    print('Exception detected: $exception');
+    rethrow;
+  } finally {
+    print('testHttpRequest: finally reached');
+  }
+</pre>
+</div>  
+
+<!-- ****************************************************************************************** --><hr>
+  <h3>... Types</h3>
+Dart supports type inference (57). <br>
+There are <b><code>var</code></b>, <b><code>const</code></b> and <b><code>final</code></b> objects.<br>
+<cite> Const constants give the compiler more freedom to perform internal optimizations</cite> (60).
+final object are read-only, but they are not known at compile time.<br>
+<div class="source_code"> 
+<pre>
+  var anInteger= 42;      // Type inference, declares a mutable object.
+  const pi= 3.14;         // Declares a constant object, using type inference.
+  const int myInteger=42; // Declares a constant integer, with type annotation.
+  if (myInteger is int){  // Runtime type checking.
+    ...
+  }
+  print("other type is: ${other.runtimeType}"); // other.runtimeType returns the runtime type of an object.
+  aNumber.toDouble(); // Casts are made calling proper methods.
+</pre>
+</div>
+
+There are also <b><code>dynamic</code></b> objects.<br>
+<div class="source_code"> 
+<pre>
+  dynamic anObj = 42;
+  anObj = 'abcd';
+  print('anObj: $anObj');
+
+  var thisIsDynamic; // Declares a dynamic object.
+  thisIsDynamic = 45;
+  thisIsDynamic = 'Xyz';
+</pre>
+</div>
+
+    <h4>.... Strings</h4>
+Dart supports string interpolation.
+<div class="source_code"> 
+<pre>
+  print("anInteger type:${anInteger.runtimeType.toString()}");
+</pre>
+</div>    
+
+Strings are immutable in Dart (85); there is no character type, only strings (like in Python) (86).<br>
+Single quotes and double quotes are supported. Single quotes are recommended (92).<br>
+Strings can be compared with the == operator. (115). 
+<p/>
+
+Example of how to print a double with a given precision (95):
+<div class="source_code"> 
+<pre>
+  const aValue = 1.234167;
+  print('aValue: ${aValue.toStringAsFixed(3)}');
+</pre>
+</div>    
+
+Other examples of strings:
+<div class="source_code"> 
+<pre>
+const someText = '''This is a line of text.
+This is another line.''';
+const someOtherText = 'Strings '
+  'are '
+  'concatenated.';
+</pre>
+</div>      
+
+<b>Raw strings</b> (98).
+<div class="source_code"> 
+<pre>
+const rawString = r'\n This is HTML $name text';
+</pre>
+</div>     
+In plain raw strings, the string must be in a single line.<br>
+<b>Note:</b> triple quotes raw strings are supported, using both triple-single-quote and triple-double quote, example:
+<div class="source_code"> 
+<pre>
+const freakonomicsXmlFeed = '''dddd
+Abcd
+AbCD
+''';
+</pre>
+</div>     
+See <a target=_blank" href="https://programming-idioms.org/idiom/48/multi-line-string-literal/628/dart">the related link</a>.
+
+
+    <h4>.... Enumerations</h4>
+<div class="source_code"> 
+<pre>
+  enum Weather {
+    sunny,  // Enumerators are lowerCamelCase
+    snowy,
+    cloudy,
+    rainy,  // Note the comma after the last enumerator, in case enumerators are in a vertical list.
+  }
+
+  // In case of horizontal list, the last enumerator does not need a final comma.
+  enum Color { black, blue, yellow}
+</pre>
+</div>  
+<!-- ****************************************************************************************** --><hr>   
+
+  <h3>... Control flow constructs</h3> 
+(118) if, else if, else. The ternary conditional operator exists in Dart (122).<br>
+Scope behaves the way you would expect (119).
+    <h4>.... Switch statement (123)</h4>
+<div class="source_code">     
+<pre>
+  switch(variable) {  // Variable can be an int, string, or compile time constant.
+    case aConst:      // Each case compares using the equality operator.
+      // code ...
+      break;
+      
+    default:
+      break;
+  }
+</pre>
+</div>
+
+    <h4>.... While loops (132)</h4>
+In while loops, <code>break</code> and <code>continue</code> statements are supported (147).   
+<div class="source_code"> 
+<pre>
+  while (cond) {
+    // loop
+  }
+</pre>    
+</div>
+
+    <h4>.... Do while loops (134, 143)</h4>
+    
+    <h4>.... C-style for loops (138)</h4>
+<code>for (var indx=0; indx&lt;10; ++indx) </code> <br>
+The <code>continue</code> keyword is supported (140).<br>
+    
+    <h4>.... for-in loops (138)</h4>
+Examples:
+<div class="source_code"> 
+<pre>
+
+  for (var item in aCollection) {
+    ...
+  }
+  
+  myItems.forEach((item) => print('forEach item: $item'));
+</pre>        
+</div>
+    
+
+<b>Note</b>: each case is compared using the equality operator.<br>
+Fallthrough is allowed (127).
+<!-- ****************************************************************************************** --><hr>
+
+  <h3>... Functions</h3>
+(150) Anatomy of a <cite><b>named</b></cite> Dart function:
+<div class="source_code"> 
+<pre>
+  ReturnType FunctionName( arguments){
+    function body
+  }
+  
+  String compliment( int number){
+  }
+</pre>
+</div> 
+
+Function names are lowerCamelCase (151).<br>
+<b>Parameters / arguments</b>. A function parameter is a name and a type defined as an input for a function. An argument is the actual value passed to a function (153). <br>
+
+<b>Optional arguments</b><br>
+<div class="source_code"> 
+<pre>
+  String fullName(String first, String last, [String? title]) {} // title is an optional argument.
+</pre>
+</div>
+
+Functions do not need to be defined before they are used.<br>
+
+<b>Named parameters</b><br>
+Dart allows you to name parameters.<br>
+<div class="source_code"> 
+<pre>
+  bool isWithin(int value, {int minValue = 0, int maxValue = 10}) { ... } 
+  // isWithin() must be called with the syntax: isWithin(15, minValue: 10, maxValue: 20)
+</pre>
+</div>
+<br>
+
+A named parameter is also an optional parameter if it has a default value.<br>
+<div class="source_code"> 
+<pre>
+  // value is named and required.  All other named parameters are optional.
+  int valueWithinRange2({required int value, int min = -1, int max = -1}) { ... }
+</pre>
+</div>
+
+If the function signature it too long, adding a comma after the last parameter lets the IDE format it vertically (160). <br>
+
+Pure functions have no side effects (163)<br>
+Dart recommendation for functions:
+<ul>
+  </li> Use noun phrases for pure functions, e.g. <code>averageTemperature()</code> instead of <code>getAverageTemperature()</code> (164) </li>
+  </li> Use verb phrases for functions with side effects, for example <code>updateDatabase()</code> or <code>printHello()</code> </li>
+  </li>Do not repeat parameters in the function name <code>cube(int number)</code> instead of <code>cubeNumber(int number)</code> </li>
+</ul>
+<p/>
+
+    <h4>.... Optional Types</h4>
+(165) Dart is an optionally typed language.  It is possible to write a function signature like: <code>compliment(number)</code>, the compiler will infer the types, or it will assign <code>dynamic</code> to unknown types.<br>    
+    
+    <h4>.... Anonymous functions</h4>
+<div class="source_code"> 
+<pre>
+
+  ReturnType NamedFunction( arguments){ ... }
+  ( arguments) {...} // By removing the return type and the name, you get the corresponding anonymous function (167).
+</pre>   
+</div>
+
+Objects whose type is anonymous functions can be declared as <code>final</code> (169).
+    <h4>.... Clojures in anonymous functions</h4>
+In case of anonymous functions, the function has access to all variables in its scope. It gets <b>references</b> to variables in its scope. Example:   
+<div class="source_code"> 
+<pre>
+  var value = 5;
+
+  final multiply = (int op) {
+    return value * op;
+  };
+  print('multiply(5): ${multiply(4)}');
+
+  value = 6;
+  print('multiply(5): ${multiply(4)}');
+</pre>
+</div> 
+   
+Prints:<br>
+<div class="source_code"> 
+<code>
+  multiply(5): 20<br>
+  multiply(5): 24<br>
+</code>
+</div>
+
+(173) Closures. Note:
+<div class="source_code"> 
+<pre>
+Function countingFunction() {
+  var counter = 0;
+  return () {
+    counter++;
+    return counter;
+  };
+}
+</pre>
+</div>
+
+Each anonymous function returned by countingFunction() gets it own instance of <code>counter</code> (175). So, an object that has just a method can be created as an anonymous function with its own state, given by the closure.
+<p/>
+    <h4>.... Arrow functions</h4>
+(176) Syntax for functions whose body is only one line. Called <b><cite>arrow syntax</cite></b> or <b><cite>arrow notation</cite></b>.
+<pre>
+<code>
+  int add( int a, int b) => a + b;
+</code>
+</pre>
+<!-- ****************************************************************************************** --><hr>
+
+  <h3>... Classes</h3> 
+<ul>
+  <li>Variables in a class are called fields; public fields with getters and setters are called properties (231).</li>
+  <li></li>
+  <li></li>
+  <li></li>
+</ul>  
+Put overridden methods, like toString, at the bottom of the class (189).  <br>
+<b>Cascade operator ..</b> (192) Dart offers the cascade operator to chain together multiple assignments to the same object. Example:
+
+<div class="source_code"> 
+<pre>
+  final otherUser = User()  // Cascade operator.
+    ..id = 48
+    ..name = 'Jack';
+</pre>
+</div>
+
+<b>Private variables</b>: Dart allows you to make variables <b>library</b> private by adding an underscore in front of their name (205).
+<p/>
+
+    <h4>.... Constructors</h4>
+The custom constructor with parameters is called <b>generative, or unnamed constructor</b> , it can be a long constructor or a short constructor (194).<br>
+There are also named constructors. Named constructors can have parameters (198).<p/>
+
+Properties can be marked <b>final</b> so they can only be modified once, in the constructor initializer list (211).<p/>
+
+<b>Const classes</b> (211). If the objects of a particular class never change, because all fields of the class are final, you can add <code>const</code> in front of all constructors, to ensure that all instances of the class are constant at compile-time.<p/>
+
+<b>Factory constructors</b> (213) it is a special method that starts with the <code><b>factory</b></code> keyword and returns an object of the class type.  <br>
+
+<b>Forwarding constructors</b> (200)
+<div class="source_code"> 
+<pre>
+  MyUser.anonymous() : this(id: -1, name: 'anonymous');
+</pre>
+</div>
+
+<b>Initializer lists</b> (206) are similar to C++.
+<div class="source_code"> 
+<pre>
+class MyUser {
+  MyUser({int id = 0, String name = ''})
+      : _id = id,
+        _name = name;
+
+  int _id = 0;
+  String _name = '';
+}
+</pre>  
+</div>
+
+<b>Late initialization</b> (keyword <code>late</code>) (262): adding <code>late</code> in front of a data member performs lazy initialization on that member. <code>late</code> checks at runtime if the variable is initialized when it is used.  If not, it throws an exception (LateInitializationError).
+<P/>
+
+
+<p/>
+
+<b>Deep copy, shallow copy</b> by default Dart copies the reference (217).
+<cite>If you want to make a deep copy of the class then you’ll need to implement that mechanism yourself by creating a method in your class that builds up a whole new object.</cite><p/>
+
+<b>Getters and setters</b>
+Remove the parenthesis and add the <code>get</code> after the return type. (218)  Getter fields are read-only.<br>
+Getters can use the arrow syntax, or the plain return syntax.
+<div class="source_code"> 
+<pre>
+class XyzPassword {
+  const XyzPassword(String value) : _value = value;
+
+  String get value => _value;
+  
+  set value(String newValue) {   
+    _value = newValue;
+  }
+  
+  bool get isValid => _value.trim().length > 8; // Getters can also be calcolated.
+
+  final String _value;
+}
+</pre>  
+</div>
+
+Other example:
+<div class="source_code"> 
+<pre>
+class TupleLike {
+  const TupleLike({required this.id, this.name = ''})
+      : assert(id >= 0),
+        assert(name.length > 0);
+
+  const TupleLike.baseTuple() : this(name: 'name', id: 0);
+
+  final int id;
+  final String name;
+}
+</pre>
+</div>
+
+Other Tuple:<br>
+<div class="source_code"> 
+<pre>
+  class OtherTuple {
+  const OtherTuple({this.id = 0, this.name = '', this.value = -1});
+
+  @override
+  String toString() => 'id:$id name:$name';
+
+  final int id;
+  final String name;
+  final int value;
+}
+</pre>
+</div>
+<p/>
+
+<b>Static members</b> are supported in Dart (224). Example of static const member: <code>static const defaultId = 100;</code>.<br>
+Member variables are called <cite>instance variables</cite>.
+
+<b>Singleton classes</b>
+<div class="source_code"> 
+<pre>
+class MySingleton {
+  MySingleton._();
+
+  static final MySingleton instance = MySingleton._();
+
+  int get id => _id;
+
+  set id(int newValue) {
+    _id = newValue;
+  }
+
+  int _id = 0;
+}
+</pre>
+</div>
+
+Static fields and top-level variables, are lazily initialized (227). <br>
+<p/>
+<b>Static methods</b> are supported (228). 
+<br>
+
+<!-- ****************************************************************************************** --><hr>
+
+  <h3>... Advanced Classes: inheritance, abstract classes, interfaces, composition, mixing.</h3> 
+(311) Object? is the root class of the hierarchy, Object derives from Object?.<br>
+<b>Subclassing</b><br>
+<center><b>_ Dart only allows SINGLE INHERITANCE _</b> </center> <br> 
+The derived class has access to all methods and interfaces of the base class (341).Example:<br>
+
+<div class="source_code"> 
+<pre>
+  class Person {
+    Person(this.givenName, this.surname);
+    [...]
+  }
+
+  class Student extends Person {  // Extends means that the base class is treated as a class.
+                                  // Implements would treat it as an interface.
+    Student(givenName, surname) 
+      : super(givenName, surname); // Super must be the last item of the initializer list.
+  }
+</pre>
+</div>
+<p/>
+(315) It is not necessary to call <code>super()</code> without arguments.<p/>
+It is possible to call <code>super</code> from a derived class, to access base methods and fields (317).
+<p/>
+<b>Runtime type check</b> The operators <code>is is!</code> check whether an object belongs, or does not belongs, to a given class (321).<br>
+Prefer composition over inheritance (323). Focus on what an object <cite>has</cite>, rather than what an object <cite>is</cite>.<br> 
+Inheritance is good when an object always need all the parent properties and methods.<br>
+
+  <h4>.... Abstract classes</h4>
+(324) There are concrete and abstract classes (326).  
+Example of abstract class:
+<div class="source_code"> 
+<pre>
+  abstract class Animal { // Abstract class.
+    bool isAlive = true;  // Abstract classes can have concrete methods and fields.
+    void eat();           // Abstract method, it does not have a body.
+    void move();          // Abstract method, it does not have a body.
+
+    @override
+    String toString() => 'I am a $runtimeType';
+  }
+</pre>
+</div><p/>
+Derived concrete class:
+<div class="source_code"> 
+<pre>
+  class Platypus extends Animal {
+    @override
+    void move() {}
+
+    @override
+    void eat() {}
+  }
+</pre>
+</div>
+<p/>
+  <h4>.... Interfaces</h4>
+Dart has single inheritance; however, multiple interfaces can be implemented (341).<br>  
+<b>Note</b>: (333) <cite>business logic = domain logic = business rules</cite><br>
+Mixing stable code with unstable code causes the stable code to become unstable.<br>
+<cite>Code against interfaces, not implementations</cite>. (335)<br>
+In Dart, interfaces are abstract classes. When creating a concrete class that implements an interface, use the keyword <b><code>implements</code></b> instead of <code>extends</code> (336).  <p/>
+<cite>
+Every class implicitly defines an interface containing all the instance members of the class and of any interfaces it implements.<br>
+If you want to create a class A that supports class B’s API without inheriting B’s implementation, class A should implement the B interface.
+</cite>
+
+(341) If SomeClass implements AnotherClass, then SomeClass must provide its own version of all methods and variables in AnotherClass.<br>
+Fields and methods must be overridden using the annotation <code>override</code> (342).<br>
+<p/>
+In Dart, the common pattern is an abstract class that has a factory method that creates object of concrete classes (338).<br>
+An alternative is a service locator (338).
+<p/>
+
+  <h4>.... Mixins</h4>
+(343) There are mixin classes, they can only be used for mixin (346), however, any class can be used for mixin (346). Example:<br>
+
+<div class="source_code"> 
+<pre>
+mixin Adder {
+  int sum(int op, int op2) => op + op2;
+}
+
+class Calculator with Adder {
+  void printSum(int op, int op2) {
+    print('$op + $op2 = ${sum(op, op2)}');
+  }
+}
+</pre>  
+</div> 
+<p/>  
+  <h4>.... Extension Methods (348)</h4>
+<div class="source_code"> 
+<pre>
+  extension on SomeClass {  // Unnamed extension.
+    // Custom code: it can be methods, getters, setters, operators.
+  }
+  
+  extension NamedExtension on SomeClass { // Named extension.
+  }  
+</pre>
+</div>
+Extensions must be located at the top-level in a file, outside of classes and functions (348).<br>
+<b>NOTE</b> if extension methods are contained in Dart files that are imported by other packages, then extensions must be named, otherwise the importer source file cannot find the extensions.<p/>
+
+<!-- ****************************************************************************************** --><hr>
+
+  <h3>... Nullability</h3> 
+(233) Sound null safety. Null indicates the absence of an object or a value (235).<br>
+In Dart, the object <code>null</code> is the sole instance of the class Null.<br>
+
+<b>Nullable and non-nullable types</b> (238).  Nullable types end with a question mark.<br>
+Every non-nullable type has a corresponding nullable type (241).<br>
+
+  <h4>.... Handling nullable types</h4> 
+<b>Type promotion</b> (243) the compiler can promote a nullable to non-nullable by analyzing the code and performing flow analysis.<br>
+
+<div class="source_code"> 
+<pre>
+  String sayHello({String? name}) => 'Hello ' + (name ?? 'Mr.Nobody'); // If-null operator
+  
+  int nullAware(int? value, {int optionalNewValue = 0}) {
+    var result = value;
+    result ??= optionalNewValue; // Null-aware assignment operator. result is assigned if it is null.
+    return result;
+  }
+
+  String? name;
+  print('name?.trim(): ${name?.trim()}'); // Null-aware access operator a.k.a. null-aware method invocation.
+  
+  // Null assertion operator (!) (248). Turns a nullable object into non-nullable.
+  // A cast does the same job as the null-assertion operator (250).
+  
+  Null aware cascade operator (252).
+  Null aware index operator 
+</pre>
+</div>
+
+<b>NOTE <cite>: there is no promotion for non local variables</cite></b> (258).<br>
+Solution: shadow the non local variable with a local variable.
+<div class="source_code"> 
+<pre>
+class TextWidget {
+  bool isLong() {
+    final text = _text;
+    if (null == text) {
+      return false;
+    }
+
+    return text.length > 100;
+  }
+
+  String? _text;
+}
+</pre>
+</div>
+<p/>
+
+<!-- ****************************************************************************************** --><hr>
+
+  <h3>... Collections</h3> 
+  <h4>.... Lists</h4>
+A list can be reassigned (<code>var</code>) or not (<code>final</code>).  A list can be immutable if <code>const</code> (275). Example (276):<br>
+<div class="source_code"> 
+<pre>
+  const ['doonut', 'brownie', 'candies'];
+</pre>
+</div>  
+
+The runtime environment checks when an immutable collection is modified and raises an exception.<br>
+There is also the <b><code>collection if</code></b> operator (281).
+<p/>
+  <h4>.... Sets</h4>
+(283)  
+
+  <h4>.... Maps</h4>
+(289)  
+
+<!-- ****************************************************************************************** --><hr>
+  <h3 id="h2AsynchProgramming"></h3> 
+  <script>
+  document.getElementById("h2AsynchProgramming").innerHTML = 
+    `${indxHeader01}.${indxHeader02}.${indxHeader03} Asynchronous Programming`;
+  </script>  
+(359) Dart is a single threaded language: Dart is based around concurrency on a single thread.<br>
+Parallelism versus concurrency (360). 
+<ul>
+<li><b>Parallelism</b>: multiple tasks run at the same time on multiple CPUs</li>
+<li><b>Concurrency</b>: multiple tasks on the same CPU core.</li>
+</ul>
+The problem with parallelism is access to shared resources (362).<br>
+In Dart each thread runs in an <b>isolate</b> (362): each isolate has only a thread.  However, the program can create multiple isolate(s): they exchange messages with each other.<br>
+<b>Event loop, microtask and event queue</b>: Dart has an event loop; the loop has two queues: a microtask queue and an event queue (365).<br>
+The microtask queue is used internally, the event queue contains keystrokes, UI events, etc.<br>
+<ul>
+  <li>Synch tasks are run immediately, they cannot be interrupted</li>
+  <li>If a task agrees to be postponed, it is put in the event queue</li>
+  <li>If there is no synch task, the microtask queue is checked, for tasks to be executed.   
+      At any time, microtasks have priority over events.</li>
+  <li>If there are no synch tasks and the microtask queue is empty, the event queue is checked: if so, it is treated a a synch task</li>
+</ul>
+
+
+<p/>
+  <h4>.... Futures</h4>
+A future is a promise to give you a value later.<br>
+A Future can have any of the following states: Uncompleted, Completed with error, Completed with value (369).<br>
+Example of <b>async</b> and <b>await</b> (373).<br>
+
+<div class="source_code"> 
+<pre>
+Future<void> main() async {
+  try {
+    final result = await Future<int>.delayed(Duration(seconds: 1), () {
+      return 42;
+    });
+    print('${DateTime.now()} result: $result');
+  } catch (error) {
+    print('${DateTime.now()} Error detected $error');
+  } finally {
+    print('${DateTime.now()} Operation finally completed.');
+  }
+}
+</pre>
+</div>
+<p/>
+
+<h4>.... Streams</h4>
+Suppose that client.send() returns a stream:
+<div class="source_code"> 
+<pre>
+final client = http.Client();
+client
+    .send(http.Request('GET', podcastFeed.uri))
+    .then((streamResponse) => onResponse(podcastFeed, streamResponse))
+    .catchError((error) => onError(podcastFeed, error))
+    .whenComplete(() => onCompleted(podcastFeed));
+</pre>
+</div>
+
+<h4>.... Isolates</h4>
+
+
+<!-- ****************************************************************************************** --><hr>   
+<h2 id="h2Testing"></h2> 
+<script>document.getElementById("h2Testing").innerHTML = `${indxHeader01}.${++indxHeader02} Testing`;</script>
+  <h3>... Unit tests</h3>
+  
+<!-- ****************************************************************************************** --><hr>   
+<h2 id="h2PackagesInDart"></h2> 
+<b>Note</b>:
+<a target=_blank" href="https://dart.dev/guides/libraries/create-library-packages">
+  how to organize a library package (directory structure, etc.)
+</a>
+  <h3> ...Exports</h3>  
+<div class="source_code"> 
+<pre>
+  export 'downloader_config.dart';
+</pre>
+</div> 
+
+<script>document.getElementById("h2PackagesInDart").innerHTML = `${indxHeader01}.${++indxHeader02} Packages in Dart`;</script>
+  <h3> ...Imports</h3>  
+<b>Namespaces</b> It is possible to import a local package using the relative path.  <code><b>as</b></code> can be used to define a prefix, to avoid name clashing.  Similar to a namespace.
+<div class="source_code"> 
+<pre>
+  import '../foo/my_package.dart' as myp; 
+</pre>
+</div> 
+<p/>
+
+If a package is published to no one, it can reference local packages by specifying their path.
+<div class="source_code"> 
+<pre>
+name: hello_dart
+
+[...]
+
+dependencies:
+  my_package:
+    path: ../my_package 
+</pre>
+</div>   
+
+<!-- ****************************************************************************************** --><hr>
+<h2 id="h2TheDartEcoSystem"></h2> 
+<script>document.getElementById("h2TheDartEcoSystem").innerHTML = `${indxHeader01}.${++indxHeader02} The Dart Ecosystem`;</script>
+  <h3>... Dependencies</h3>
+Example, in the pubspec.yaml file.  Add two spaces before the package name, example chaacters.
+<div class="source_code"> 
+<pre>
+dependencies:
+  characters: : ^1.1.0
+</pre>
+</div>
+
+To update the packages, the command is: <code>dart pub get</code> .
+<div class="source_code"> 
+<pre>
+  PS D:\Dart_Wrkdir\00_hello_dart\hello_dart> dart pub get 
+  Resolving dependencies...
+    lints 1.0.1 (2.0.0 available)
+  Got dependencies!
+  PS D:\Dart_Wrkdir\00_hello_dart\hello_dart> 
+</pre>
+</div>
+
+<h2 id="h2UsefulCommands"></h2> 
+<script>document.getElementById("h2UsefulCommands").innerHTML = `${indxHeader01}.${++indxHeader02} Useful commands`;</script>
+<div class="source_code"> 
+<pre>
+  dart help 
+  dart create
+  dart --version
+    Dart SDK version: 2.16.2 (stable) (Tue Mar 22 13:15:13 2022 +0100) on "windows_x64"
+</pre>
+</div>
+<p/>
+(399)
+<hr>
+
+</body>
+</html>

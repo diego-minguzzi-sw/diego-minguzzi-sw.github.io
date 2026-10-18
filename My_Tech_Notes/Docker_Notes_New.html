@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+  .source_code {
+    background-color: lightgray;
+    font-family: Courier New;
+    border-style: solid;
+    border-width: thin;
+    font-size: larger;
+  }
+  </style>
+  <title>New Docker Notes</title>
+</head>
+
+<body>
+  
+<h1>Installation in Linux Ubuntu</h1>  
+
+Adapted from <a target="_blank" href="https://docs.docker.com/engine/install/ubuntu/">here</a>
+<div class="source_code"> 
+<pre>
+sudo apt-get update
+sudo apt-get install \
+    ca-certificates \
+    curl \
+    gnupg \
+    lsb-release
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg    
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update  
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin docker-compose docker-doc
+</pre>
+</div>
+
+To verify that the Docker Engine is installed:
+<div class="source_code"> 
+<pre>
+sudo docker run hello-world
+</pre>
+</div>
+
+<h2>NOTE: Post-installation: Run the Docker daemon as a non-root user (Rootless mode)</h2>
+Adapted from <a target="_blank" href="https://docs.docker.com/engine/security/rootless/">here</a>.
+
+<div class="source_code"> 
+<pre>
+  sudo apt-get install uidmap # Installs newuidmap and newgidmap on the host. 
+</pre>
+</div>
+
+Check that the result is similar to below:
+<div class="source_code"> 
+<pre>
+  grep ^$(whoami): /etc/subuid
+  minguzzi:100000:65536 # There must be at least 65535
+  grep ^$(whoami): /etc/subgid
+  minguzzi:100000:65536 # There must be at least 65535
+</pre>
+</div>
+
+Install:
+<div class="source_code"> 
+<pre>
+ sudo apt-get install -y dbus-user-session
+</pre> 
+</div>
+<p/>
+Logout and relogin again.<br>
+<div class="source_code"> 
+<pre>
+# Disable the daemon if it is running.  
+sudo systemctl disable --now docker.service docker.socket
+
+# Check if /usr/bin/dockerd-rootless-setuptool.sh still exists.
+ls -lah /usr/bin/dockerd-rootless-setuptool.sh
+
+# Run the daemon as non root user.
+/usr/bin/dockerd-rootless-setuptool.sh install
+</pre>
+</div>
+<p/>
+<div class="source_code"> 
+<pre>
+apr 30 17:08:24 mingux dockerd-rootless.sh[2373]: time="2022-04-30T17:08:24.228801144+02:00" level=info msg="Daemon has completed initialization"
+apr 30 17:08:24 mingux dockerd-rootless.sh[2373]: time="2022-04-30T17:08:24.244264608+02:00" level=info msg="API listen on /run/user/1000/docker.sock"
++ DOCKER_HOST=unix:///run/user/1000/docker.sock /usr/bin/docker version
+Client: Docker Engine - Community
+ Version:           20.10.14
+ API version:       1.41
+ Go version:        go1.16.15
+ Git commit:        a224086
+ Built:             Thu Mar 24 01:48:02 2022
+ OS/Arch:           linux/amd64
+ Context:           default
+ Experimental:      true
+
+Server: Docker Engine - Community
+ Engine:
+  Version:          20.10.14
+  API version:      1.41 (minimum version 1.12)
+  Go version:       go1.16.15
+  Git commit:       87a90dc
+  Built:            Thu Mar 24 01:45:53 2022
+  OS/Arch:          linux/amd64
+  Experimental:     false
+ containerd:
+  Version:          1.5.11
+  GitCommit:        3df54a852345ae127d1fa3092b95168e4a88e2f8
+ runc:
+  Version:          1.0.3
+  GitCommit:        v1.0.3-0-gf46b6ba
+ docker-init:
+  Version:          0.19.0
+  GitCommit:        de40ad0
++ systemctl --user enable docker.service
+[INFO] Installed docker.service successfully.
+[INFO] To control docker.service, run: `systemctl --user (start|stop|restart) docker.service`
+[INFO] To run docker.service on system startup, run: `sudo loginctl enable-linger minguzzi`
+
+[INFO] CLI context "rootless" already exists
+
+[INFO] Make sure the following environment variables are set (or add them to ~/.bashrc):
+
+export PATH=/usr/bin:$PATH
+export DOCKER_HOST=unix:///run/user/1000/docker.sock
+</pre>
+</div>
+
+<h2>NOTE: Post-installation: Manage Docker as a non-root user</h2>
+Adapted from <a target="_blank" href="https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user">here</a>
+If you don’t want to preface the docker command with sudo, create a Unix group called docker and add users to it.
+<div class="source_code"> 
+<pre>
+  sudo groupadd docker
+  sudo usermod -aG docker $USER
+</pre>
+</div>
+Log out and log back in so that your group membership is re-evaluated.
+Then, issue the command:
+<div class="source_code"> 
+<pre>
+  newgrp docker 
+</pre>
+</div>
+
+Verify that you can run docker commands without sudo
+<div class="source_code"> 
+<pre>
+  docker run hello-world
+</pre>
+</div>
+<!-- ******************************************************************************************* 
+     ******************************************************************************************* --><hr>
+    
+<h1>Docker in Action, 337 pages</h1>
+
+<p/>
+
+Example <code>sudo docker run dockerinaction/hello_world</code>:<br>
+<code>dockerinaction/hello_world</code> is the _image_, or repository name, it is the name of the program you want to run.
+<p/>
+<a target="_blank" href="https://docs.docker.com/engine/install/ubuntu/">Installation on Ubuntu</a>
+<p/>
+
+Image = files and metadata.<br>
+The state of the container is the same as the state of the program running in the container.<br>
+When the program stops, the container is also stopped, but it is not yet removed.<br>
+<p/>
+
+Docker is not virtualization, it is containerization. Containers are an operating system feature.<br>
+Programs in the container interface directly with the Linux kernel of the host.<br>
+Running Docker means running both the Docker engine and the Docker CLI in user space. (6)
+<p/>
+Think of a Docker container as a <b>physical shipping container</b> the container stores the 
+application and its dependencies.(7) <br>
+From an image it is possible to create one or more containers. Containers started from the same image 
+do not share changes to their filesystem (8).
+<p/>
+
+
+The component that acts as the container is the <i>image</i>. 
+<b>IMAGE</b>: a bundled snapshot of all the files that should be available to a program inside the container.
+<p/>
+Multiple containers can be created from the same image: they do not share the filesystem.
+Docker runs natively in Linux, there is a virtual machine for Windows and MacOS.<br>  
+Software running in a container is more secure.<br>
+<p/>
+(20) Detached containers: the container runs in the background without being attached to any input or output.<br>
+<b>Image</b> the collection of files and instructions to run a software program.<br>
+Example of how to launch an image in a container:<br> 
+<code>sudo docker run --detach --name web nginx:latest                                                          </code> <br>
+<code>sudo docker run -d --name mailer dockerinaction/ch2_mailer                                                </code> <br>
+<code>sudo docker run --interactive --tty --link web:web --name web_test busybox:1.29 /bin/sh # Runs a command in a container. </code> <br>
+<code>sudo docker run -it --name agent --link web:insideweb --link mailer:insidemailer dockerinaction/ch2_agent </code>
+<p/>
+<code>docker logs [container name]</code> <b>Useful</b>: lists the log of the desired container. Then, press Control-C to stop the logs command.
+<p/>
+
+
+docker pull ubuntu:jammy-20220428
+
+The option <code>-d</code> or <code>--detach</code> launches a detached container.<br>
+<b>Detaching from an interactive container</b>: press <b>Ctrl-P Q</b>, to detach from the container.
+<p/>
+
+Each container has a unique identifier.<p/>
+<div class="source_code"> 
+<pre>
+docker run -d --name namespaceA busybox:1.29 /bin/sh -c "sleep 30000"
+docker run -d --name namespaceB busybox:1.29 /bin/sh -c "nc -l 0.0.0.0 -p 80"
+</pre>
+</div>
+<code>docker exec</code> runs additional processes in a running container (26).<br>
+<div class="source_code"> 
+<pre>
+# Shares the same PID namespace as the host. Lists all host processes.    
+docker run --pid host busybox:1.29 ps 
+</pre>
+</div>
+
+To run docker commands without sudo: 
+<a target="_blank" href="https://github.com/sindresorhus/guides/blob/master/docker-without-sudo.md">
+    https://github.com/sindresorhus/guides/blob/master/docker-without-sudo.md
+</a><p/>
+(25)
+
+Hint: to assign the container id to a shell variable (int Linux):<br>
+<code>
+minguzzi@mingux:~/docker_wrkdir$ export CID=$(docker create nginx:latest)<br>
+minguzzi@mingux:~/docker_wrkdir$ echo $CID <br>
+</code>
+<p/>
+(32) Docker containers states: Created, Running, Restarting, Paused, Removing, Exited.
+<br>
+
+<b>Read-only filesystems</b>
+(34) Read-only filesystems, advantages:
+<ul>
+    <li>An hacker cannot compromise the data</li>
+    <li>The container cannot be specialized</li>
+</ul>
+
+
+<div class="source_code"> 
+<pre>
+# Runs the container wp on a read-only filesystem    
+docker run -d --name wp --read-only wordpress:5.0.0-php7.2-apache
+
+# Runs wordpress in a read-write filesystem.
+docker run -d --name wp_writable wordpress:5.0.0-php7.2-apache
+
+# Checks the modifications to the container files or directories.
+docker run -d --name wp_writable wordpress:5.0.0-php7.2-apache
+docker container diff wp_writable
+
+# Runs wp2, read-only, mounts /run/apache2/ from the host and the temporary filesystem /tmp
+docker run -d --name wp2 --read-only -v /run/apache2/ --tmpfs /tmp wordpress:5.0.0-php7.2-apache
+
+# Starts MySQL in a container, and then the Wordpress that stores in the wpdb.
+docker run -d --name wpdb -e MYSQL_ROOT_PASSWORD=ch2demo mysql:5.7
+
+# -p 8000:80 Maps traffic from the host port 8000 to the container port 80.
+docker run -d --name wp3 --link wpdb:mysql -p 8000:80 --read-only -v /run/apache2/ --tmpfs /tmp wordpress:5.0.0-php7.2-apache
+</pre>
+</div>
+(36) <b>Note</b>: it is possible to mount a temporary, in memory filessystem with --tmpfs <p/>
+
+(38) Hint: it is possible to customize programs running in containers by passing environment variables.<br>
+<b>Environment variables</b>.  Example<br>
+<pre>
+docker run --env MY_ENVIRONMENT_VAR="This is a test" busybox:latest env    
+</pre>
+The --env option can be repeated.<br>
+<p/>
+
+<!-- HERE -->
+
+<b>Building durable containers</b>: what to do in case the program in the container crashes.<br>
+(40) Restarting containers: the policy can be: never restart (the default).  Restart waits for an exponential time before restarting. 
+<div class="source_code"> 
+<pre>
+docker run -d --name backoff-detector --restart always busybox:1.29 date    
+</pre>
+</div>
+Problem: you cannot do anything on the container when it is restarting.
+<p/>
+(42) A better way is using an <b>init system</b><br>
+It is common practice to use an <i>init system</i> inside a container. <br>
+<code>supervisord</code> is described: <a target="_blank" href="http://supervisord.org">Home page: http://supervisord.org</a>
+
+Example a LAMP system:<br>
+<div class="source_code"> 
+<pre>
+docker run -d -p 80:80 --name lamp-test tutum/lamp    
+</pre>
+</div>
+<p/>
+Moreover <code>docker top</code> can be used to list the processes running inside a container.
+<p/>
+<div class="source_code"> 
+<code>docker exec [container] [command]</code> # executes a command inside a container.
+</div>
+<p/>
+It runs additional processes inside a running container.
+<br>
+Example: <code>docker exec lamp-test ps</code> <br>
+<div class="source_code"> 
+<pre>
+# The --rm flag makes sure that the container is removed as soon as the program exits.    
+docker run --rm --name auto-exit-test busybox:1.29 echo Hello World
+</pre>
+</div>
+
+<hr>
+<h2>Chapter 3: SW Installation Simplified</h2>
+The steps are:
+<ul>
+  <li>Identifying SW</li>
+  <li>Finding the SW to install</li>
+  <li>Installing and isolating installed SW</li>
+</ul>
+(47) 
+<h3>Identify the SW</h3>
+Every Image has an <b>unique identifier</b> (raw image identifier).  
+<cite><b>A named repository is a named bucket of images</b></cite>. The named repository is composed as:<br>
+<code>Registry_host/user/short_name</code>, e.g.
+<div class="source_code"> 
+<pre>
+docker.io/dockerinaction/ch3_hello_registry
+</pre>
+</div>
+The named repository can reference several images (49). Each image has a <cite><b>tag</b></cite>.
+A tag is attached to an image, but an image can be referenced by many tags, creating aliases, if needed. For example, <code>latest</code> (49).<br>
+<p/>
+
+The group <code>short_name:tag</code> form the <i>composite key</i>: a unique reference made-up of non-unique components.<br>
+
+<h3>Find the software to install</h3>
+Indexes are search engines that catalog repositories.<br>
+Docker Hub is the default registry and index, located at <code>docker.io</code> <br>
+An image author can use the CLI to either: publish an independently build image or make a docker file 
+publicly available (this is preferred).<br>
+<p/>
+Use <code>docker login</code> and <code>docker logout</code> to login and logout from the registry.<br>
+
+<h4>Loading and saving images as files.</h4>
+It is possible to load images into Docker from a file (52).
+<b>Pull an image</b>: <code>docker pull busybox:latest</code><br>
+<b>Saves an image</b>: 
+Example:
+<div class="source_code"> 
+docker save -o myfile.tar busybox:latest  # NOTE that the image is saved, not the container.
+
+# Other example: saves the tar and then compressed it:
+docker save -o busybox.tar busybox:1.29
+gzip -9 busybox.tar
+</div>
+<br>
+
+<b>Remove an image</b>: 
+<div class="source_code"> 
+docker rmi [image_name]
+</div>
+<br>
+
+<h4>Installing from a Dockerfile</h4>
+The dockerfile can be distributed using git.<br>
+<pre>
+git clone https://github.com/dockerinaction/ch3_dockerfile.git # Clones the dockerfile locally
+docker build -t dia_ch3/dockerfile:latest ch3_dockerfile       # Follows the instructions to build an image.
+</pre>
+
+To clean the image: <code>docker rmi dia_ch3/dockerfile:latest </code><br>
+<p/>
+<a href="https://hub.docker.com/">https://hub.docker.com/</a> The official Docker Hub.
+<p/>
+Example activity (54):
+<pre>
+docker run -it --rm dockerinaction/ch3_ex2_hunt
+docker run -it --rm dockerinaction/ch3_ex2_huntanswer
+</pre>
+<br>
+<b>Hint</b>: the option <code>--rm Automatically remove the container when it exits</code>
+<p/>
+
+(55)
+Alternatives to the Docker Hub registry:
+<ul>
+<li>An alternative repository registry </li>    
+<li>A manually loaded image file, example a tar file</li>
+<li>Download a Dockerfile, and build the image locally</li>
+</ul>
+Most of the times an image is a collection of image layers.
+A <i><b>layer</b></i> is a set of files and file metadata that are distributed as an atomic unit. <br>
+Example:
+<pre>
+docker pull dockerinaction/ch3_myapp    
+docker pull dockerinaction/ch3_myotherapp
+</pre>
+
+
+Images maintain parent-child relationships.<br>
+Union filesystem.
+
+<hr> <!-- -------------------------------------------------------------------------------------- -->
+
+<h2>Chapter 4: Working with storage</h2>
+Linux unifies all storage into a single tree. Storage devices area attached to <i>mount points</i>.<br>
+Every container has a MNT namespace and a unique file tree root, but other storage can be mounted into containers:<br>
+<ul>
+<li>Bind mounts: (64) a container file is physically a file in the host filesystem</li>
+<li>In-memory storage: in the container memory</li>    
+<li>Volume: example: <code>/var/logs</code> in the container is mapped to a directory of the host</li>
+</ul>
+All the point points are created using the <code>--mount</code> flag on the docker run and docker create commands.<br>
+<p/>
+
+<h3>Bind mounts</h3>
+Bind mounts: it attaches a specific location of the host filesystem to a specifi point of the container file tree.<br>
+
+Example of creation of a bind mount: <code>docker run -d --name diaweb --mount type=bind,src=${CONF_SRC},dst=${CONF_DST} nginx:latest</code><br>
+In case a file exists in the container, the bind overrides the content of that file with what is provided by the host.
+The mount can be read-only so the container cannot modify the file:<br>
+<code>docker run -d --name diaweb --mount type=bind,src=${CONF_SRC},dst=${CONF_DST},readonly=true nginx:latest</code><br>
+Source is the host, destination is the container.<br>
+The file provided by the container overrised the file contained in the container filesystem.<br>
+
+Bind mounts are appropriate for workstations, machines with specialized concerns, systems combined with more traditional configuratoin tooling.
+It is better to avoid them in generalized platforms or hardware pools (67).<p/>
+Example fo sharing a file using bind mount.<br>
+Bind: the source is part of the host filesystem, the destination is part of the container filesystem.<br>
+<pre>
+echo "All commands paths are relative to the working directory."
+export LOG_SRC=$(pwd)/web-logs-example
+echo LOG_SRC=${LOG_SRC}
+
+mkdir -vp ${LOG_SRC}
+docker run --name plath -d --mount type=bind,src=${LOG_SRC},dst=/data dockerinaction/ch4_writer_a
+docker run --rm --mount type=bind,src=${LOG_SRC},dst=/data alpine:latest head /data/logA
+</pre>
+
+
+<b>Tmp filesystem</b> : the tmp filesystem is mounted to the container filesystem and it writes in memory.
+Example:
+<pre>
+docker run --rm --mount type=tmpfs,dst=/tmp --entrypoint mount alpine:latest -v
+</pre>
+
+The command below limits the tmp filesystem size to 10MB and make it make it not readable to other in-container users.
+<pre>
+docker run --rm --mount type=tmpfs,dst=/tmp,tmpfs-size=10M,tmpfs-mode=1770 --entrypoint mount alpine:latest -v
+</pre>
+
+Hint: entrypoint is the default command to execute at runtime:
+<pre>
+docker run --rm --mount type=tmpfs,dst=/tmp --entrypoint /bin/bash alpine:latest 
+</pre>
+<p/>
+
+<h3>Docker Volumes</h3>: 
+Docker volumes are named filesystem trees managed by Docker. They can be implemented with disk storage on the host filesystem.<br>
+To create docker volumes:
+<pre>
+docker volume create \
+       --driver local --label example=location \
+       location-example
+</pre>
+Uses the local plugin, named location-example.  To inspect the volume:
+<pre>
+docker volume inspect --format "{{json .Mountpoint}}" location-example
+</pre>
+
+<i>Volumes are created, not associated to any container</i><br>
+
+A volume has name, a set of key-value pairs, volumes can be shared among containers.
+When you are finished with a volume, Docker can clean things up (69).<br>
+The data contained in the volume can have a scope or life cycle that is independent from a single container (70).<br>
+<ul>
+<li> <b>Images</b> are used to distribute static content</li>
+<li> <b>Volumes</b> are used to hold dynamic data specializations</li>
+</ul>
+There is the concept of <b>polymorphic behavior</b><br>
+Volumes inject behavior into containers without modifying the image.<br>
+
+<h4>Using volumes with a No-SQL database</h4>
+(71) using Cassandra: create the cluster, create a keyspace, delete the container, then recover that keyspace on a new node in another container.<br>
+<pre>
+docker volume create --driver local --label example=cassandra cass-shared
+</pre>
+<pre>
+docker run -d --volume cass-shared:/var/lib/cassandra/data --name cass1 cassandra:2.2            
+</pre>
+Maps the container directory <code>/var/lib/cassandra/data</code> to the volume <code>cass-shared</code>. <br>
+Next, it runs the Cassandra shell linked to the previously created <code>cass1</code> container.
+<pre>
+docker run -it --rm --link cass1:cass cassandra:2.2 cqlsh cass
+</pre>
+Example command issued to the Cassandra shell:
+<pre>
+select * from system.schema_keyspaces where keyspace_name = 'docker_hello_world';
+create keyspace docker_hello_world with replication = { 'class' : 'SimpleStrategy', 'replication_factor': 1 };
+</pre>
+
+It is possible to add key-value pairs to organize and clean-up volumes later.
+
+Runs an image with the volume mapped into the filesystem <code>docker run --rm -i -v=cass-shared:/tmp/myvolume busybox </code><br>
+
+Cassandra example:<br>
+<pre>
+docker volume create --driver local --label example=cassandra cass-shared
+docker run -d --volume cass-shared:/var/lib/cassandra/data --name cass1 cassandra:2.2 # Runs the Cassandra server
+
+docker run -it --rm --link cass1:cass cassandra:2.2 cqlsh cass # Runs the Cassandra client linked to the Cassandra server.
+</pre>
+<code>quit</code> exits the Cassandra shell.<br>
+
+
+<h4>Sharing mount points and sharing files</h4>
+
+
+
+Example of sharing a file using volumes.
+<pre>
+# Creates the volume    
+docker volume create --driver local logging-example   
+
+# The log writer and the log reader use the logging-example volume
+docker run --name plath -d --mount type=volume,src=logging-example,dst=/data dockerinaction/ch4_writer_a 
+docker run --rm --mount type=volume,src=logging-example,dst=/data alpine:latest head /data/logA
+
+# Dumps the content of the file.
+sudo cat "$(docker volume inspect --format "{{json .Mountpoint}}" logging-example)"/logA
+
+docker volume inspect --format "{{json .Mountpoint}}"
+</pre>
+
+Docker volumes can be removed: unnamed volumes are deleted automatically when the container is removed.<br>
+Named Docker volumes must be removed using the command line interface.
+
+<hr>
+<!-- ------------------------------------------------------------------------------------------- -->
+
+<h2>Chapter 5: Single host networking</h2> 
+<ul>
+<li><b>Protocol</b>: with respect to communication and networking is a sort of language.</li>    
+<li><b>Interfaces</b> A network interface has an address and represents a location. <br>
+    Think of it like a <i>mailbox</i>: all messages to the recipients at that location are delivered to the same mailbox.
+    A mailbox has a postal address, a network interface has an IP address.<br>
+    Computers have an ethernet interface and a loopback interface.</li>
+<li>The <b>port</b> identifies the sender or the recipient.  The port concept is part of the TCP and UDP level.</li>    
+</ul>
+
+(83) Relevant networks are: 
+<ul>
+<li>the network that the computer is attached to</li>
+<li>the virtual network that Docker creates to connect all running containers to the network that the computer is attached to.</li>
+</ul>
+The Docker Network acts as a bridge. A bridge selectively forwards traffic between the connected networks, <i>based on another type of network address</i> (83).<br>
+The bridge creates the illusion that all hosts of the networks connected to the bridges are part of the same network.
+<p/>
+
+<ul>
+<li>A container gets a unique IP address in the Docker virtual network</li>    
+</ul>
+
+By default three networks:
+<ul>
+<li>bridge: intercontainer connectivity</li>
+<li>host: the container has direct access to all host interfaces</li>
+<li>none: containers attached to none do not have any network connectivity.</li>
+</ul>
+
+Network scope can be:
+<ul>
+<li> local: the network is constrained to the machine where the network exists </li>    
+<li> global: exists in every node of the cluster but without route between them </li>
+<li> swarm : seamlessly span all of the host participating in a Docker swarm </li>
+</ul>
+Using the default bridge network is not recommended (84). <p/>
+
+To create your own bridge network: the Docker bridge, a customizable network topology.
+The resulting network is local to the machine where Docker is running, it creates a route between the containers and the network where the host is attached.<br>
+Each container has a virtual interface. All containers interfaces are connected to the Docker bridge interface (named e.g. <code>docker0</code>.  
+In turn, the Docker bridge is connected to a logical host interface, which is connected to the physical network interface.
+<p/>
+
+To build a network called <code>user-network</code>, issue the command:
+<pre>
+docker network create \
+        --driver bridge \
+        --label project=dockerinaction \
+        --label chapter=5 \
+        --attachable \
+        --scope local \
+        --subnet 10.0.42.0/24 \
+        --ip-range 10.0.42.128/25 \
+        user-network
+minguzzi@mingux:~/docker_wrkdir/ch05_single_host_networking$ docker network ls
+NETWORK ID          NAME                DRIVER              SCOPE
+a80a6c2a9455        bridge              bridge              local
+f6fda069a9b1        host                host                local
+b352d3530a2f        none                null                local
+aa7095a77d73        user-network        bridge              local        
+</pre>
+Labels are metadata helps in identifying the resource later.
+
+<pre>
+docker run -it --network user-network --name network-explorer alpine:3.8 sh
+</pre>
+
+To create a new local network:
+<pre>
+docker network create \
+        --driver bridge \
+        --label project=dockerinaction \
+        --label chapter=5 \
+        --attachable \
+        --scope local \
+        --subnet 10.0.43.0/24 \
+        --ip-range 10.0.43.128/25 \
+        user-network2
+</pre>
+
+A running container can be attached to a network on the fly:
+<pre>
+docker network connect user-network2 network-explorer # Network-name Container-name
+</pre>
+Basically, the bridge allows multiple containers to communicate within a single machine.<p/>
+
+A container can be created using the networks:
+<ul>
+<li><b>host</b>: the container has the same network access as a process running outside of the container. </li>    
+<li><b>none</b>: the container is not given interface other that the localhost (90). </li>    
+</ul>
+
+<pre>
+docker run -it --network user-network --name network-explorer alpine:3.8 sh    
+docker run --rm --network host alpine:3.8 ip -o addr
+</pre>
+ip -f inet -4 -o addr
+
+To create another network:
+<pre>
+docker network create \
+    --driver bridge \
+    --label project=dockerinaction \
+    --label chapter=5 \
+    --attachable \
+    --scope local \
+    --subnet 10.0.43.0/24 \
+    --ip-range 10.0.43.128/25 \
+    user-network2
+</pre>
+
+<b>DNS</b> (88)Inside the virtual network created by Docker there is also a DNS.  
+Each name exposes the name it was given when it was created. Example: the container below is given the name lighthouse:
+<pre>
+docker run -d --name lighthouse --network user-network2 alpine:3.8 sleep 1d
+</pre>
+<h3>Connecting a container to the host network device</h3>
+(88) 
+<pre>docker run --rm --network host alpine:3.8 ip -o addr </pre>
+
+<h3>Handling inbound traffic using NodePort publishing</h3>
+NodePort publishing: the <code>docker create</code> command has the <code>-p</code> argument 
+
+<ul>
+<li><code>docker run --rm -p 8080 alpine:3.8 echo "forward ephemeral TCP -> container TCP 8080"</code> picks a random port on the host and redirects incoming traffic to container 8080</li>    
+<li><code>docker run -d --rm -p 8088:8080/udp alpine:3.8 echo "host UDP 8088 -> container UDP 8080"; sleep 300   </code></li>
+</ul>
+(99)
+
+<pre>
+docker run -d -p 8080 --name listener alpine:3.8 sleep 300
+</pre>
+
+Incoming traffic to host 12180 is routed to the container 80.
+<pre>
+docker run -d --name website -p 12180:80 nginx:latest 
+</pre>
+
+
+<hr>
+<h2>Chapter 6: Limiting Risk with resource control</h2>
+
+(100)
+When a container is created or executed, <code>create</code> or <code>run</code>, it is possible to set options to limit resources:
+<ul>
+  <li><code>--memory</code> example --memory 256m </li>
+  <li><code>--cpu-shares</code> the argument is the relative weight of the container </li>
+  <li><code>--cpus</code> limits the total amount of CPU used by a container</li>
+  <li>It is possible to restrict access to devices (105)</li>
+</ul>
+Memory limit is not reservation (101).<br>
+<p/>
+
+(107) Docker starts containers ar the user that specified the image metadata by default.<br>
+
+Example (note: <code>docker stats</code>, show container statistics)
+<pre>
+docker container run -d --name ch6_mariadb --memory 256m --cpu-shares 1024 --cap-drop net_raw -e MYSQL_ROOT_PASSWORD=test mariadb:5.5        
+</pre>
+
+<b>NOTE</b> <code>docker stats</code> displays resource usage statistics.<p/>
+
+<h3>Limit CPU access or usage</h3>
+To set CPU usage, the option <code>--cpu-shares 512</code> (102). It sets the relative weight of the container relative to other containers.<br>
+(103) <i>CPU shares differ from memory limits in that they’re enforced only when there is contention for time on the CPU</i><p/>
+
+It is also possible to assign a container to a set of CPU cores, using the <code>--cpuset-cpus</code> flag.  The argument can be a list of CPUs, or a range.<br>
+<code>--cpuset-cpus 0,1</code> a list<br>
+<code>--cpuset-cpus 0-2</code> a range<br>
+
+<h3>Authorize access to devices</h3>
+
+<h3>Understanding users</h3>
+(107) A container has the same priviledges as the user who specified the image metadata: usually it is the root user.<br>
+
+<!-- ------------------------------------------------------------------------------------------- -->    
+<hr>
+
+<h2>Chapter 7: packaging software in images</h2>
+(125) An image is created by either modifying an existing image inside a container, or defining and excuting a build script called <i>Dockerfile</i>.<br>
+
+Workflow:
+<ul>
+<li>Create a container from an image</li>    
+<li>Modify the container filesystem</li>
+<li>Commit the changes</li>
+</ul>
+<pre>
+docker container run --name hw_container ubuntu:latest touch /HelloWorld    # Runs the image and modifies the filesystem.
+docker container commit hw_container hw_image                               # Commits the changes to a new image.
+</pre>
+<i><b>Then, it is possible to save the image as: tar file.</i></b><br>
+<pre>
+docker save -o myfile.tar hw_image
+</pre>
+
+Example: creating an Ubuntu image that contains git.<br>
+<pre>
+docker container run -it --name image-dev ubuntu:latest /bin/bash  # Runs a container with the latest Ubuntu image.
+</pre>
+In the container bash shell, issue the commands:<br>
+<code>
+apt-get update<br>
+apt-get install git<br>
+exit<br>    
+</code>
+Note: <code>docker diff [container]</code> shows the differences in the filesystem.<br>
+<pre>docker container commit -a "DMinguzzi" -m "Added git." image-dev ubuntu-git # -a author -m comment    </pre>
+To save the image in a tar file:
+<pre>docker save -o ubuntu_git_20200503.tar ubuntu-git                      # Saves the image </pre> 
+<pre>docker load -i ubuntu_git_20200503.tar                                 # Loads the saved image</pre>
+Runs a container from the loaded image:
+<pre>docker run -it --rm --name my_ubuntu ubuntu-git bash </pre>
+<p/>
+Example of how to install git in an image:
+<pre>
+    docker container run -it --name image-dev ubuntu:latest /bin/bash
+    apt-get update
+    apt-get -y install git
+    git version # verifies that it works.
+</pre>
+The command to show the changes that where made to the filesystem of an image is:
+<pre>docker container diff [image-name]</pre>
+<b>Committing a new image</b> (129)
+<pre>
+docker container commit -a "DMinguzzi" -m "Added git to Ubuntu." image-dev ubuntu-git    
+</pre>
+
+<p/>
+When a container is created, it is better to provide an <b>entry point</b>:
+Example:
+<pre>
+  docker container run --name cmd-git --entrypoint git ubuntu-git
+</pre>
+<b>Note</b>: the command above sets <code>git</code> as the entrypoint command.  <br>
+Then, then a container is executed, it is possible to set the command line arguments to the entrypoint command.
+Examples
+<pre>
+    docker container run --name cmd-git ubuntu-git version     # Runs git version in the container
+    docker container run --name cmd-git ubuntu-git static      # Runs git status in the container
+</pre>
+(130) When the layer is committed, a set of informations are saved, example : 
+<ul>
+    <li>Environment variables</li>
+    <li>The working dir</li>
+    <li>The exposed ports</li>
+    <li>etc....</li>
+</ul>
+<p/>
+
+<pre>
+docker container run --name cmd-git -it  --entrypoint bash ubuntu-git                   # Runs the container, with the entrypoint.
+docker container commit -m "Set the entrypoint to bash" -a minguzzi cmd-git ubuntu-git  # Commits the change
+docker save -o ubuntu_git_20200503b.tar ubuntu-git                                      # Saves to tar file.
+tar -czvf ubuntu_git_20200503b.tar.gz ubuntu_git_20200503b.tar                          # Compresses to tar.gz
+</pre>
+
+The <code>docker commit</code> adds a new layer to the image.  It saves a set of attributes: the env variables, 
+the working directory, the exposed ports, volumes the container entrypoint, the commands and arguments (130).<br>
+Every time files are added, modified or deleted, those modifications become a new layer to the image.<br>
+
+(134) A commit action saves the changes to the top layer in an identifiable way; the layer has a parent that is the payer below it.<br>
+A collection of all layers exists: an image is a sequence of layers, from leaf to its parents until the root.  The root is the <b>starting layer</b>.(135)
+A commit produces a new image ID, something like: <code>e8114fb60a8ed9ac914d7999a644ba758b50a32771aca3979aba6ffe757945c0</code><br>
+A <b>repository</b> is a location/name pair that point to a specific layer identifier (136).<br>
+A repository name is defined by: registry host, user / short name, example <code>docker.io/dockeerinaction/ch3_hello_registry</code> (136).<br> 
+<pre>
+docker container commit cmd-last  minguzzi/myfirstrepo:mytag  # Commits to a repository with a tag. 
+</pre>
+<p/>
+
+It is possible to flatten images by saving the image to a TAR file with <code>docker image save</code> and then <code>docker image import</code> (139).
+It is possible to export the image filesystem to the host, modify it and then reimport it again (139).<br>
+
+
+
+It is possible to create a statically linked image in the host filesystem and run it in a docker image. Steps below:
+<pre>
+go build hello_world.go                 # Creates the hello_world statically linked executable.
+tar -cf hello_world.tar hello_world     # Creates the tar that docker can import into a container.
+
+# Creates the dockerinaction/ch7_static image, containing the hello_world.
+docker import -c "ENTRYPOINT [\"/hello_world\"]" - dockerinaction/ch7_static < hello_world.tar
+docker run dockerinaction/ch7_static    # Runs the image.
+</pre> 
+
+<h3>How to create a new image to run a statically linked executable.</h3>
+<pre>
+# Imports the content of the tar file into a new image, called my_image.    
+docker import -c "ENTRYPOINT [\"/hello_world\"]" - my_image < hello_world.tar
+    
+id -u minguzzi  # Prints the user id, for example 1000
+
+# The command below runs my_image in a read-only filesystem
+docker run --cpuset-cpus 0 --rm -t -i --read-only --user 1000 my_image
+</pre>
+<hr> <!-- -------------------------------------------------------------------------------------- -->
+
+<h2>Chapter 8: Building images automatically with Dockerfiles</h2>
+<ul>
+<li>A Dockerfile is created in an empty directory.</li>    
+<pre>
+docker image build --tag ubuntu-from-docker:auto .  # Creates a new image from the dockerfile in the current directory.    
+docker container run --rm ubuntu-from-docker:auto   # Runs a container with the image.  
+</pre>
+<li>The image build is started with the command:<br>
+    <code>docker image build --tag ubuntu-git:auto .</code> <br>
+    or<br>
+    <code>docker image build --tag ubuntu-git:auto --file ubuntu_git.dockerfile .</code> <br>
+    
+    </li>
+</ul>
+<a href="https://docs.docker.com/engine/reference/builder/" target="_blank">Reference docs on dockerfiles</a><br>
+(149) A dockerfile must start with FROM. <code>scratch</code> can be used as empty repository.<p/>
+<h3>Useful commands in Dockerfile(s)</h3>
+<h4>.dockerignore</h4>
+<code>.dockerignore</code> indicates files in a directory that will not be added to the image.
+<b>NOTE</b>: indicate <code>.dockerignore</code> itself in the .dockerignore.<br>
+
+<h4>ENTRYPOINT and CMD</h4>
+<ul>
+<li>CMD is the argument list for the entrypoint, which by default is:<code>/bin/sh</code></li>    
+</ul>
+
+Simplest example of dockerfile:
+<pre>
+# An example Dockerfile for installing git on Ubuntu.
+FROM ubuntu:xenial-20201014
+LABEL maintainer="mtarpit@gmail.com"
+RUN apt-get update && apt-get install -y git
+ENTRYPOINT ["git"]    
+</pre>
+
+<!-- *******************************************************************************************
+     ******************************************************************************************* -->
+<h2>Chapter 11: Services with Docker and Compose</h2> 
+(219) Any process functionality or data discoverable and available over a network is called a <cite>service</cite>.<br>
+Swarm mode, the role of an orchestrator.
+<div class="source_code"> 
+<pre>  $ docker swarm init
+  Swarm initialized: current node (24hgwvbzerig6zx1nqek9t4kc) is now a manager.
+
+  To add a worker to this swarm, run the following command:
+
+    docker swarm join --token SWMTKN-1-4zjgf57ez1anz5rh7qqgwafiapddq66qsr57pkz8jt6f29p07u-e68pxvcp7erm177o6ptaderbz 10.0.2.100:2377  
+</pre>
+</div>
+
+<h2>How to create a development environment in a Docker image.</h2>
+<pre>
+docker run -i -t --name ubuntu_dev ubuntu:xenial-20201014 /bin/bash
+
+In the shell:
+groupadd develop
+useradd -g develop -m developer
+apt-get update
+apt-get install -y build-essential libgl1-mesa-dev gdb gdb-doc gdbserver
+apt-get install -y cppcheck cppcheck-gui
+apt-get install -y cmake cmake-curses-gui clang-format
+apt-get install -y curl
+apt-get install -y flex byacc
+apt-get install -y git 
+
+cd /home/developer
+mkdir -pv /home/developer/platform
+export PLATFORM_ROOT=/home/developer/platform
+
+
+docker build --file devenv_00_os_packages.df --tag devenv:packages .
+
+</pre>
+
+<h1>Steps to create a development image to develop for EC2</h1>
+<pre>
+docker build --file devenv_00_os_packages.df --tag devenv:packages .
+docker run -i -t --name dev_cont devenv:packages /bin/bash
+docker build --file devenv_00_os_packages.df --tag devenv:packages .
+</pre>
+
+
+Steps to create a development environment for C++, based on Ubuntu 2022
+<div class="source_code"> 
+<pre>
+  
+</pre>
+</div>
+# Run only at the beginning: run Docker as non-root.
+/usr/bin/dockerd-rootless-setuptool.sh install
+
+docker pull ubuntu:jammy-20220531 # Downloaded image Ubuntu 2022.04LTS.
+
+
+# Creates a volume called my-volume
+sudo docker volume create my-volume
+
+# Runs the container u22dev
+docker run --interactive \
+  --tty \
+  --env AV_ROOT=/home/minguzzi/ubuntu22_repos/av_wrkdir \
+  --mount type=bind,src=/home/minguzzi/ubuntu22_repos/av_wrkdir/,dst=/home/minguzzi/ubuntu22_repos/av_wrkdir/ \
+  --name u22dev ubuntu:jammy-20220531
+  
+  
+Repo: https://minguzzi@bitbucket.org/minguzzi/av_wrkdir.git  
+
+# Within the container, issue the commands:
+apt-get update
+apt-get install -y g++ gcc binutils cmake wget git sudo net-tools unzip
+
+# To export the filesystem to the file called u22dev_fs
+docker export -o u22dev_fs u22dev
+
+# Adds the fs to the image
+docker import -m u22dev_with_fs u22dev_fs ubuntu:jammy-20220531
+
+docker run --interactive \
+  --tty \
+  --env AV_ROOT=/home/minguzzi/ubuntu22_repos/av_wrkdir \
+  --mount type=bind,src=/home/minguzzi/ubuntu22_repos/av_wrkdir/,dst=/home/minguzzi/ubuntu22_repos/av_wrkdir/ \
+  --name u22dev \
+  ubuntu:jammy-20220531 \
+  bash
+
+</body>
+</html>

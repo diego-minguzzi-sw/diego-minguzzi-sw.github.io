@@ -1,0 +1,441 @@
+<html>
+<body>
+<!-- ------------------------------------------------------------------------------------------- -->
+<h1>Working Draft, Standard for Programming Language C++</h1>
+N4659 2017-03-21<br>
+
+<h3>5.5 Alternative tokens</h3> [25]
+<code>
+  <pre>
+    <%      {
+    %>      }
+    <:      [
+    :>      ]
+    and     &&
+    or      ||
+    xor     ^
+    compl   ~
+    bitand  &
+    bitor   |
+  </pre>
+</code>
+
+5.10[27] the identifiers:
+<pre>
+override
+final
+</pre>
+have a special meaning.
+<p/>
+<h2>6 Basic Concepts</h2>
+<code>[39]</code>
+An entity is a value, object, reference, function, enumerator, type, class member, bit-field, template, template
+specialization, namespace, or parameter pack.<br>
+Every name that denotes an entity is introduced by a declaration.<br>
+It is better to define a <code>static constexpr</code> class member.
+
+<h3>6.2 One definition rule</h3> No translation unit shall contain more than one definition of any variable, function, class type, enumeration
+type, or template.<br>
+<code>[42]</code>
+Exactly one definition of a class is required in a translation unit if the class is used in a way that requires the
+class type to be complete.  The class does not need to be complete if it used in pointer formation.
+
+<h3>6.3 Scope</h3>
+<h4>6.3.2 Point of declaration</h4>
+The point of declaration for a name is immediately after its complete declarator and before its initializer (if any). 
+A name from an outer scope remains visible up to the point of declaration of the name that hides it.
+<pre>
+unsigned char x = 12;
+{ unsigned char x = x; }
+</pre>
+The second <code>x</code> is initialized to its own undeterminate value.
+
+The point of declaration for a class or class template first declared by a class-specifier is immediately after
+the identifier or simple-template-id (if any) in its class-head. 
+The point of declaration for an enumeration is immediately after the identifier (if any) in either its enum-specifier or its first
+opaque-enum-declaration, whichever comes first.
+
+<h4>6.3.3 Block scope</h4>
+<code>[46]</code> A name declared in a block has block scope: it potential scope begins at the end of the declaration and ends at the end of the block.
+Names declared in the init-statement, the for-range-declaration, and in the condition of <code>if</code>, <code>while</code>, <code>for</code>, and <code>switch</code> statements are local to the <code>if</code>, <code>while</code>, <code>for</code>, or <code>switch</code> statement.
+
+<h4>6.3.4 Namespace scope</h4>
+<code>[47]</code> Entities declares in a namespace body have potential scope starting from the declaration to the end namespace.
+
+<p/>
+Read until page <code>[66]</code>
+
+<!-- ------------------------------------------------------------------------------------------- -->
+<h1>Stroustroup</h1>
+
+<h2>Pointers and consts</h2>
+<code>[187]</code> When using a pointer, two objects are involved: the pointer itself and the object pointed to. <br>
+Pre-fixing a declaration of a pointer with <code>const</code> makes the object, but not the pointer, a constant. <br>
+To declare a pointer itself, rather than the object pointed to, to be a constant, we use the declarator operator <code>*const</code> instead of plain <code>*</code> .
+
+<pre>
+const char* pc = s; // pointer to constant
+char *const cp = s; // constant pointer
+</pre>
+
+The declarator operator that makes a pointer constant is <code>*const</code>. 
+There is no <code>const*</code> declarator operator, so a <code>const</code> appearing before the * is taken to be part of the base type. <br>
+For example:
+<pre>
+char *const cp; // const pointer to char
+
+char const* pc; // pointer to const char
+const char* pc2;// pointer to const char 
+</pre>
+So, <code>char const*</code> is the same type as <code>const char*</code> .<br>
+Some people find it helpful to read such declarations right-to-left, for example, <cite>cp is a const pointer to a char</cite> and 
+<cite>pc2 is a pointer to a char const</cite>.<br>
+
+<h2>References</h2>
+<code>[189]</code> 
+<pre>
+T& : a reference to an object of type T.
+const T& : a reference to a constant object of type T.
+</pre>
+
+<!-- ------------------------------------------------------------------------------------------- -->
+<h1>Effective Modern C++</h1>
+Kindle Book<p/>
+
+<code>[3]</code> <b>lvalues/rvalues</b> An expression is a lvalue if you can take its address. Otherwise, it is a rvalue.
+Being a lvalue / rvalue does not depend on the type.<br>
+
+<code>[4]</code> In a function call, the expressions passed at the call site are the function’s <i>arguments</i>.
+The arguments are used to initialize the function’s <i>parameters</i>.<br>
+<b>Function call: arguments initialize parameters.</b> <br>
+Parameters are lvalues, while arguments can be lvalues or rvalues.<br>
+
+<code>[4]</code> Function object: anything supporting the <code>operator()</code>.<br>
+<code>[5]</code> Callable objects: function objects and function pointers.
+<code>[5]</code> A declaration introduces a new name, while a definition provides the storage details.</br>
+<code>[6]</code> <code>ctor</code> = constructor, <code>dtor</code> = destructor.<br>
+<code>[25]</code> trailing return type syntax:
+<pre>
+template <typename Container, typename Index>
+auto authAccess( Container& c, Index index) -> decltype(c[index]) 
+{
+  ...
+}
+// the trailing decltype refines the auto at the beginning of the definition.
+</pre>
+<p/>
+
+<code>[25]</code> std::function is a template in the C++11 Standard Library that generalizes the idea of a function pointer.
+The type of a lambda function can be expressed by an object of type <code>std::function</code>. <br>
+
+<code>std::bind</code>
+
+
+Read until page <code>[49]</code>
+
+<!-- ------------------------------------------------------------------------------------------- -->
+<h1>C++ Template Metaprogramming</h1>
+
+<code>[36]</code> Dynamic polymorphism. Static polymorphism allows objects of different types to be manipulated in the same way merely by virtue of their support for a
+common syntax.
+
+To achieve polymorphism among metafunctions, we'll need a single way to invoke them. The convention used by the Boost libraries is as
+follows:
+<pre>
+metafunction-name<type-arguments...>::type
+</pre>
+
+<code>[51]</code> A metafunction is either a class template, all of whose parameters are types or a class with a publicly accessible nested result type called <code>type</code>.
+<p/>
+
+<b>Templates: specialization and instantiation. </b>
+<code>[54]</code>
+
+<ul>
+<li>Specialization
+    </li>
+<li>Instantiation: the instantiation does not instantiates definitions until functions are actually used.
+    </li>
+<li>Primary template
+    </li>
+</ul>
+
+<b>Polymorphism</b> <code>[55]</code> is the ability to manipulate different types through a common interface. <br>
+Having a consistent interface is the best way to ensure that code is reusable and components interoperate naturally.
+
+<b>Metafunction</b> <code>[56]</code>:a template or class is a metafunction if it has no non-type parameters and returns a type called <code>type</code>.<br>
+
+<b>Numerical metafunction</b> <code>[56]</code>: they provide a nested ::value member, in addition to the general ::type::value member.<br>
+<b>Nullary metafunction</b> <code>[56]</code> <br>
+<b>Traits</b> <code>[56]</code> provide associations between pieces of metadata via class template specializations.<br>
+<p/>
+
+<!-- ------------------------------------------------------------------------------------------- -->
+<h1>Optimized C++</h1>
+<h2>Optimizing Dynamic variables</h2>
+<h3>Storage duration</h3>
+<ul>
+<li> <code>[108]</code> Variables with <b>static storage duration</b> live in memory reserved by the compiler.
+      Each global static variable is constructed before execution enters <code>main()</code> and destroyed after execution leaves <code>main()</code>.<br>
+      There is no runtime cost to create the storage for static variables. However, the storage is not available for reuse. <br>
+      Static variables are thus appropriate for data that will be used for the whole life of the program.
+  </li>
+<li> <code>[109]</code> <b>Thread-local storage duration</B>
+      Thread-local variables are constructed at thread entry and destroyed at thread exit; their lifetime is the same as the lifetime of the thread. Each thread has its own separate copy of these variables.
+      
+  </li>
+<li> Automatic Variables: there is no runtime cost to allocate the storage used by automatic variables.
+  </li>  
+</ul>
+
+<h3>Ownership of variables</h3>
+<ul>
+<li> <code>[111]</code> Global ownership, lexically scoped, member ownership, dynamic variables. 
+      Dynamic variables have no ownership.</li>
+  
+<li> <code>[]</code> 
+  </li>
+  
+<li> <code>[]</code> 
+  </li>
+</ul>
+
+<code>[116]</code>  Smart pointers couple the lifetime of a dynamic variable to the lifetime of the smart pointer that owns it.
+
+<h3>Value and entity objects</h3>
+<code>[112]</code> 
+Entities are unique, mutable, not copyable, not comparable.<br>
+Values are interchangeable, comparable, immurable, copyable.
+<p/>
+
+<code>[118] auto_ptr</code> does not implement move semantics and does not have a copy constructor.<br>
+
+<!-- ------------------------------------------------------------------------------------------- -->
+<h1>Modern C++ Cookbook</h1>
+<h2>Using auto</h2>
+<ul>
+<li>It is not possible to use auto for multi-word data types, like <code>long long</code>, 
+    <code>long double</code>. However, it is possible to use type aliases, e.g. <code>using</code> </li>
+</ul>
+
+<h2>Uniform initialization</h2>
+If a class has an <cite>initializer list constructor</cite>, it takes the precedence over the other constructor for that class.<br>
+<br>
+In C++17, the form below is used for initializer lists with auto:
+<code>
+
+</code>
+
+<h2>Non static class members initialization</h2>
+In C++17, it is possible to initialize a constant member with "default member initialization", and also 
+any member whose initializer do not depend on a value passed to the constructor.<br>
+Prefer the initializer list and the default member initialization.<br>
+
+The order in which non static data members are initialized is the same as the order in which they are declared in the class definition / declaration.
+<p>
+The order in which non static data members are destroyed is the reverse of the order of construction.
+<p/>
+If not initialized in the initializer list, non static members are initialized via their default constructor and then, when assigned in the constructor body, the assignment operator is invoked.<br>
+If a data member is initialized both with the default member initialization and in the initializer list, the latter takes the precedence and the default member is discarded.<p/>
+<br>
+[1169] <code>final</code> ensures that functions cannot be overridden or classes cannot be inherited any more.
+<pre>
+  void foo() final{}
+  class Derived final: public Base {}
+</pre>
+<code>final</code> and <code>override</code> are special keywords that have a meaining only in class or function declarations.<br>
+ 
+<h2>Structured decomposition</h2> 
+[1224] Example of structured decomposition
+<pre>
+std::multimap<int,std::string> mmap{ {0, "Ciccio"}, ... };
+for ( const auto& [rate,name] : mmap)
+{
+  [...]
+}
+</pre>
+
+<h2>Range loops on custom types</h2> 
+It is sufficient to define two free functions: <code>begin()</code> and <code>end()</code>.  If MyRangeable is the user defined data type.<br>
+<pre>
+int* begin( MyRangeable& obj );
+int* end( MyRangeable& obj );
+</pre>
+
+<pre>
+  MyClass myObj2 = myObj; // This statement calls the copy constructor.
+</pre>
+It is better not to use <code>this</code> in the initializer list.
+
+<h2>Explicit constructors and conversion operators</h2>
+In C++11, it is possible to define as <code>explicit</code>, both:
+<ul>
+<li>constructors with an arbitrary set of arguments,</li>
+<li>conversion operators, if it makes sense.</li>
+</ul>
+<pre>
+class Handle
+{
+public:
+  explicit Handle( int const h);
+    
+  explicit operator bool() const;
+};
+</pre>
+
+Note that the two ways of constructing an object of type are equivalent. Both call the initializer list constructor.
+<pre>
+MyRangeable myRange{1,2,3};
+MyRangeable other = MyRangeable{1,2,3};
+</pre>
+
+<h2>Using unnamed namespaces instead of static globals</h2>
+In C++, it is possible to write:
+<pre>
+namespace 
+{
+  void printMe()
+  {
+    /* ... */
+  }
+}
+</pre>
+
+The unnamed namespace acts like static functions in C.<br>
+
+<h2>Using inline namespaces to handle multiple versions of a library</h2>
+
+<pre>
+namespace modernlib
+{
+
+#ifdef LIB_VERSION_1
+inline namespace version_1
+{
+
+template <typename T>
+int test(T value) { return 1; }
+
+} /*namespace version_1*/
+
+#endif /*LIB_VERSION_1*/
+
+#ifdef LIB_VERSION_2
+inline namespace version_2
+{
+
+template <typename T>
+int test(T value) { return 2; }
+
+}
+#endif /*LIB_VERSION_2*/
+</pre>
+
+<h2>Using structured bindings</h2>
+<pre>
+std::tuple<int, std::string, double> find()
+{
+  return std::make_tuple(1, "Marius", 123.5);
+}
+
+// id, name and score do not have to be declared in advance.
+auto [id, name, score] = find();
+</pre>
+
+<h2>Multi-return values with structured bindings</h2>
+[1572]
+Example:
+<pre>
+std::tuple<int, std::string, double> find() { return std::make_tuple( 15, "marius", 1234.5); }
+auto [id, name, score] = find(); 
+</pre>
+
+std::tie() is similar, it requires to declare all bound variables before the std::tie() call:
+<pre>
+int         myId{};
+std::string myName;
+double      myScore;
+std::tie( myId, myName, myScore) = find();
+</pre>
+
+<h2>if(init;condition) and switch(init; condition) blocks.</h2>
+Note that it is possible to write:
+<pre>
+if ( auto [tid, tname, tscore]=find(); tid>0)
+{
+  [...]
+}  
+</pre>
+Switch case with init condition:
+<pre>
+switch ( auto result= performOperation(); result )
+{  }
+</pre>
+
+<h2>Converting to and from strings</h2>
+Use:
+<pre>
+The <code>std::to_string()</code> exists to convert from integer, float, etc., into string.<br>
+
+/* E.g. string to integer, throws std::invalid_argument in case it is not able to convert.
+ * And std::out_of_range in case the value is outside the limits of integers. 
+ * The input string is trimmed before the conversion is attempted.*/
+std::stoi("123");
+std::stoi("   123   "); 
+std::stoi("   123abcd   ");
+
+</pre>
+<h2>Converting between numbers and strings</h2>
+<h3>Raw string</h3>
+<code>[2319]</code> Basic form:
+<pre>R"(A raw string \n \t ecc)"</pre>
+User defined form:
+<pre>R"delimiter( literal )delimiter"</pre>
+Where <cite>delimiter</cite> is any sequence of characters not present in literal.
+
+
+<h2>Defaulted and deleted fuctions</h2>
+<code>[2954]</code> How to default and delete a function. Any function, including non member functions, can be deleted.<br>
+<pre>
+class FooClass
+{
+public:
+  FooClass()=default; // Special functions can be defaulted.
+
+  FooClass( FooClass ) {}
+
+  FooClass( FooClass const& ) = delete; // To delete, use delete instead of the method body.
+  
+};
+
+void funct() = delete;
+</pre>
+
+<code>[2987]</code>
+<ul>
+<li>If a user-defined constructor exists, then the default constructor is not by default.</li>
+<li>If a user-defined virtual constructor exists, then the default destructor is not generated.</li>
+<li>If a move constr. or move assignment exist, then copy constr. and copy assignment are not generated.</li>
+<li>If a move/copy constr, or move/copy assignment exist, then the move constructor and assignmet are not generated.</li>
+<li><cite>Other rules are mentioned but they are deprecated</cite></li>
+</ul>
+
+<code>[3010]</code>
+<b>Rule of five</b> if you explicitly define any of( copy constr, move constr, copy assign, move assign, destructor), then you must define or default all of them.
+
+
+<!-- ------------------------------------------------------------------------------------------- -->
+<h1>C++ Templates, The Complete Guide</h1>
+D.Vanderdoorde, N.M.Josuttis, D.Gregor, Kindle book<br>
+<code>[39]</code>
+In order to declare a constant integer, the book uses: <code>int const</code>.
+<br>
+<code>[834]</code> The process of replacing template parameters with concrete types is called <cite>instantiation</code>.<br>
+It results in an <cite>instance</cite> of a template.<br>
+
+A <cite>definition-time</cite> check exists, even if the template is not instantiated with any parameter.<br>
+Without instantiation at definition time, the template code is checked for correctness (syntax errors, unknown names, etc).
+At  instantiation time the code is checked again.
+
+</body>
+</html>

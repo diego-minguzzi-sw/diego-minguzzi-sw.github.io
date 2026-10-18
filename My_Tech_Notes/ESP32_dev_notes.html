@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+  .source_code {
+    background-color: lightgray;
+    font-family: Courier New;
+    border-style: solid;
+    border-width: thin;    
+  }
+  </style>
+  <title>ESP32 Development Notes</title>
+</head>
+<body>
+<h1>. FreeRTOS for ESP32-Arduino - Practical Multitasking Fundamentals by Warren Gay</h1>  
+Elektor 2020, (314 pages)
+<cite>Up to page 223.  </cite>
+<p/> 
+(19) The ESP32 Freenove WROVER board is used for the W4C New Project.<br>
+<h2>.. Introduction</h2>
+(20) Conventions
+<ul>
+  <li> Data types
+    <ul>
+    <li><code>TickType_t</code> number of ticks</li>
+    <li><code>BaseType_t</code> unsigned integer, e.g. 32 bit, the efficient type on the HW platform</li>
+    </ul>
+  </li>
+  <li> Variable names prefixes
+    <ul>
+    <li><code>c</code> char</li>
+    <li><code>s</code> short</li>
+    <li><code>l</code> long</li>
+    <li><code>p</code> pointer</li>
+    <li><code>u</code> unsigned</li>
+    <li><code>x</code> something else, for example <code>BaseType_t</code></li>
+    </ul>
+  </li>
+  <li>Function names have a prefix: the return type and the file they are defined in. v= void</li>
+  <li>Macro names have a prefix: the file where they are defined. The name is uppercaps.</li>
+  <li>Include files
+    <ul>
+    <li> <b>FreeRTOS.h should be the first header file to be included.</b> </li>
+    </ul>
+  </li>
+</ul>
+(22) Explanation of important header files. <br>
+[28] Output GPIO have programmable current strengths, by default strength 2, it means 20mA.<br>
+
+<h2>.. Stack size</h2>
+By default, FreeRTOS uses about 2k of stack.<br> 
+
+<h2>.. Tasks</h2>
+(30) Preemptive scheduling is used.<br>
+(31) In FreeRTOS, zero is the lowest priority. Espressif places support tasks in CPU0, while user application tasks in CPU1 (31) .<br>
+(50) The <code>assert()</code> macro can be used to check return codes of methods.<br>
+(58) Various scenarios when a task can be blocked while adding or receiving from a queue.<br>
+In ESP32 there is Data RAM, Instruction RAM IRAM.  It is also possible to add external SPI RAM (39).<br>
+<code>taskYield()</code> releases the CPU to the next scheduled task. The scheduler is executed again when the time slice finishes.<p/>
+<p/>
+<h2>.. Timers</h2>
+The FreeRTOS tick rate can be configured using the Menu Config.<p/>
+
+<code>vTaskDelay()</code> (75)
+<p/>
+Note: The ESP32 also provides access to high-resolution hardware timers, which are useful for measuring 
+high-frequency events. That API is covered in the Espressif online documentation. 
+(75)
+<p/>
+Applications normally tend to get more complex as new requirements are identified. Seldom do they get simpler (78). 
+<p/>
+FreeRTOS has two <b>timer types</b>:
+<ul>
+  <li>one-shot timer</li>
+  <li>auto-reload timer</li>
+</ul>
+
+<b>Timer states</b>:
+<ul>
+  <li>Dormant: timers are initialized in dormant state</li>
+  <li>Running: the timer is active</li>
+</ul>
+<p/>
+<b>NOTE</b> It is possible to use the function <b><code>vTaskDelayUntil()</code></b>, to block a task for a given time, without using a timer.
+<br>
+(116)
+
+<h2>.. Mailboxes</h2>
+A mailbox allows different tasks to exchange data. A mailbox is a queue of size one.
+<ul>
+  <li>It is created as a queue of size ONE </li>
+  <li>To write to the mailbox, <code>xQueueOverwrite()</code> must be used.</li>
+  <li>To read from the mailbox, erasing the read datum, <code>xQueueReceive()</code> can be used.</li>
+  <li>To read from the mailbox, not erasing the read datum, <code>xQueuePeek()</code> can be used.</li>
+</ul>
+
+<h2>.. Task Priorities</h2>
+(130) FreeRTOS scheduling is totally based on priorities: the higher ready task executes.<br>
+A task executing at a given priority is pre-empted when another task at higher priority exters the ready state.<br>
+When there is no task to execute, the scheduler runs the idle task.
+<p/>
+(131) 25 priority levels, from 0 to 24. Zero is the lowest urgency, 24 the maiximum.<br>
+Tasks at the same priority execute in Round Robin. When the slice expires, the CPU is given to the next task at same priority. <br>
+If no task is ready, the idle task is run (149).<br>
+When a higher priority task is ready, it is executed immediately (131).<br>
+For many applications, runs the tasks at priority 1. (150) <br>
+In ESP32, the following CPUs are present:
+<ul>
+  <li>CPU 0: Protocol CPU</li>
+  <li>CPU 1: Application CPU</li>
+</ul>
+
+The task states are : Ready, Running, Blocked (waiting for some event to become Ready), Suspended (132).<br>
+
+<h2>.. Memory allocation</h2>
+
+<ul>
+  <li>Data RAM is the normal memory heap (38)</li>	
+  <li>IRAM instructions RAM</li>
+  <li>D/IRAM: RAM that is used for data or instructions</li>
+  <li>It is possible to attach external SPI RAM</li>
+</ul>
+
+
+<h2>.. Mutexes</h2>
+(151) Semaphores are prone to the priority inversion problem.<br> 
+A mutex is created in <b>given</b> state, unlike semaphores, that are created in <b>taken</b> state (154).<br>
+Mutexes are created with a specific function, then they are used with semaphore take and give.<br>
+Recursive mutexes are supported.(164).<p/>
+
+<h2>.. Semaphores</h2>
+(97)
+
+<h3>Binary semaphores</h3>
+A binary semaphore has two states.
+<ul>
+  <li>empty = not given = taken: an attempt to take a binary semaphore when it is empty will block</li>	
+  <li>full = given = not taken</li>
+</ul>
+Here, the analogy is with a queue with a depth of one, either full or empty (97).<br>
+<b>In FreeRTOS semaphores are created empty.</b><p/>
+
+<h2>.. Interrupts</h2>
+(166) Interrupt Service Routine (ISR).
+<ul>
+  <li>A separate ISR stack exists, used by all ISR routines. Better to use small amount of stack.<br>
+    <b>Check the ISR stack size in the <code>menuconfig</code></b>. </li>
+  <li>ISR handlers must be reentrant, short, they must not call blocking functions</li>
+  <li>ISR(s) have priorities, a high priority ISR blocks a lower priority ISR (166)</li>
+</ul>
+<b>Reentrant functions</b>: a function is reentrant if it can be invoked multiple times without corrupting the outcome of prior calls in progress.<br>
+(167) A reentrant function only uses its passed parameters and has no side-effect.<br>
+On the ESP32, an interrupt service routine is declared as:
+<div class="source_code"> 
+<pre>
+  void IRAM_ATTR myIsr()
+  {
+    /* ... */
+  }
+</pre>
+</div>
+It means that the ISR must be placed in the IRAM.  On the ESP32 there is approximately 128kB of IRAM.
+Some of it is preallocated.(169). <p/>
+
+
+<h2>.. Queue sets</h2>
+(191) <b>Note:</b> the QueueSet must be created and initialized before any item is inserted in any of the queues.
+<p/>
+
+<h2>.. Task Events</h2>
+(203)  
+<b>In FreeRTOS, each task has a built-in 32-bit notification value, initialized to zero when the task is created</b>.
+<p/>
+Task events do not use additional RAM, since the notification value is built-in in every task.
+<br>
+NOTE: there are restrictions (203):
+<ul>
+  <li>It is not possible to send a notification to an ISR</li>
+  <li>Notification events cannot be queued</li>
+  <li>The notifying task cannot block waiting that the event is received by the receiving task</li>
+</ul>
+
+<h3>Waiting for an event</h3>
+<ul>
+  <li>ulTaskNotifyTake()</li>
+</ul>
+
+<hr>
+<!-- ------------------------------------------------------------------------------------------- -->  
+<h1>. Communication</h1>
+<h2>.. Communication: BLE</h2>
+<a href="https://h2zero.github.io/esp-nimble-cpp/" target="_blank">https://h2zero.github.io/esp-nimble-cpp/</a>: repo of the ESP32 NimBLE library used for the POCs. <br>
+
+
+<h2>.. Communication: the I2C bus</h2>
+The PCF8574 Chip (155)
+
+<h2>.. Communication: Digital I/O(s)</h2>
+By default, after the reset:
+<ul>
+  <li>The GPIO 12, 13, 14 are disabled, with pull-up</li>
+</ul>
+
+<a target="_blank" 
+  href="https://github.com/espressif/esp-idf/blob/b9c6175649647580cfa9ae33432e53ff2ccd2ca1/examples/peripherals/gpio/main/gpio_example_main.c">
+  C example of GPIO that uses interrupts</a><br>
+<p/>  
+
+<h2>.. Communication: Wifi</h2>
+<a target="_blank" 
+  href="https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/network/esp_wifi.html">
+  Wi-Fi Espressif IDF docs</a><br>
+<ul>
+  <li><b>Station mode</b> (aka STA mode or Wi-Fi client mode). ESP32 connects to an access point.</li>
+  <li><b>AP mode</b> (aka Soft-AP mode or Access Point mode). Stations connect to the ESP32.</li>
+</ul>  
+Examples are located to the path: <code>${HOME}/.platformio/packages/framework-espidf/examples/wifi/getting_started</code>
+
+
+<hr>
+<!-- ------------------------------------------------------------------------------------------- -->  
+<h1>. ESP32 Development Notes</h1>
+<h2>.. Hardware</h2> 
+(28) The ESP32 uses 3.3V GPIO ports. Output ports can provide up to 20mA.<br>
+
+<h2>Installation on Linux</h2> 
+From  <a target="_blank" href="https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/linux-setup.html">Standard Setup of Toolchain for Linux</a>:
+packages needed to compile the ESP-IDF
+<pre>
+$ sudo apt-get install git wget flex bison gperf python3 python3-pip python3-setuptools cmake ninja-build ccache libffi-dev libssl-dev dfu-util libusb-1.0-0
+</pre>
+<p/>
+
+<cite>Maybe this step is not needed</cite> the installation of 99-platformio-udev.rules:
+<div class="source_code"> 
+<pre>
+curl -fsSL https://raw.githubusercontent.com/platformio/platformio-core/master/scripts/99-platformio-udev.rules | sudo tee /etc/udev/rules.d/99-platformio-udev.rules  
+
+# Restart the udev management tool.
+sudo service udev restart
+</pre>
+</div>
+
+<h2>Platform IO: Development</h2>
+The upload and the monitor step use the USB, by default it can only be accessed by the root user, to allow access to every user:
+<div class="source_code"> 
+<pre>
+  sudo chmod 666 /dev/ttyUSB0  
+</pre>
+</div>
+
+Note that in Platform IO, the proper USB serial speed must be set.
+For the TTYGO Camera, set in the <code>platform.ini</code> file:
+<div class="source_code"> 
+<code>
+  <pre>
+  monitor_port = /dev/ttyACM0
+  monitor_speed = 115200    
+  </pre>
+</code>
+</div>
+
+Remember to set the permissions to the pseudo file /dev/ttyUSB0 or the one to access the USB, by default it can only be accessed by the root user. E.g. 
+<code>sudo chmod 666 /dev/ttyACM0</code>
+
+Other boards use:
+<div class="source_code"> 
+<code>
+  <pre>
+  monitor_port = /dev/ttyUSB0
+  monitor_speed = 115200    
+  </pre>
+</code>
+</div>
+
+<b>Note:</b> Platform I/O is located, for example, under: 
+<pre>
+  /home/minguzzi/.platformio/penv/bin/pio
+</pre>
+<br>
+The IDF is located under:
+<pre>
+  /home/minguzzi/.platformio/packages/framework-espidf
+</pre>
+
+The current version of ESP-IDF is 3.4.0
+<h3>Platform IO: build, run, etc</h3>
+Suppose that the <code>platformio.ini</code> file contains:
+
+<div class="source_code"> 
+<pre>
+  [env:esp32dev]
+  platform = espressif32
+  board = esp-wrover-kit
+  framework = espidf
+  [...]
+</pre>	
+</div>
+
+The environment is called <b>esp32dev</b>.<p/>
+
+<b>Note</b>
+In order to build a project, using the cli, the command is:
+<pre>
+  platformio run --environment poc_test_esp32
+	platformio run --environment esp-wrover-kit
+	platformio run --environment esp32dev
+</pre>
+
+In order to build, upload and monitor a project, using the cli, the command is:
+<div class="source_code"> 
+<pre>
+  platformio run --target upload --target monitor --environment poc_test_esp32  
+  platformio run --target upload --target monitor --environment esp32dev
+  platformio run --target upload --target monitor --upload-port /dev/ttyUSB0 --environment esp-wrover-kit
+</pre>
+</div>
+
+<h3>... Custom Flash partition table</h3>
+
+<a target="_blank" href="https://docs.platformio.org/en/latest/platforms/espressif32.html#id18">See PlatformIO docs</a>
+Examples:
+<div class="source_code"> 
+<pre>
+# Name,   Type, SubType, Offset,  Size, Flags
+# Note: if you have increased the bootloader size, make sure to update the offsets to avoid overlap
+nvs,      data, nvs,     ,        0x6000,
+phy_init, data, phy,     ,        0x1000,
+factory,  app,  factory, ,        1M,
+</pre>
+</div>
+<br>
+
+Example: partitions_singleapp_large.csv<br>
+<div class="source_code"> 
+<pre>
+# Name,   Type, SubType, Offset,  Size, Flags
+# Note: if you have increased the bootloader size, make sure to update the offsets to avoid overlap
+nvs,      data, nvs,     ,        0x6000,
+phy_init, data, phy,     ,        0x1000,
+factory,  app,  factory, ,        1500K,  
+</pre>
+</div>
+
+In order to <b>change the partition table</b>, the <code>partitions.csv</code> file was created, with the following content:
+<div class="source_code"> 
+<pre>
+# Name,   Type, SubType, Offset,  Size, Flags
+# Note: if you have increased the bootloader size, make sure to update the offsets to avoid overlap
+nvs,      data, nvs,     ,        0x6000,
+phy_init, data, phy,     ,        0x1000,
+factory,  app,  factory, ,        2M,
+</pre>
+</div>
+
+Then, in the <code>platform.ini</code> file:<br>
+<div class="source_code"> 
+<pre>
+[env:esp32dev]
+platform = espressif32
+board = esp32dev
+framework = espidf
+board_build.partitions = partitions.csv
+</pre>
+</div>
+The same file was also indicated in the <code>Manuconfig / Partition Table</code>: set to Custom Partition Table.<br>
+
+<!-- ------------------------------------------------------------------------------------------- -->
+<hr>
+<h2>.. Freenove ESP32-WROVER Board</h2>
+<pre>
+  platformio run --environment poc_esp32_wrover
+</pre>
+
+<h3>... Links</h3>
+<ul>
+  <li><a target="_blank" href="https://freenove.com">Freenove Home Page</a></li>
+  <li><a target="_blank" href="https://github.com/Freenove/Freenove_ESP32_WROVER_Board">Freenove ESP32-WROVER Board git repo</a></li>
+  <li><a target="_blank" href="https://docs.espressif.com/projects/esp-idf/en/v4.4.1/esp32/index.html">ESP IDF v.4.4.1 docs</a></li>
+  <li><a target="_blank" href="https://www.espressif.com/sites/default/files/documentation/esp32-wrover-e_esp32-wrover-ie_datasheet_en.pdf">Datasheet</a></li>
+  <li><a target="_blank" href=""></a></li>
+  <li><a target="_blank" href=""></a></li>
+</ul>
+<hr>
+<!-- ------------------------------------------------------------------------------------------- -->
+<h2>.. ESP32 CAM Development Board</h2>
+20220925 The ESP32 CAM was then preferred, because it integrates camera and microSD reader.<br>
+<ul>
+  <li><a target="_blank" href="https://www.diymore.cc/products/ov2640-esp32-cam-bluetooth-module-camera-development-board-esp32-ov7670-2-4g-wireless-sma-antenna-nrf24l01-2db-gain-pa-cc2500?_pos=3&_sid=76e59b92b&_ss=r">
+      DIY More OV2640 ESP32-CAM</a></li>
+  <li><a target="_blank" href="https://www.amazon.it/diymore-sviluppo-Bluetooth-dual-core-fotocamera/dp/B08P1NMPLL/ref=pd_lpo_2?pd_rd_i=B08P1NMPLL&th=1">ESP32 CAM su Amazon</a></li>
+  <li><a target="_blank" href="https://www.futurashop.it/ESP32-CAM-development-board-2846-ESP32-CAM">Futura Elettronica</a></li>
+  <li><a target="_blank" href="https://github.com/espressif/esp32-camera">ESP32 Camera Driver on github</a></li>
+  <li><a target="_blank" href="https://registry.platformio.org/libraries/espressif/esp32-camera">Esp32 Camera</a></li>
+  <li><a target="_blank" href="https://github.com/survivingwithandroid/ESP32-CAM-tensorflow-lite">ESP32 CAM example</a></li>
+  
+  <li><a target="_blank" href="https://all3dp.com/2/esp32-cam-arduino-tutorial/">ESP32 CAM with Arduino</a></li>
+  <li><a target="_blank" href="https://randomnerdtutorials.com/esp32-cam-ai-thinker-pinout/">
+    <b>IMPORTANT: This page contains the GPIO connections.</b></a></li>
+  <li><a target="_blank" href=""></a></li>
+  <li><a target="_blank" href=""></a></li>
+  <li><a target="_blank" href=""></a></li>
+  
+  
+</ul>
+
+<h3>... ESP32 CAM with Platform IO and IDF</h3>
+The Platform IO, by default, loads the firmware to the ESP32, but then it does not show the logging messages. 
+To do that, the <code>platform.ini</code> must be like 
+(<a target="_blank" href="https://community.platformio.org/t/noob-stuck-on-esp32-cam-mb-with-pio-vscode/19117">see link</a>):
+<div class="source_code"> 
+<pre>
+[env:esp32cam]
+platform = espressif32
+board = esp32cam
+framework = espidf
+monitor_port = /dev/ttyUSB0
+monitor_speed = 115200 
+monitor_rts = 0
+monitor_dtr = 0
+</pre>
+</div>
+
+<h3>... ESP32-CAM GPIO(s)</h3>
+<ul>
+  <li>GPIO 4:   Flashlight</li>
+  <li>GPIO 33:  built-in red led Labelled as LED1 on the board.<br>
+    That LED works with inverted logic, so you send a LOW signal to turn it on and a HIGH signal to turn it off.</li>
+</ul>
+
+<hr>
+<!-- ------------------------------------------------------------------------------------------- -->
+
+<h1>. Todo</h1>
+<ul>
+  <li> System composed of:
+    <ul>
+      <li> Able to receive commands via HTTP or BLE 
+            <ul>
+              <li>The BLE can be used to enable/disable the Wifi and set SSID and password
+                  The BLE is always enabled</li>
+            </ul>
+          </li>
+      <li> Start/stop camera </li>
+      <li> Set the camera parameters</li>
+      <li> Publish image via HTTP</li>
+      <li> Use the on board button IO34</li>
+      <li> Use the display</li>
+      <li> Use the I2C BUS</li>
+      <li> Object detection via TF</li>
+      <li> Save image to SD</li>
+    </ul>    
+  </li>
+  <li>POCs:
+    <ul>
+    <li>(_) FreeRTOS on ESP32: review the mechanisms</li>
+    <li>(_) Dump Flash and PSRAM Size</li>
+    <li>(_) Http server </li>
+    <li>(_) BLE server </li>
+    <li>(_) Display </li>
+    <li>(_) Acquire images from camera</li>
+    <li>(_) Save and retrieve configuration parameters from the flash</li>
+    <li>(_) Bus I2C</li>
+    <li>(_) SPI</li>
+    <li>(_) SD Card access</li>
+    </ul>
+  </li>
+  
+</ul>
+
+<!-- ------------------------------------------------------------------------------------------- -->
+<hr>
+
+<h1>. Links</h1>
+<ul>
+  <li><a target="_blank" href="https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/system/freertos.html">ESP FreeRTOS</a></li>
+  <li><a target="_blank" href="https://docs.espressif.com/projects/esp-idf/en/release-v4.0/api-guides/index.html">ESP IDF API Guide</a></li>
+  <li><a target="_blank" href="https://docs.platformio.org/en/latest/frameworks/espidf.html">Espressif IoT Development Framework</a></li>
+  <li><a target="_blank" href="https://docs.platformio.org/en/latest/integration/ide/pioide.html">PlatformIO IDE</a></li>
+  <li><a target="_blank" href="https://docs.platformio.org/en/latest/tutorials/espressif32/espidf_debugging_unit_testing_analysis.html">PlatformIO Tutorial</a></li>
+  <li><a target="_blank" href="https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/index.html">ESP-IDF Reference</a></li>
+  <li><a target="_blank" href="https://www.sourceware.org/newlib/">Newlib: the ESp32 IDF contains it</a> <br>
+      Newlib is a C library intended for use on embedded systems.</li>
+  <li><a target="_blank" href=""></a></li>
+  
+  <li><a target="_blank" href=""></a></li>
+  
+  
+</ul>
+
+<h2>.. FreeRTOS</h2>
+<ul>
+  <li><a target="_blank" href="https://www.freertos.org/a00106.html">API Reference</a></li>
+  <li><a target="_blank" href="https://www.freertos.org/RTOS.html">Kernel Library: tasks, </a></li>
+  
+</ul>
+
+<h2>Heltec Automation ESP32 + Lora</h2>
+The display is 128 x 96 pixels (see <a target="_blank" href="https://www.sabulo.com/sb/esp32-development-board/how-to-use-the-heltec-oled-display-on-the-esp32/">blog post</a> )
+<ul>
+  <li><a target="_blank" href="https://heltec-automation-docs.readthedocs.io/en/latest/esp32/index.html">Read the docs</a></li>
+  <li><a target="_blank" href="https://docs.platformio.org/en/stable/boards/espressif32/heltec_wifi_lora_32.html">Heltec WiFi LoRa 32 su Platform IO</a></li>
+  <li><a target="_blank" href="https://github.com/HelTecAutomation">Haltech on GitHub</a></li>
+  <li><a target="_blank" href="https://github.com/HelTecAutomation/Heltec_ESP32">Heltec_ESP32 Library</a></li>
+  <li><a target="_blank" href="https://github.com/HelTecAutomation/ESP32_LoRaWAN"></a></li>
+  <li><a target="_blank" href=""></a></li>
+  <li><a target="_blank" href=""></a></li>
+</ul>
+
+<H1>. ESP32 peripherals</H1>
+
+<h2>.. ESP32 Camera peripheral</h2>
+<a target="_blank" href="https://github.com/espressif/esp32-camera">https://github.com/espressif/esp32-camera</a><br>
+<a target="_blank" href="https://registry.platformio.org/libraries/espressif/esp32-camera">
+  https://registry.platformio.org/libraries/espressif/esp32-camera</a>
+<br>
+
+Added the following line to the platformio.ini:
+<div class="source_code"> 
+<pre>
+lib_deps= espressif/esp32-camera@^2.0.0
+</pre>
+</div>
+
+Enabled CONFIG_ESP32_SPIRAM_SUPPORT Support for external, SPI-connected RAM<br>
+Found in: Component config > ESP32-specific<br>
+Downloaded the https://raw.githubusercontent.com/espressif/esp32-camera/master/Kconfig and disabled the unneeded cameras<br>
+Copied the file to the path: PROJECT_DIR/src<br>
+The the examples are to the path: 
+<a target="_blank" href="https://github.com/espressif/esp32-camera">https://github.com/espressif/esp32-camera</a><br>
+
+<b>Compiled by following the steps described at:</b><br>
+<a target="_blank"  href="https://esp32.com/viewtopic.php?t=27293">https://esp32.com/viewtopic.php?t=27293</a><br>
+Otherwise it did not work.
+<p/>
+
+<h2>.. ESP32 Peripheral: microSD card reader</h2><br>
+<ul>
+  <li><a target="_blank" href="https://deguez07.medium.com/esp32-with-sd-card-modules-the-master-guide-5d391f6785d7">
+      deguez07.medium.com</a></li>
+  <li><a target="_blank" href=""></a></li>
+  <li><a target="_blank" href=""></a></li>
+</ul>
+
+MOSI=SPID
+MISO=SPIQ
+CS=SPICS0
+CLK=SPICLK
+
+Pag 122 technical reference manual
+MOSI= HSPID=IO13
+MISO= HSPIQ=IO12
+CS=   HSPICS0=IO15
+CLK=  HSPICLK=IO14
+
+
+<table border="1" width="100%"> 
+  <tr><td>microSD board</td>  <td>ESP32 from deguez07</td>  <td></td></tr>
+  <tr><td>CS</td>             <td>GPIO5 ?</td>              <td>VSPI-CS0</td></tr>        
+  <tr><td>SCK</td>            <td>GPIO18 ?</td>             <td>VSPICLK</td></tr>       
+  <tr><td>MOSI</td>           <td>GPIO23 ?</td>             <td>VSPI-D</td></tr>       
+  <tr><td>MISO</td>           <td>GPIO19 ?</td>             <td>VSPI-Q</td></tr>
+  <tr><td>VCC</td>            <td></td> </tr>
+  <tr><td>GND</td>            <td></td> </tr>
+</table>
+
+Pin20 CLK/SCLK SPICLK
+Pin21 SD0/SDO  SPIQ
+Pin22 SD1/SDI  SPID
+Pin23 GPIO15 
+
+GPIO6-11 ,16,17 cannot be used
+SRAM is accessed by the QSPI 
+
+GPIO 6
+GPIO 7
+GPIO 8
+GPIO 9
+GPIO10
+GPIO11
+GPIO16
+GPIO17
+
+Controller SPI1 can be used as a master SPI1 has no DMA
+SPI1 signals start with SPI:
+  SPID=   MOSI
+  SPIQ=   MISO
+  SPICS0= CS
+  SPICLK= CLK  
+
+SPI2 start with HSPI
+SPI3 start with VSPI
+
+<!-- ------------------------------------------------------------------------------------------- -->
+<H1>. Notes About developing for the Heltech ESP32 WiFi kit</H1>
+
+Note that the serial USB uses a different baud rate.
+<p/>
+The  <code><b>platformio.ini</b></code> file must thus contain:
+<p/>
+
+<div class="source_code"> 
+<pre>
+[env:heltec_wifi_kit_32]
+platform = espressif32
+board = heltec_wifi_kit_32
+framework = espidf
+monitor_port = /dev/ttyUSB0
+monitor_speed = 74880 
+</pre>
+</div>
+
+https://esp32tutorials.com/oled-esp32-esp-idf-tutorial/
+https://github.com/nopnop2002/esp-idf-ssd1306
+
+
+
+<!-- ------------------------------------------------------------------------------------------- -->
+<H1>. Notes from the ESP32-WROVER datasheet Version 2.2, 2019</H1>
+<ul>
+  <li>ESP32-WROVER : 4MB Flash, 8MB PSRAM Pseudo static RAM.  
+  <li>Sleep current is 5 microA.
+  <li> FreeRTOS with LwIP</li>
+  <li>After reset release, strapping bits behave as normal function pins. GPIO,2,5; MTDI, MTDO</li>
+  <li>Peripherals, see chapter 4, page 14.</li>
+  <li>Source current 40mA, 20mA typical</li>
+</ul>
+
+<!-- ------------------------------------------------------------------------------------------- -->
+<H1>. Notes from the ESP32 Technical Reference Manual Version 4.7, 2022</H1>
+<ul>
+  <li>The CPUs are named PRO (protocol) and APP (application) </li>
+  <li>Little endian</li>
+  <li>Peripherals are mapped to memory</li>
+  <li>Reset and Clock(39): none of the reset types below clears the RAM
+      <ul>
+        <li>CPU reset:</li>
+        <li>Core reset:</li>
+        <li>System reset</li>
+      </ul>
+    </li>
+  <li> IO_MUX and GPIO 
+      <ul>
+      <li>GPIO pads 34-39 are input-only (45)</li>
+      <li>Reset configurations: each pad has a default configuration after reset (57) 
+          <ul>
+          <li>0: IE=0 input disabled</li>
+          <li>1: IE=1 input enabled</li>
+          <li>2: IE=1 WPD input enabled with pull down (WPD)</li>
+          <li>3: IE=1 WPU input enabled with pull up (WPU)</li>
+          <li>GPIO12,13 by default are enabled, WPD</li>
+          <li>GPIO14,15 by default are enabled, WPU</li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+</ul>
+
+<hr>
+<!-- ------------------------------------------------------------------------------------------- -->
+<H1>. Hints, problems</H1>
+<h2>.. The ttyUSB disconnects</h2>
+<div class="source_code"> 
+<pre>
+sudo dmesg -c	
+[ 2914.954252] usb 1-2: new full-speed USB device number 18 using xhci_hcd
+[ 2915.104171] usb 1-2: New USB device found, idVendor=1a86, idProduct=7523, bcdDevice=81.32
+[ 2915.104181] usb 1-2: New USB device strings: Mfr=0, Product=2, SerialNumber=0
+[ 2915.104185] usb 1-2: Product: USB Serial
+[ 2915.108800] ch341 1-2:1.0: ch341-uart converter detected
+[ 2915.109571] usb 1-2: ch341-uart converter now attached to ttyUSB0
+[ 2915.661484] input: BRLTTY 6.4 Linux Screen Driver Keyboard as /devices/virtual/input/input44
+[ 2915.662329] usb 1-2: usbfs: interface 0 claimed by ch341 while 'brltty' sets config #1
+[ 2915.662792] ch341-uart ttyUSB0: ch341-uart converter now disconnected from ttyUSB0
+[ 2915.662804] ch341 1-2:1.0: device disconnected	
+</pre>
+</div>
+
+The solution is removing the package:
+<pre>
+ sudo apt remove brltty	
+</pre>
+As described in <a href="https://stackoverflow.com/questions/70123431/why-would-ch341-uart-is-disconnected-from-ttyusb" target="_blank">stack overflow</a><br>
+
+<h2>Installing the 99-platformio-udev.rules</h2>
+Warning! Please install `99-platformio-udev.rules`. 
+More details: <a href="https://docs.platformio.org/en/latest/core/installation/udev-rules.html" target="_blank">https://docs.platformio.org/en/latest/core/installation/udev-rules.html</a><br>
+
+<pre>
+# Recommended
+curl -fsSL https://raw.githubusercontent.com/platformio/platformio-core/master/scripts/99-platformio-udev.rules | \
+   sudo tee /etc/udev/rules.d/99-platformio-udev.rules
+
+# OR, manually download and copy this file to destination folder
+sudo cp 99-platformio-udev.rules /etc/udev/rules.d/99-platformio-udev.rules
+</pre>
+
+
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+  .source_code {
+    background-color: lightgray;
+    font-family: Courier New;
+    border-style: solid;
+    border-width: thin;
+    font-size: normal;
+  }
+  </style>
+
+  <title>Python</title>
+  <link href="data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAETT//9E0///RNP//0TT//9E0///RNP//wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAETT//9E0///RNP//0TT//9E0/////////////9E0///AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABE0///RNP//0TT//9E0///RNP/////////////RNP//wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARNP//0TT//9E0///RNP//0TT//9E0///RNP//0TT//8AAAAAAAAAAAAAAAAAAAAAAAAAAJ9wOv+fcDr/n3A6/0TT/5hE0///RNP//0TT//9E0///RNP//0TT//9E0///RNP//0TT//9E0///AAAAAJ9wOv+fcDr/n3A6/59wOv+fcDqVRNP//0TT//9E0///RNP//0TT//9E0///RNP//0TT//9E0///RNP//0TT//+fcDr/n3A6/59wOv+fcDr/RNP/mETT//9E0///RNP//0TT//9E0///RNP//0TT//9E0///RNP//0TT//9E0///n3A6/59wOv+fcDr/n3A6/59wOpVE0/+YRNP/mETT/5hE0/+YRNP/mETT/5hE0///RNP//0TT//9E0///RNP//59wOv+fcDr/n3A6/59wOv+fcDr/n3A6lZ9wOpWfcDqVn3A6lZ9wOpWfcDqVn3A6lUTT//9E0///RNP//0TT//+fcDr/n3A6/59wOv+fcDr/n3A6/59wOv+fcDr/n3A6/59wOv+fcDr/n3A6/0TT/5hE0///RNP//0TT//9E0///n3A6/59wOv+fcDr/n3A6/59wOv+fcDr/n3A6/59wOv+fcDr/n3A6/59wOv+fcDqVRNP//0TT//9E0///RNP//wAAAACfcDr/n3A6/59wOv+fcDr/n3A6/59wOv+fcDr/n3A6/59wOv+fcDr/RNP/mETT//9E0///RNP//wAAAAAAAAAAAAAAAAAAAAAAAAAAn3A6/59wOv+fcDr/n3A6/59wOv+fcDr/n3A6/59wOv8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJ9wOv///////////59wOv+fcDr/n3A6/59wOv+fcDr/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACfcDr///////////+fcDr/n3A6/59wOv+fcDr/n3A6/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJ9wOv+fcDr/n3A6/59wOv+fcDr/n3A6/wAAAAAAAAAAAAAAAAAAAAAAAAAA+B8AAPAPAADwDwAA8A8AAIABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAQAA8A8AAPAPAADwDwAA+B8AAA==" rel="icon" type="image/x-icon">
+</head>
+
+<body>
+
+<h1>. Asynchronous Python (asyncio)</h1>
+Book : <i>Python Concurrency with asyncio</i>. Up to page 146
+<p/>
+
+Concurrency: more than one task at the same time.<br>
+Asynchronous: a task can run in background, the main is notified when the background task is finished.
+Asynchio: support for coreoutines and asynchronous programming.
+<b>Single threaded event loop. STEL.</b>
+<p/>
+CPU-bound: the code would execute faster with a faster CPU.<br>
+I/O bound: the code would execute faster with a better device, e.g. network card.<br>
+<p/>
+
+Threads use the address space of the process that created them.
+<br>
+Concurrency can be achieved by multithreading and multiprocessing.<br>
+
+In Python multithreading is only useful for I/O bound, because of the global interpreter lock.
+<p/>
+Asyncio: we execute coroutines, when an I/O operation is executed, the current curoutine is stopped, but other Python code can execute.<br>
+CPU-bound code must use separate processes to execute concurrently.<br>
+Asyncio saves time when I/O bounds operations are executed concurrently.<br>
+Do not call blocking I/O functions inside a coroutine, e.g.<code>time.sleep()</code>, <code>requests</code>.<br>
+You need to use a library that supports coroutines and uses non-blocking calls.<p/>
+<!-- ******************************************************************************************* -->
+<hr>
+
+<h1>. Asynchronous HTTP (aioHTTP)</h1>
+
+Web requests employ the concept of <b>session</b>.  A session is like an open browser, that stores cookies.<br>
+Within a session, many connection can be pooled.<br>
+The session object has methods to execute web requests, like GET, PUT, POST.<br>
+Create the ClientSession with the <code>async with</code> syntax.
+
+<h1>. CPU bound work</h1>
+It is possible to create a process pool to run CPU bound work. <br>
+Each process can be run using <code>run_in_executor</code> and then treated as an awaitable.
+
+<div class="source_code">
+<pre>
+  def countUpTo( countTo: int) -> int:
+    pass
+
+  async def main():
+  loop= asyncio.get_running_loop()
+
+  with cf.ProcessPoolExecutor() as processPool:
+    nums= [ 100_000_000, 20_000_000, 25_000_000, 50_000_000, 75_000_000]
+
+    functCalls= [ ft.partial( countUpTo, num) for num in nums]
+    futureResults= [ loop.run_in_executor( processPool, functCall) for functCall in functCalls]
+
+    for completedResult in asyncio.as_completed( futureResults):
+      result= await completedResult
+      log.info( f'Result:{result}')
+</pre>
+</div>
+<!-- ******************************************************************************************* -->
+<hr>
+
+<h1>. Terms and acronyms</h1>
+<ul>
+  <li>Awaitable: an object that can be used in an await expression.</li>
+  <li> <b>Concurency</b> : things happen at the same time.  Switch between tasks is concurrent behavior. <br>
+       A baker can prepare a cake, while it is in the owen, he can do something else.  But the cook does one thing at a time.<br>
+       In a single core CPU, the application can use preemptive multitasking to switch.<br>
+       Concurrency does not imply parallelism.<br>
+      </li>
+  <li>Coroutine in asyncio: a regular Python function.<br>
+    When we call a coroutine, it is not executed; a coroutine object is created.<br>
+    <code>async.run()</code> is the entry point to an asyncio application.<br>
+    <code>await</code> pauses the current coroutine to let other tasks run. It is followed by an <i>awaitable</i> object.<br>
+    </li>
+  <li>Event Loop: in asyncio the event loop keeps a task queue instead of a message queue.
+    </li>
+  <li>Future : we can await on a future. It is an awaitable.
+    </li>
+  <li> <b>Global Interpreter Lock</b> the Python interpreter can only execute one bytecode at a time.<br>
+    We can start multiple threads, but the interpreter  only runs a process bytecode at a time, even with multicore GPU.<br>
+    There can be an executing thread per process.<br>
+    The GIL is released upon an I/O operation, so I/O-bound tasks can be made parallel with multithreading.<br>
+    This is true in CPython, which is the reference Python implementation.<br>
+    </li>
+  <li> <b>Multitasking</b> :
+      <ul>
+        <li> <b>Cooperative</b> : a task decides when to yield to another task.  <br>
+          Less resource intensive than preempitive, no context switch.</li>
+        <li> <b>Preempitive</b> : the OS switches between tasks </li>
+      </ul>
+    </li>
+  <li> <b>Parallelism</b> : thing actually occur at the same time.  In the example: there are two cooks working at the same time.<br>
+      Needs a multi core CPU.<br>
+      Parallelism implies concurrency.<br>
+    </li>
+  <li> <b>Process</b>
+    </li>
+  <li>Task in asyncio: a wrapper around a coroutine.  Tasks are paused during an I/O operation.<br>
+      A task is an awaitable.<br>
+    </li>
+  <li> <b>Thread</b> : a lightweight process. All threads of the same process share the same address space-
+      A process has a main thread and additional worker or background threads.<br>
+      A task can be cancelled only if it is awaiting on some operation, otherwise it runs to completion.<br>
+      It is possible to run a task with <code>asyncio.shield(longTask)</code> to prevent it from being shielded.<br>
+    </li>
+  <li> <b></b>
+    </li>
+</ul>
+
+<h1>Hints</h1>
+
+<h2>PIP</h2>
+To show the version of a package, for example:
+<div class="source_code">
+<pre>
+  $ pip show langgraph
+
+  Name: langgraph
+  Version: 0.2.39
+  Summary: Building stateful, multi-actor applications with LLMs
+  Home-page: https://www.github.com/langchain-ai/langgraph
+  [...]
+</pre>
+</div>
+
+<h1>Links</h1>
+<ul>
+  <li><a target="_blank" href="https://docs.aiohttp.org/">aio HTTP</a></li>
+  <li><a target="_blank" href="https://docs.python.org/3/library/asyncio.html">asyncio</a></li>
+  <li><a target="_blank" href="https://www.python.org/">python.org</a></li>
+  <li><a target="_blank" href="https://docs.python.org/3/library/index.html">python.org/library</a></li>
+
+
+
+</ul>
+
+
+</body>
+</html>

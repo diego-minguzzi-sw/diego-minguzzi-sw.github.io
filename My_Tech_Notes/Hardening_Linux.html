@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Hardening Linux</title>
+
+<style>
+  /* =========================================================
+     RESET
+     ========================================================= */
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family:
+      Inter,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      Roboto,
+      Helvetica,
+      Arial,
+      sans-serif;
+
+    background: #f5f7fa;
+    color: #1f2937;
+    line-height: 1.7;
+  }
+
+
+  /* =========================================================
+     PAGE LAYOUT
+     ========================================================= */
+
+  .page {
+    width: 100%;
+    min-height: 100vh;
+    background: #ffffff;
+  }
+
+  .content {
+    width: 100%;
+    max-width: 1900px;
+    margin: 0 auto;
+    padding: 25px clamp(24px, 5vw, 80px);
+  }
+
+
+  /* =========================================================
+     TYPOGRAPHY
+     ========================================================= */
+
+  h1,
+  h2,
+  h3 {
+    line-height: 1.2;
+    color: #111827;
+  }
+
+  .content {
+    counter-reset: chapter;
+  }
+
+  h1 {
+    counter-increment: chapter;
+    counter-reset: section;
+
+
+    margin-top: 10px;
+    margin-bottom: 5px;
+
+    font-size: clamp(2rem, 4vw, 2.5rem);
+    font-weight: 750;
+    letter-spacing: -0.03em;
+
+    color: #374151;
+  }
+
+  h1:first-child {
+    margin-top: 0;
+  }
+
+  h1::before {
+    content: counter(chapter) ": ";
+
+    color: #6b7280;
+    font-weight: 700;
+  }
+
+  h2 {
+    counter-increment: section;
+    counter-reset: subsection;
+
+    margin-top: 9px;
+    margin-bottom: 5px;
+
+    font-size: clamp(1.25rem, 2vw, 1.75rem);
+    font-weight: 650;
+    letter-spacing: -0.015em;
+
+    color: #374151;
+  }
+
+  h2::before {
+    content: counter(chapter) "." counter(section) ": ";
+
+    color: #6b7280;
+    font-weight: 600;
+  }
+
+  h3 {
+    counter-increment: subsection;
+    margin-top: 8px;
+    margin-bottom: 5px;
+
+    font-size: 1.15rem;
+    font-weight: 600;
+  }
+
+  h3::before {
+    content: counter(chapter) "." counter(section) "." counter(subsection) ": ";
+  }
+
+
+  /* =========================================================
+     PARAGRAPHS & LISTS
+     ========================================================= */
+
+  p {
+    max-width: 900px;
+    margin-bottom: 18px;
+
+    font-size: 1.05rem;
+    color: #4b5563;
+  }
+
+  ul,
+  ol {
+    max-width: 900px;
+    margin: 0 0 24px 24px;
+    color: #4b5563;
+  }
+
+  li {
+    margin-bottom: 2px;
+  }
+
+
+  /* =========================================================
+     LINKS
+     ========================================================= */
+
+  a {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+
+  /* =========================================================
+     CODE
+     ========================================================= */
+
+  code {
+    padding: 3px 7px;
+
+    border-radius: 6px;
+
+    background: #555555;
+    color: #000000;
+
+    font-family:
+      "SFMono-Regular",
+      Consolas,
+      "Liberation Mono",
+      monospace;
+
+    font-size: 0.9em;
+  }
+  
+  .inline-code {
+    padding: 3px 6px;
+    border-radius: 6px;
+
+    background: #e5e7eb;   /* light gray */
+    color: #1f2937;        /* dark gray text */
+
+    font-family:
+      "SFMono-Regular",
+      Consolas,
+      "Liberation Mono",
+      monospace;
+
+    font-size: 0.9em;
+  }
+
+
+  pre {
+    width: 100%;
+    overflow-x: auto;
+
+    margin: 28px 0;
+
+    padding: 24px;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+
+    background: #111827;
+    color: #e5e7eb;
+
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  }
+
+  pre code {
+    padding: 0;
+    background: transparent;
+    color: inherit;
+  }
+
+
+  /* =========================================================
+     BLOCKQUOTES
+     ========================================================= */
+
+  blockquote {
+    max-width: 900px;
+
+    margin: 30px 0;
+    padding: 20px 24px;
+
+    border-left: 4px solid #2563eb;
+    border-radius: 0 8px 8px 0;
+
+    background: #eff6ff;
+
+    color: #374151;
+    font-style: italic;
+  }
+
+
+  /* =========================================================
+     TABLES
+     ========================================================= */
+
+  .table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    margin: 30px 0;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+  }
+
+  th,
+  td {
+    padding: 14px 16px;
+    text-align: left;
+
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  th {
+    background: #f8fafc;
+    color: #111827;
+    font-weight: 650;
+  }
+
+  tr:hover td {
+    background: #f8fafc;
+  }
+
+
+  /* =========================================================
+     CARDS
+     ========================================================= */
+
+  .card {
+    width: 100%;
+
+    margin: 30px 0;
+    padding: 28px;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+
+    background: #ffffff;
+
+    box-shadow:
+      0 4px 12px rgba(0, 0, 0, 0.04),
+      0 1px 3px rgba(0, 0, 0, 0.03);
+  }
+
+
+  /* =========================================================
+     HORIZONTAL RULE
+     ========================================================= */
+
+  hr {
+    margin: 50px 0;
+
+    border: 0;
+    border-top: 1px solid #e5e7eb;
+  }
+
+
+  /* =========================================================
+     RESPONSIVE
+     ========================================================= */
+
+  @media (max-width: 768px) {
+    .content {
+      padding: 40px 20px;
+    }
+
+    h1 {
+      margin-top: 20px;
+    }
+
+    h2 {
+      margin-top: 10px;
+    }
+
+    p {
+      font-size: 1rem;
+    }
+
+    .card {
+      padding: 20px;
+    }
+  }
+
+
+  /* =========================================================
+     PRINT
+     ========================================================= */
+
+  @media print {
+    body {
+      background: #ffffff;
+      color: #000000;
+    }
+
+    .content {
+      max-width: none;
+      padding: 0;
+    }
+
+    h1 {
+      break-before: page;
+    }
+
+    h1:first-child {
+      break-before: auto;
+    }
+
+    .card {
+      box-shadow: none;
+      border: 1px solid #ccc;
+    }
+  }
+</style>
+</head>
+
+<body>
+<main class="page">
+  <div class="content">
+
+
+<h1>LinkedIn Learning Course: Linux Security Techniques</h1>
+<h2>Managing logs with syslog</h2>
+Hackers want to damage your logs, to hide their tracks, then they get access to your data.<p/> 
+
+syslog is installed by default and configured in every Linux system.<br>
+journad is replacing syslog, but even in systems that have journald, syslog is running.<br>
+syslog logs into /var/log.  <br> 
+Ubuntu uses <span class="inline-code">/var/log/syslog</span>
+<p/>
+Usually the syslog files should have read and write unallowed to regular users.<br>
+Syslog contains the general information about our system. The /var/log directory contains log from other services and applications.
+<p/>
+
+Periodically send log files to a centralized log server.  All logs in one place. <br>
+
+<h3>Logs retention and rotation</h3>
+Log rotation is configured in <span class="inline-code">/etc/logrotate.conf</span>
+
+<h3>RSysLog</h3>
+There is <span class="inline-code">rsyslog</span> : remote syslog.<br>
+It allows you to store the log files locally and remotely.<br>
+<p/>
+
+<p>
+How to configure it?<br>
+In <span class="inline-code">/etc/rssyslog.conf</span> <br>
+
+<div class="code">
+<pre>
+# provides TCP syslog reception
+#module(load="imtcp")
+#input(type="imtcp" port="514")
+</pre>
+</div>
+
+
+
+If we uncomment those lines, the machine becomes a rsyslog server, that can receive rsyslog messages from clients. (better to use TCP syslog reception)<br>
+RSyslog haas not authentication, there must be a firewall to allow access to that port from selected client IPs.
+</p>
+
+How to set the current machine as a rsyslog client that sends log messages to another machine?
+
+
+It is possible to use ssh tunnel to access that port.<br>
+With ssh tunnel you get authentication and encrypted communication.<br>
+In <span class="inline-code">/etc/rssyslog.conf</span> add :<br>
+
+<div class="code">
+<pre>
+*.* @@172.16.10.100:514
+</pre>
+</div>
+
+Now, it is both storing log messges locally and sending them through the network.<br>
+
+<h3>Moreover</h3>
+<ul>
+<li> Setup a backup strategy </li>
+<li> Consider logging not using text files, but for example database entries. The text file must be stored all at once in memory.</li>
+</ul>
+
+<hr>
+
+<h2>Managing logs with journald</h2>  
+<p>Part of SystemD.  Official name is System D Journal.</p>
+
+<p>
+Journald is considered easier to work with, than syslog. <br>
+In syslog, all log messages are stored as text files, easy to manipulate and remove log entries, with root priviledges.
+<br>
+In journald, all log files are stored in binary files. They are harder to modify with an editor. Better performance , better tools to search.<br>
+</p>
+
+
+<div class="code">
+journalctl # Lists the log messages
+journalctl -n 20 # Give me the last 20 lines, similar to tail.
+journalctl -f # Show me the last few lines.
+</div>
+
+<h3>Filtering</h3>
+
+<div class="code">
+journalctl -p warning -f # Show priority warning and below. Follow the log.
+journalctl --since="2026-09-20 00:00:00" --until="2026-09-20 17:04:00" # Filtering by datetime.
+
+journalctl --since="2026-09-20 00:00:00" --until="2026-09-20 17:04:00" -p warning
+</div>
+
+Suppose I filter messages and I find that a service raises errors. Suppose it is the Samba daemon.  In journalctl everything is a unit. Get extended messages and explanation.
+<div class="code">
+journalctl -xau smbd
+journalctl -xau firewall
+</div>
+
+Priorities are between 0/"emerg" and 7/"debug"<br>
+<h3>Storing logs to the disk</h3>
+Journald keeps log entries in memory: most of the distros rely on sylog to store the logs on the disk. 
+<br>
+If journald finds that the directory <span class="inline-code">/var/log/journal</span> exists on the disk, it will store its logs into it. 
+The directory must have the proper permissions.<br>
+<span class="inline-code">
+drwxr-sr-x+  3 root      systemd-journal   4096 Aug 20  2025 journal
+</span><br>
+
+In the file <span class="inline-code">/etc/systemd/journald.conf</span>, set 
+<div class="code">
+[Journal]
+Storage=persistent
+</div>
+Means: if the folder does not exists, create it, with the right permissions.
+
+<hr>
+
+<h1>Useful commands</h1>
+
+<ul>
+<li><span class="inline-code">sudo -s</span> # Opens a sudo shell. </li>
+</ul>
+</main>
+</body>
+</html>

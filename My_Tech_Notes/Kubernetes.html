@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+  .source_code {
+    background-color: lightgray;
+    font-family: Courier New;
+    border-style: solid;
+    border-width: thin;
+    font-size: larger;
+  }
+  </style>
+
+  <title>Kubernetes</title>
+  <link href="data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAD///8/////P////z////8/////P////z////8/////P////z////8/////P////z////8/////P////z////8/2NjY8Hp6evBtbW3wbW1t8GxsbPBsbGzwbGxs8GxsbPBsbGzwbGxs8Gtra/BpaWnwampq8GlpafB6enrw2NjY8IiIiP8BAQH/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8gICD/QkJC/y8vL/87Ozv/AgIC/4iIiP+BgYH/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/VFRU/6enp/99fX3/lZWV/wMDA/+BgYH/np6e/xQUFP8NDQ3/DQ0N/w0NDf8NDQ3/DQ0N/w0NDf8NDQ3/DQ0N/xUVFf8fHx//GRkZ/xwcHP8UFBT/np6e//Pz8/++vr7/srKy/7Ozs/+zs7P/s7Oz/7Ozs/+zs7P/s7Oz/7Ozs/+ysrL/srKy/7Kysv+xsbH/vr6+//Pz8/+3t7f/Ozs7/zAwMP8wMDD/MDAw/zAwMP8wMDD/MDAw/zAwMP8wMDD/MDAw/zExMf8wMDD/MTEx/zo6Ov+3t7f/goKC/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/0FBQf+Dg4P/YWFh/3V1df8CAgL/goKC/4ODg/8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP84ODj/cXFx/1NTU/9lZWX/AgIC/4KCgv/BwcH/TU1N/0JCQv9CQkL/QkJC/0JCQv9CQkL/QkJC/0JCQv9CQkL/QUFB/0FBQf9BQUH/QEBA/01NTf/BwcH/8PDw/7W1tf+oqKj/qamp/6mpqf+pqan/qamp/6mpqf+pqan/qamp/6ioqP+np6f/qKio/6enp/+1tbX/8PDw/5eXl/8LCwv/BQUF/wUFBf8FBQX/BQUF/wUFBf8FBQX/BQUF/wUFBf8SEhL/ISEh/xgYGP8dHR3/CwsL/5eXl/+BgYH/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/WFhY/66urv+CgoL/m5ub/wQEBP+BgYH/jIyM/wICAv8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/xgYGP8zMzP/JCQk/y0tLf8DAwP/jIyM/+Hh4fCRkZHwhYWF8IWFhfCFhYXwhYWF8IWFhfCFhYXwhYWF8IWFhfCEhITwgoKC8IODg/CCgoLwkZGR8OHh4fD///8/////P////z////8/////P////z////8/////P////z////8/////P////z////8/////P////z////8///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//8AAA==" rel="icon" type="image/x-icon">
+</head>
+
+<body>
+
+<!-- ******************************************************************************************* -->
+
+<h1>. Get Started</h1>
+
+<h2>.. Get Started: Installation</h2>
+<h3>... Get Started: Installation on Linux</h3>
+<h4>.... Get Started: Docker Installation on Linux</h4>
+<div class="source_code">
+<pre>
+# Add Docker's official GPG key:
+sudo apt-get update
+sudo apt-get install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+# Add the repository to Apt sources:
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+</pre>
+</div>
+<p/>
+Verify the installation
+<div class="source_code">
+<pre>
+sudo docker run hello-world
+</pre>
+</div>
+<p/>
+Manage Docker as a non-root user.<br>
+<p/>
+Verify the installation
+<div class="source_code">
+<pre>
+sudo docker run hello-world
+</pre>
+</div>
+
+Manage docker as a non root user
+<div class="source_code">
+<pre>
+  sudo groupadd docker
+  sudo usermod -aG docker $USER
+</pre>
+</div>
+Log-out and Log-in again., or run <code>newgrp docker</code>
+
+<p/>
+Configure Docker to start on boot with systemd:
+<div class="source_code">
+<pre>
+  sudo systemctl disable docker.service
+  sudo systemctl disable containerd.service
+</pre>
+</div>
+
+<h4>.... Get Started: Minikube Installation on Linux</h4>
+
+<div class="source_code">
+<pre>
+  curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+  sudo install minikube-linux-amd64 /usr/local/bin/minikube && rm minikube-linux-amd64
+
+  sudo install kubectl /usr/local/bin/kubectl && rm kubectl # kubectl must be installed separately.
+</pre>
+</div>
+
+<h1>. Docker</h1>
+Simply invoke <code>docker</code> to check whether it is running.<br>
+
+<h1>. Minikube</h1>
+Minikube lets you create the cluster, while <code>kube control</code> is used to interact with the cluster.<br>
+To invoke kubectl, run <code>minikube kubectl</code> . <br>
+Commands:
+
+<div class="source_code">
+<pre>
+  minikube start
+  minikube stop
+  minikube delete       # Deletes the cluster.
+
+  minikube update-check # Checks whether a new version is available.
+</pre>
+</div>
+
+
+<h1>. Kubectl</h1>
+<div class="source_code">
+<pre>
+  $ minikube kubectl cluster-info
+  Kubernetes control plane is running at https://192.168.49.2:8443
+  CoreDNS is running at https://192.168.49.2:8443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+</pre>
+</div>
+The port is random.
+<p/>
+
+<div class="source_code">
+<pre>
+  $ minikube kubectl get nodes
+  NAME       STATUS   ROLES           AGE   VERSION
+  minikube   Ready    control-plane   11m   v1.30.0
+
+  kubectl get namespaces              # Lists the namespaces
+  kubectl get pods -A                 # Lists the pods in every namespace.
+  kubectl get services -A             # Lists the running services. They act as load balancers in the cluster. and direct traffic to POD(s).
+</pre>
+</div>
+
+<h2>.. Kubectl </h2>
+Check that the application is running using BusyBox
+
+<!-- ******************************************************************************************* -->
+<hr>
+
+<h1>. K8S Architecture</h1>
+<h2>.. K8S Architecture: the Control Plane</h2>
+The control plane is the control tower of a K8S cluster<p/>
+<ul>
+<li><code><b>API component</b></code>: exposes the K8S API, each entity has an API endpoint.<br>
+    Kubernetes exposes a REST interface.<br>
+    It is a containeraised application, run as a pod.<br>
+    It handles requests from the user and from inside the cluster.
+  </li>
+<li><code><b>etcd</b></code>: a key-value store. It saves all data about the state of the cluster.<br>
+  Only the Kube API server can communicate directly with <code>etcd</code>.  </li>
+<li><code><b>Scheduler</b></code>: identifier new pods and assings them to a node  </li>
+<li><code><b>Controller Manager</b></code>: a loop that continuously checks the status of the cluster,
+                                            to make sure things are running properly.<br>
+                                            If a worker node breaks, it is replaced with a new worker node.</li>
+<li><code><b>Cloud Controller Manager</b></code> :  lets you connect the cluster with a cloud provider API<br>
+  So you can use cloud resources from AWS, GCP, etc.</li>
+</ul>
+
+The control plane nodes are hidden from kubectl  if you run the K8S by a Managed Cloud Provider.<br>
+
+<h2>.. K8S Architecture: the Worker Nodes</h2>
+In the airport, the Worker nodes are like the busy terminals, there are a minimum of three worker nodes.<br>
+The worker nodes are where POD(s) are scheduled and run.<br>
+Each worker node has three components:
+<ul>
+  <li>Kubelet: an agent that runs on every worker node, it makes sure that the containers in a pod are running and healthy<br>
+    It communicates directly with the API server in the control plane, looking for newly assigned POD(s)<br>
+    </li>
+  <li>Container Runtime: when a Kubelet is a assigned to new pod, it starts a continer using Continer Runtime Interface (CRI)<br>
+      CRI enables the Kubelet to create container with the engines: containerd, etc. </li>
+  <li>Kube-proxy: it makes sure that POD(S) and services can communicate with other POD(s) and services, on nodes and in the control plane.<br>
+      Each kube-proxy communicates directly with the Kube-API-server.
+    </li>
+</ul>
+
+<h2>.. K8S Architecture: How the Control Plane and the Nodes work together</h2>
+<ul>
+
+</ul>
+
+<!-- ******************************************************************************************* -->
+<hr>
+
+<h1>. Theory</h1>
+
+<h2>.. Theory: Containers</h2>
+A technology that bundles: the code for an application, and the configuration to run the code itself, in one unit.<br>
+Virtualized instances of operating system kernels. A file stored in a container, example has path: /tmp/foo.txt, it is
+actually a file, with a longer path, in your computer.<br>
+In a VM, the file is stored in the VM hard-disk, your computer does not known anything about that file.
+<p/>
+Dockerfiles create Docker images through layers of instructions. With docker, as long as your computer supports Docker, your app can run on anything. <br>
+
+Docker runs on a container runtime called containerd.
+
+<p/>
+Docker at scale can be a challenge.
+
+Advantages of containers over virtual machines:
+
+
+<ul>
+  <li>Containers are portable</li>
+  <li>They use less CPU and memory than VM(s)</li>
+  <li>Self contained, they run in seconds</li>
+  <li>Allows to quickly create replicas of an application, to elastically scale up and down.</li>
+</ul>
+<p/>
+
+<h3>... Theory: Containers / Docker images</h3>
+Starting a Docker image with:<br>
+<div class="source_code">
+<pre>
+FROM scratch
+</pre>
+</div><br>
+creates an image from a blank state.<br>
+
+The command COPY
+<div class="source_code">
+<pre>
+COPY [local file in your HD] [destination file in the container storage]
+</pre>
+</div><br>
+
+Example of ENTRYPOINT:
+<div class="source_code">
+<pre>
+ENTRYPOINT ["sh","-c","echo 'Hello Docker'"]
+</pre>
+</div><br>
+
+Example of how to build a Docker Image (see the help):
+
+<div class="source_code">
+<pre>
+docker build --file website.docker --tag explorecalifornia.com .
+docker run  -it --rm -p 5000:80 explorecalifornia.com /usr/bin/bash
+
+
+</pre>
+</div><br>
+-p command : OUTSIDE:INSIDE<br>
+<ul>
+  <li>OUTSIDE: the port visible from outside the container</li>
+  <li>INSIDE: the port opened from the OS inside the docker container</li>
+</ul>
+
+<h2>.. Theory: Kubernetes</h2>
+
+
+
+
+<h2>.. Theory: Cloud Native</h2>
+<b><i>What is cloud native?</i></b><br>
+Cloud native technologies allow to build and run scalable applications in public, private and hybrid clouds.<br>
+Containers, service meshes, microservices, immutable infrastructure, and declarative APIs simplify this approach.
+<p/>
+Alternative: Cloud native technologies are open-source projects designed to let-technologists use
+cloud computing services to automatically deploy and scale applications.
+<p/>
+Other CNCF open-source projects: Helm, Prometheus, Linkerd.<br>
+
+<h2>.. Theory: YAML format</h2>
+Example YAML<p/>
+Extension is .yml or .yaml<br>
+<b>YAML depends on indentation.</b>  All the items at the same hierarchy level must have the same indentation.<br>
+<div class="source_code">
+<pre>
+---
+# Comment
+name: Kim Schlesinger
+courses:
+  - List item 1
+  - List item 2
+</pre>
+</div>
+
+<h2>. Theory: Namespaces</h2>
+To separate the application in, e.g. production and development environment.<br>
+TO torganize the application into microservices.
+<div class="source_code">
+<pre>
+  kubectl apply -f namespace.yaml
+
+  kubectl delete -f namespace.yaml  # Deletes the entities contained in the file.
+
+
+  kubectl get deployments -n development  # Lists the deployments in a given namespace (development).
+  kubectl get pods -n development         # Lists the pods in a given namespace (development).
+  kubectl get pods -n development -o wide # Prints more data.
+
+  # List all pods in ps output format with more information (such as node name)
+  kubectl get pods -o wide
+
+  kubectl get pods --all-namespaces -o wide
+  kubectl get pods -A -o wide
+
+
+  # Example of how to delete a pod called pod-info-deployment-5cdffc94c-mxx68.
+  kubectl delete pod pod-info-deployment-5cdffc94c-mxx68 -n development
+
+  # Useful to troubleshoot a POD: the events at the bottom describe what happened.
+  kubectl describe pod pod-info-deployment-5cdffc94c-pw6j5 -n development
+
+  # Example of events:
+
+  Events:
+  Type    Reason     Age    From               Message
+  ----    ------     ----   ----               -------
+  Normal  Scheduled  8m14s  default-scheduler  Successfully assigned development/pod-info-deployment-5cdffc94c-rzfcw to minikube
+  Normal  Pulling    8m13s  kubelet            Pulling image "kimschles/pod-info-app:latest"
+  Normal  Pulled     8m11s  kubelet            Successfully pulled image "kimschles/pod-info-app:latest" in 2.667s (2.667s including waiting). Image size: 213980203 bytes.
+  Normal  Created    8m11s  kubelet            Created container pod-info-container
+  Normal  Started    8m11s  kubelet            Started container pod-info-container
+
+  # Executes a command in a POD. The command is the one after the double dash.
+  kubectl exec -it busybox-54f785c7d7-lvxkd -- /bin/sh
+  kubectl exec -it busybox-54f785c7d7-jqlq7 -- /bin/sh
+
+  # Dumps the log messages issued by a specific pod.
+  kubectl logs pod-info-deployment-5cdffc94c-jts4t -n development
+</pre>
+</div>
+
+<h3>... Theory: Kubernetes: Running locally</h3>
+<code>kind</code>: Kubernetes in Docker<br>
+Tools similar to kind are helm, k3s, MicroK8s.<br>
+
+<h3>.... Theory: Kubernetes: Running locally: kind</h3>
+Installation
+<div class="source_code">
+<pre>
+  sudo apt-get -y install podman
+  go install sigs.k8s.io/kind@v0.24.0
+
+  export PATH=${PATH}:$(go env GOPATH)/bin
+
+  kind create cluster # By default, the cluster has name: kind.
+  kind create cluster --name explorecalifornia.com
+
+  $ kubectl get nodes
+  NAME                                  STATUS   ROLES           AGE     VERSION
+  explorecalifornia.com-control-plane   Ready    control-plane   2m52s   v1.31.0
+
+  $ kubectl get pods -A
+  NAMESPACE            NAME                                                          READY   STATUS    RESTARTS   AGE
+  kube-system          coredns-6f6b679f8f-fpc8t                                      1/1     Running   0          4m55s
+  kube-system          coredns-6f6b679f8f-trjfw                                      1/1     Running   0          4m55s
+  kube-system          etcd-explorecalifornia.com-control-plane                      1/1     Running   0          5m4s
+  kube-system          kindnet-6tt2k                                                 1/1     Running   0          4m56s
+  kube-system          kube-apiserver-explorecalifornia.com-control-plane            1/1     Running   0          5m4s
+  kube-system          kube-controller-manager-explorecalifornia.com-control-plane   1/1     Running   0          5m3s
+  kube-system          kube-proxy-kksbt                                              1/1     Running   0          4m56s
+  kube-system          kube-scheduler-explorecalifornia.com-control-plane            1/1     Running   0          5m3s
+  local-path-storage   local-path-provisioner-57c5987fd4-9td77                       1/1     Running   0          4m55s
+
+  It created the nodes woth postfix: explorecalifornia.com-control-plane
+
+  kubectl cluster-info --context kind-kind
+
+  kind delete cluster
+</pre>
+</div>
+
+
+<h2>.. Theory: Pods</h2>
+
+<div class="source_code">
+<pre>
+kubectl apply -f pod_info_deployment.yaml
+
+</pre>
+</div>
+
+The smallest unit of computing that K8S can run.<br>
+They group similar containers into a logical unit.<br>
+All POD(s) of the same kind have the same IP address and move together.
+<p/>
+PODs are scheduled in a K8S Kubelet, or node.
+<p/>
+
+K8S deployments,
+<br>
+POD(s) are discovered by Services. Services make POD(s) discoverable.<br>
+Services provide a single IP address and a DNS for a group of related POD(s).<br>
+<p/>
+
+Ingresses and Ingress controllers make your app internet accessible.<br>
+They are HTTP reverse proxy that allow that allow the external world to reach the POD(s) of the cluster.
+
+
+<h3>... Theory: Pods: Deployment</h3>
+<h4>.... Theory: Pods: Deployment: Deployment Object</h4>
+POD(s) can be deployed using: Deployment script. <br>
+No downtime upgrade. It is possible to deploy a new version without interrupting the current one.
+K8S makes sure that the new POD(s) are running before shutting down the old one.<br>
+
+<h4>.... Theory: Pods: Deployment: Daemon Set</h4>
+It puts one copy of POD per node. Usually for background processes.
+Typically for metrics about the underlying nodes.
+
+<h4>.... Theory: Pods: Deployment: Jobs</h4>
+Creates one or more PODs and run the container until completion.<br>
+Example: running unit tests in the POD.<br>
+You can delete the application once it is done.<br>
+
+<h3>... Theory: Pods: Running Stateful Workloads</h3>
+
+How do you handle a data storage in K8S?<br>
+
+<ul>
+  <li> Connect the application to a database , independent of your cluster, outside.
+    </li>
+  <li> Kubernetes persistent volumes: a data storage that exists in the cluster and remains event after a POD is destroyed.<br>
+      You can use a stateful set, to make sure your updated application can communicate with the same volume as the previous POD.
+    </li>
+</ul>
+
+<h2>.. Theory: Services</h2>
+Kubernetes services:
+<ul>
+  <li>Load balancer</li>
+  <li>Node port </li>
+  <li>Cluster IP</li>
+</ul>
+A Kubernetes service is a load balancer that directs traffic from the internet to the Kubernetes pods.  <br>
+The K8s service has a public and static IP address.
+The inner pods and IP addresses can change, but the static address of the K8S service IP is static.<br>
+The service has a key called spec:selector:app it must match with metadata:labels:app of the yaml that deploys the pod.<p/>
+
+<a href="https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/" target="_blank">
+  Resource Management for Pods and Containers</a><br>
+
+<div class="source_code">
+<pre>
+  # On one terminal, run the tunnel, to expose the load balancer (it will be local).
+  minikube tunnel
+
+  # Run the service described in the Yaml file:
+  kubectl apply -f service.yaml
+
+  # List the services.
+  get services -n development -o wide
+
+</pre>
+</div>
+
+<h2>.. Theory: Kubernetes API</h2>
+<div class="source_code">
+<pre>
+  kubectl api-resources  # Lists the API exposed
+</pre>
+</div>
+
+
+<h2>.. Theory: Terms</h2>
+<ul>
+  <li> Cluster: an instance of K8S. Each cluster has a control plane and at least one worker node</li>
+  <li> Control Plane: it is like the air traffic control tower. The control plane overlooks the cluster  </li>
+  <li> Node:  </li>
+
+  <li>Container registry: a database that stores container images. Images can be public or private. E.g. Docker hub</li>
+  <li>Image (for a container): a container image is a file with executable code that can be run as a container</li>
+  <li>Infrastructure as Code (IaC) : YAML manifests </li>
+  <li>GitOps : </li>
+  <li>POD(s) are the Kubernetes resources that run the application and microservices </li>
+</ul>
+
+<h2>.. Theory: hints about technologies, products, tools, etc.</h2>
+There are Docker alternatives, like podman, Containerd, rkt, LXD.<br>
+Check the GitOps course on the LL.<br>
+
+Regularly update the version of K8S that you are using.<br>
+There is a document called Kubernetes Hardening Guide, by the NSA.<br>
+
+<!-- ******************************************************************************************* -->
+<hr>
+
+<h1>. K8S Security</h1>
+Hackers want to:
+<ul>
+  <li>Steal data from inside the cluster.</li>
+  <li>Use computational resources to mine cryptocurrencies</li>
+  <li>Cause a distributed Denial of Service or DDOS attack</li>
+</ul>
+
+Use security settings.<br>
+Make sure that the filesystem is readonly. <code>readOnlyRootFilesystem: true</code><br>
+
+Scan your Kubernetes yaml manifest with <code>Snyk CLI</code>
+
+
+<!-- ******************************************************************************************* -->
+<hr>
+
+<h1>. Links</h1>
+<ul>
+  <li> <a target="_blank" href="https://www.cncf.io/">Cloud Native Computing Foundation</a> </li>
+  <li> <a target="_blank" href="https://minikube.sigs.k8s.io/">Minikube</a> </li>
+  <li> <a target="_blank" href="https://yamlchecker.com/">YAML checker</a> YAML validator </li>
+
+
+
+</ul>
+
+</body>
+</html>
+
+Master Cloud-Native Infrastructure with Kubernetes
+Linux Foundation Kubernetes Certification Exams
