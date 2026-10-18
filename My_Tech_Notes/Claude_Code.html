@@ -422,7 +422,7 @@ Scopes:
 <li>Project: applies to all contributors of the project<br>
   File location is: the root of the project ROOT/CLAUDE.md, or in ROOT/.claude/CLAUDE.md. <br>
   Under version control <br>
-<li>User: the user settings, located in ${HOME}/.claude/ <br>
+<li>User: the user settings, located in <span class="inline-code">${HOME}/.claude/</span> <br>
   Least priority, can be overridded by higher priority settings</li>
 </ul>
 <p>
@@ -536,11 +536,49 @@ Scope and priority matter. User level settings can be overridden.
 The priority from bottom to top is: user-level, project-level, personal, IT managed.<br>
 Settings are expressed into JSON files. A giant JSON Object. <br>
 Claude code updates the setting files, when you accept or refuse an option.<br>
-The command 
+The command <span class="inline-code">/doctor</span> verifies the Claude Code installation and diagnoses setting issues, but you have to modify the JSON.
+<br>
+<span class="inline-code">/status</span> : version, model, account, etc.
+Settings changes kick-in immediately, but it is better to <b>clear the context and/or restart Claude Code</b>.  If you corrupt the settings, you can delete the file and start over.<br>
+<p>
+<b>Environmental variables</b> : it is possible to define env variables applied at every session.
+</p>
 
+<h3>Hooks</h3>
+Hooks are deterministic and consistent, they can control and validate external integrations like MCP servers.  MCP: validate the MCP actions and result.<br>
+Reccomended: a lint or code formatter hook.
+<br>
+Application lifecycle. We can hook to lifecycle events.<br>
 
+<ul>
+  <li> Session start: </li>
+  <li> For each turn: <br> User Prompt Submit: </li>
+    <ul>
+    <li> Agentic loop: </li>
+    <ul>
+    <li> Task Created: </li>    
+    <li> Task Completed: </li>
+    </ul>
+    <li> Stop / Stop Failure: </li>
+    </ul>
+  <li> Session End </li>
+</ul>
+<br>
+<span class="inline-code">/hooks</span>  : lists the available hooks and their events.
+There is a <span class="inline-code">/hooks</span> folder , unser the project or user settings, e.g. <span class="inline-code">.claude/hooks</span> or <span class="inline-code">my-plugin/hooks</span> 
+<p>
 
+Hook types: 
+<ul>
+<li><span class="inline-code">command</span> : issue a shell command to execute inside the environment, substitutes our command with its owen </li>
+<li><span class="inline-code">http</span> : sends POST request to a URL</li>
+<li><span class="inline-code">prompt</span> : prompts an LLM to evaluate and allow/block</li>
+<li><span class="inline-code">agent</span> : spawns an agent verifier with tool access</li>
+</ul>
 
+<h3>Plugins</h3>
+
+Plugins are bundles
 
 <!-- ************************************************************************************ -->
 <hr>
