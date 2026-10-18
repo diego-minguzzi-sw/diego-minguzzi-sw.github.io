@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+  .source_code {
+    background-color: lightgray;
+    font-family: Courier New;
+    border-style: solid;
+    border-width: thin;
+    font-size: larger;
+  }
+  </style>
+  <title>ROS</title>
+  <link rel="icon" type="image/x-icon" href="https://simpleicons.org/icons/ros.svg">
+</head>
+  
+<body>
+<h1>ROS Control: a set of packages</h1>  
+
+<a target="_blank" href="http://wiki.ros.org/ros_control">ros_control</a>: A set of packages that include controller interfaces, controller managers, transmissions and hardware_interfaces.
+<br>
+<img src="http://wiki.ros.org/ros_control?action=AttachFile&do=get&target=gazebo_ros_control.png" width="40%" border="1"> <br> 
+<ul>
+<li>the <b>Controller Manager</b> can list, load, unload, switch controller.</li>
+<li>according to the picture, the controller manager has multiple controllers, running at the same time</li>
+<li>a controller receives the set-point from the ROS interface, depending on the type of control:
+    <ul>
+    <li>joint trajectory</li>
+    <li>joint position</li>
+    <li>joint velocity</li>
+    </ul>
+<li>the controller compares the set-point with the joint state, and issues the next command at the Joint Command Interface 
+  </li>       
+<li>Controller plug-ins, some examples are in the directory <code>ros_controllers/position_controllers/include/position_controllers/</code>,
+    for example <code>joint_position_controller.h</code><br>
+    In our case, <code>JointGroupPositionController</code> 
+    <ul>
+    <li> param <code>type</code> Must be "JointGroupPositionController" </li>
+    <li> param <code>joints</code> List of names of the joints to control </li>
+    <li> subscribes to: <code>command</code> (std_msgs::Float64MultiArray): the joint positions to apply </li>
+    </ul>
+  </li>
+<li></li>
+<li></li>
+<li></li>
+</ul>
+
+<h1>Precise TCP/IP command server (TCS)</h1>
+The TCS runs on the robot, receives command requests and sends back responses.<br>
+Listens on the port  <code><b>10100</b></code>.<br>
+<p/>
+Commands are not case sensitive.<br>
+<ul>
+  <li>The same controller can command multiple robots.</li>
+  <li>The TCS can store up to 20, 1-indexed positions, they can be cartesian or joint locations. A location is called <b>station</b> </li>
+  <li>The TCS can store up to 20, 1-indexed profiles, a profile is speed, accel, etc.</li>
+  <li>Motion commands: move, move one axis, wait for end-of-motion, zero torque (enable/disable).</li>
+</ul>
+
+
+
+
+<a target="_blank" href=""></a>
+<a target="_blank" href=""></a>
+<a target="_blank" href=""></a>
+<a target="_blank" href=""></a>
+<a target="_blank" href=""></a>  
+<img src="" width="40%" border="1"> <br> 
+<img src="" width="40%" border="1"> <br> 
+<img src="" width="40%" border="1"> <br> 
+<img src="" width="40%" border="1"> <br> 
+
+
+</body>
+
+</html>
+-  

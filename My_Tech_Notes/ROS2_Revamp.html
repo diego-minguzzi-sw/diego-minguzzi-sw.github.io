@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+  .source_code {
+    background-color: lightgray;
+    font-family: Courier New;
+    border-style: solid;
+    border-width: thin;
+    font-size: larger;
+  }
+  </style>
+  <title>ROS 2 Revamp</title>
+  <link rel="icon" type="image/x-icon" href="https://simpleicons.org/icons/ros.svg">
+</head>
+
+<body>
+  
+<h1>. ROS2 Commands</h1>  
+<div class="source_code">
+<pre>    
+  source /opt/ros/foxy/setup.bash                   # Underlay
+  source /home/minguzzi/ros2_ws/install/setup.bash  # Overlay 1
+  
+  # All overlays
+  source /opt/ros/foxy/setup.bash ; \
+  source /home/minguzzi/ros2_ws/install/setup.bash 
+  
+  rosdep update # Discovers dependencies not satisfied with packages.
+  
+  # Colcon build: creates links from the install to the build dir, to save space.
+  colcon build --symlink-install 
+</pre>
+</div>
+  
+<h1>. Links and References</h1>
+<ul>
+  <li> <a target="_blank" href="https://colcon.readthedocs.io/en/released/">colcon: readthedocs</a> </li>
+  <li> <a target="_blank" href="https://github.com/dirk-thomas/vcstool">Vcs Tool makes working with multiple repositories easier.</a> </li>
+  
+  <li> <a target="_blank" href=""></a> </li>
+  <li> <a target="_blank" href=""></a> </li>
+  <li> <a target="_blank" href=""></a> </li>
+  <li> <a target="_blank" href=""></a> </li>
+  <li> <a target="_blank" href=""></a> </li>
+  <li> <a target="_blank" href=""></a> </li>
+  <ul> ROS2
+    <li> <a target="_blank" href="https://docs.ros.org/en/foxy/Concepts/About-ROS-Interfaces.html">Concepts: Interfaces</a> </li>
+    
+  </ul>
+</ul>
+  
+<!-- *************************************************************** -->
+<h1>. ROS2 Installation Ubuntu2020</h1>
+<div class="source_code">
+<pre>  
+locale  # check for UTF-8
+
+sudo apt update && sudo apt install locales
+sudo locale-gen en_US en_US.UTF-8
+sudo update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
+export LANG=en_US.UTF-8
+
+locale  # verify settings
+
+sudo apt install software-properties-common
+sudo add-apt-repository universe
+
+sudo apt update && sudo apt install curl
+sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
+
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
+
+sudo apt update
+
+sudo apt install ros-foxy-ros-base python3-argcomplete # Base is 19.3MB of archives. 150MB installed on disk.
+sudo apt install ros-foxy-desktop python3-argcomplete
+
+# MoveIT for ROS2
+sudo apt install python3-rosdep
+
+sudo apt install python3-colcon-common-extensions
+sudo apt install python3-colcon-mixin
+colcon mixin add default https://raw.githubusercontent.com/colcon/colcon-mixin-repository/master/index.yaml
+colcon mixin update default
+
+sudo apt install python3-vcstool
+
+</pre>
+</div>
+<hr>
+<h2>.. ROS2 Packages</h2>
+<ul>
+  <li> <code>rclcpp</code> ROS Client C++ </li>
+  <li> <code>rclpy</code> ROS Client Python </li>
+  <li> <code>rcl</code>: <code>rclcpp</code> and <code>rclpy</code> depends on <code>rcl</code> </li>
+  <li> <code>rms</code> an abstraction layer over the DDS implementation. Packages above are thus independent of the DDS vendor.(15) </li>
+</ul>
+
+<h1>. ROS2 Workspace</h1>  
+It is possible to remove the build, install, log directories anytime, the build will recreate them (13).<br>
+
+<h1>. ROS2 Tools</h1>  
+
+<h2>.. ROS2 Tools: colcon</h2>
+colcon needs the extension for bash to be able to generate the source.bash overlay file .<br>
+
+
+<!-- *************************************************************** -->
+
+<h1>. ROS2 Book RPR2: 01 Intro</h1>
+A topic name can start with a tilde [8], to mean a private topic: private to the node that publishes it.<br>
+The book uses the <b><code>vcs</code></b> tool to manage repositories (12). <br>
+The book uses <b><code>colcon</code></b> to compile, instead of catkin as in ROS1.<br>
+
+
+</body>
+
+</html>
+

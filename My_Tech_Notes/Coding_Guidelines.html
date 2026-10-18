@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+  .source_code {
+    background-color: lightgray;
+    font-family: Courier New;
+    border-style: solid;
+    border-width: thin;
+    font-size: larger;
+  }
+  </style>
+  <title>Coding Guidelines</title>
+</head>
+<body>
+<h1>.1 Introduction</h1>
+This document describes a set of proposed coding guidelines.<br>
+The guidelines are geared towards C++, but the naming rules and the general strategies can be applied to other languages as well.<br>
+This document tries to balance between an overly prescriptive set of rules with the lack of rules.<br>
+The guidelines try to make sure that a person can orient himself when reading the code of a colleague, and that a new developer involved in the project finds a common approach throughout the codebase, about cross-though decisions like the directory structure, error handling approach, etc.  It is easier to participate in a project if everyone uses the same style. <br>
+
+<p/>
+
+<h1>.2 GENERAL STRATEGIES</h1>
+<h2>.. The C++ standard</h2>
+The preferred standard for the C++ language and the standard library is C++20.<br>
+
+<h2>.. Variable and type names</h2>
+Do not use the Hungarian notation or any other name scheme where the identifier name depends on the data type, because the type can change in the future (e.g. an enumeration can turn into a class, etc.).<br>  
+The name should reflect its intent/purpose, not its data type. The data type may change in the future, forcing the developer to rename all references.
+Moreover, intellisense does a better job at inferring data types.
+<P/> 
+
+Do not use abbreviations unless they are consistent all your code. <br> 
+Do not worry about saving horizontal space as it is far more important to make your code immediately understandable by a new reader.<br>
+<ul>
+<li>Type names (classes, structs, enumerations-enumerators) start with a capital letter and have a capital letter for each new word, without underscores. <br>
+    Examples: <code>SportCar</code>, <code>UserParameter</code>, etc.</li>
+<li>Variable and function names are written in camel case, with the first letter lowercase, e.g. <code>myFunction()</code>.</li>
+<li>Constants and #define macros in all capital letters separated by underscore characters, e.g. <code>MAX_SPEED</code>.</li>
+<li>File names and directory names should be all lowercase separated by underscores: <code>app/hello_world.cpp</code> </li>
+</ul>
+Do not construct identifiers using the name of the current project, because in the future the same code can be re-used again in a different project.  
+<p/>
+
+
+<h2>.. Error handling</h2>
+
+<h1>Links and references</h1>
+
+<table border="1" width="100%">
+  <tr>
+    <th width="10%">ID</th><th width="60%">Title</th><th>Version</th>
+  </tr>
+  <tr>
+    <td>[CP10]</td>
+    <td><cite>“C++ Manuale di Stile - Reloaded”, Carlo Pescio.</cite> 
+        (<a href="https://www.eptacom.net/pubblicazioni/cpp_stile/CppManualeDiStile_Reloaded.pdf" target="_blank">link</a>) </td>
+    <td>May 2010</td>
+  </tr>
+  <tr>
+    <td>[GCSG]</td>
+    <td><cite>“Google C++ Style Guide”</cite>: (<a href="https://google.github.io/styleguide/cppguide.html" target="_blank">link</a>)</td>
+    <td>N/A</td>
+  </tr>
+  <tr>
+    <td>[JSR05]</td>
+    <td><cite>“Joint Strike Fighter – Air Vehicle – C++ Coding Standard”</cite>, Lockheed Martin Corporation.
+      (<a href="http://www.stroustrup.com/JSF-AV-rules.pdf">link</a>)</td>
+    <td>Rev. C December 2005</td>
+  </tr>
+  <tr>
+    <td>[MC18]</td><td><cite>“C++ Core Guidelines: Rules for Error Handling” </cite>
+      (<a target="_blank" href="https://www.modernescpp.com/index.php/c-core-guidelines-rules-to-error-handling">link</a>)</td><td>16 July 2018</td>
+  </tr>
+  <tr>
+    <td></td><td></td><td></td>
+  </tr>
+  <tr>
+    <td></td><td></td><td></td>
+  </tr>
+</table>
+
+
+</body>
+<html>

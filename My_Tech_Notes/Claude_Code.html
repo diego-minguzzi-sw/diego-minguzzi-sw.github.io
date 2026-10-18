@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Claude Code</title>
+<style>
+  /* =========================================================
+     RESET
+     ========================================================= */
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family:
+      Inter,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      Roboto,
+      Helvetica,
+      Arial,
+      sans-serif;
+
+    background: #f5f7fa;
+    color: #1f2937;
+    line-height: 1.7;
+  }
+
+
+  /* =========================================================
+     PAGE LAYOUT
+     ========================================================= */
+
+  .page {
+    width: 100%;
+    min-height: 100vh;
+    background: #ffffff;
+  }
+
+  .content {
+    width: 100%;
+    max-width: 1900px;
+    margin: 0 auto;
+    padding: 10px clamp(20px, 5vw, 20px);
+  }
+
+
+  /* =========================================================
+     TYPOGRAPHY
+     ========================================================= */
+
+  h1,
+  h2,
+  h3 {
+    line-height: 1.2;
+    color: #111827;
+  }
+
+  .content {
+    counter-reset: chapter;
+  }
+
+  h1 {
+    counter-increment: chapter;
+    counter-reset: section;
+
+    margin-top: 10px;
+    margin-bottom: 5px;
+
+    font-size: clamp(2rem, 4vw, 2.5rem);
+    font-weight: 750;
+    letter-spacing: -0.03em;
+
+    color: #374151;
+  }
+
+  h1:first-child {
+    margin-top: 0;
+  }
+
+  h1::before {
+    content: counter(chapter) ": ";
+
+    color: #6b7280;
+    font-weight: 700;
+  }
+
+  h2 {
+    counter-increment: section;
+    counter-reset: subsection;
+
+    margin-top: 9px;
+    margin-bottom: 5px;
+
+    font-size: clamp(1.25rem, 2vw, 1.75rem);
+    font-weight: 650;
+    letter-spacing: -0.015em;
+
+    color: #374151;
+  }
+
+  h2::before {
+    content: counter(chapter) "." counter(section) ": ";
+
+    color: #6b7280;
+    font-weight: 600;
+  }
+
+  h3 {
+    counter-increment: subsection;
+    margin-top: 8px;
+    margin-bottom: 5px;
+
+    font-size: 1.15rem;
+    font-weight: 600;
+  }
+
+  h3::before {
+    content: counter(chapter) "." counter(section) "." counter(subsection) ": ";
+  }
+
+
+  /* =========================================================
+     PARAGRAPH & LISTS
+     ========================================================= */
+
+  p {
+    max-width: 900px;
+    margin-bottom: 18px;
+
+    font-size: 1.05rem;
+    color: #4b5563;
+  }
+
+  ul,
+  ol {
+    max-width: 900px;
+    margin: 0 0 24px 24px;
+    color: #4b5563;
+  }
+
+  li {
+    margin-bottom: 2px;
+  }
+
+
+  /* =========================================================
+     LINKS
+     ========================================================= */
+
+  a {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+
+  /* =========================================================
+     CODE
+     ========================================================= */
+
+  code {
+    padding: 3px 7px;
+    border-radius: 6px;
+    background: #d1d5db;       /* gray */
+    color: #111827;
+    border: 1px solid #4b5563; /* dark gray outline */
+    font-family:
+      "SFMono-Regular",
+      Consolas,
+      "Liberation Mono",
+      monospace;
+    font-size: 0.9em;
+  }
+
+  .inline-code {
+    padding: 3px 6px;
+    border-radius: 6px;
+
+    background: #C0C0C0;
+    color: #171E29;
+
+    font-family:
+      "SFMono-Regular",
+      Consolas,
+      "Liberation Mono",
+      monospace;
+
+    font-size: 0.9em;
+  }
+
+  pre {
+    width: 100%;
+    overflow-x: auto;
+
+    margin: 28px 0;
+
+    padding: 24px;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+
+    background: #111827;
+    color: #e5e7eb;
+
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  }
+
+  pre code {
+    padding: 0;
+    background: transparent;
+    border: none;
+  }
+
+
+  /* =========================================================
+     BLOCKQUOTES
+     ========================================================= */
+
+  blockquote {
+    max-width: 900px;
+
+    margin: 30px 0;
+    padding: 20px 24px;
+
+    border-left: 4px solid #2563eb;
+    border-radius: 0 8px 8px 0;
+
+    background: #eff6ff;
+
+    color: #374151;
+    font-style: italic;
+  }
+
+
+  /* =========================================================
+     TABLES
+     ========================================================= */
+
+  .table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    margin: 30px 0;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+  }
+
+  th,
+  td {
+    padding: 14px 16px;
+    text-align: left;
+
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  th {
+    background: #f8fafc;
+    color: #111827;
+    font-weight: 650;
+  }
+
+  tr:hover td {
+    background: #f8fafc;
+  }
+
+
+  /* =========================================================
+     CARDS
+     ========================================================= */
+
+  .card {
+    width: 100%;
+
+    margin: 30px 0;
+    padding: 28px;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+
+    background: #ffffff;
+
+    box-shadow:
+      0 4px 12px rgba(0, 0, 0, 0.04),
+      0 1px 3px rgba(0, 0, 0, 0.03);
+  }
+
+
+  /* =========================================================
+     HORIZONTAL RULE
+     ========================================================= */
+
+  hr {
+    margin: 10px 0;
+
+    border: 0;
+    border-top: 1px solid #0000ff;
+  }
+
+
+  /* =========================================================
+     RESPONSIVE
+     ========================================================= */
+
+  @media (max-width: 768px) {
+    .content {
+      padding: 40px 20px;
+    }
+
+    h1 {
+      margin-top: 30px;
+    }
+
+    h2 {
+      margin-top: 20px;
+    }
+    
+    h3 {
+      margin-top: 10px;
+    }
+
+    p {
+      font-size: 1rem;
+    }
+
+    .card {
+      padding: 20px;
+    }
+  }
+
+
+  /* =========================================================
+     PRINT
+     ========================================================= */
+
+  @media print {
+    body {
+      background: #ffffff;
+      color: #000000;
+    }
+
+    .content {
+      max-width: none;
+      padding: 0;
+    }
+
+    h1 {
+      break-before: page;
+    }
+
+    h1:first-child {
+      break-before: auto;
+    }
+
+    .card {
+      box-shadow: none;
+      border: 1px solid #ccc;
+    }
+  }
+</style>
+</head>
+
+<body>
+<main class="page">
+<div class="content">
+
+<h1>Hints</h1>
+<ul>
+<li> Be descriptive with your prompt</li>
+<li> <b>Start a project without CLAUDE.md </b>, so you see where you have to constantly have to correct the model</li>
+</ul>
+
+<h1>Shortcuts</h1>
+<ul>
+<li> The @ to reference a doc</li>
+</ul>
+
+<!-- ************************************************************************************ -->
+<hr>
+
+<h1>Claude Code in Practice: Configuring Projects, Workflows, and Agents</h1>
+<p>Morten Rand-Hendriksen, LinkedIn Learning course</p>
+
+<p>
+<a target="_blank" href="https://github.com/LinkedInLearning/claude-code-setup-guide-supercharge-your-coding-agent-8842019">Course repository</a>
+</p>
+
+<h2>Claude Code Project Setup</h2>
+Claude Code is an agent harness wrapping around an LLM, any model.<br>
+Claude Code can be configured at two levels: 
+<ul>
+<li>Agent layer: providing information to the agent layer about how to do things amd <i>what it can do</i>: CLAUDE.md, Skills, Subagents (for repeatable tasks), MCP</li>
+<li>Harness layer: settings, hooks, plugins</li>
+</ul>
+
+<h3>Scope priority and file location</h3>
+Scopes: 
+<ul>
+<li>Managed: applies to all organization users in organization accounts . <br>
+  Higher priority
+  </li>
+<li>CLI scope: can exert temporary overrides </li>  
+<li>Local: applies to the current project only <br>
+  File location is .claude/ </li>
+<li>Project: applies to all contributors of the project<br>
+  File location is: the root of the project ROOT/CLAUDE.md, or in ROOT/.claude/CLAUDE.md. <br>
+  Under version control <br>
+<li>User: the user settings, located in ${HOME}/.claude/ <br>
+  Least priority, can be overridded by higher priority settings</li>
+</ul>
+<p>
+Settings at higher pririty override those at less priority.<br>
+Priority, from bottom to top are: User, Project, Local, CLI, Managed<br>
+</p>
+
+<h3>CLAUDE.md and rules: project level instructions</h3>
+
+The command <span class="inline-code">/init</span> inspect the content in the project and creates a CLAUDE.md file.<br>
+
+In CLAUDE.md, use @ to import additional context.<br>
+CLAUDE.md can be updated by the agent itself.
+In CLAUDE.md: 
+<ul>
+<li>Use markdown to create semantic structure</li>
+<li>Keep it under 200 lines<li>
+<li>Write direct, precise, unambiguous instructions</li>
+</ul>
+
+<h4>Rules</h4>
+Stored in <span class="inline-code">.claude/rules/</span>
+
+<h3>Skills</h3>
+<a target="_blank" 
+   href="https://code.claude.com/docs/en/skills">
+  Claude Code Docs on Skills
+</a> <br>
+
+Claude CLI commands:
+<div class="code">
+/skills # Lists the available skills
+/&lt;skill-name&gt;  # Invokes a kill manually
+</div>
+Claude code can inkove a skill when it infers it is relevant for the task.<br>
+
+Skills live under <span class="inline-code">.claude/skills/&lt;skill-name&gt;/SKILL.md</span>
+<p>
+<b>Note</b>
+<ul>
+<li>Do not trust third party skills</li>
+<li>Avoid conflicting skills</li>
+<li>use the skill-creator skill from Anthropic to create your own skills (<i>the skill creator must be installed</i>)</li>
+</ul>
+
+</p>
+
+Example: skill header, in Yaml, called <i>frontmatter</i> in the course.
+<p>
+
+<div class="code">
+<pre>
+---
+name: git-commit
+description: Create the message related to a git commit
+---
+</pre>
+</div>
+
+</p>
+Claude only loads the frontmatter at the beginning, the rest when it actually runs the skill.
+
+<h3>Subagents</h3>
+<a target="_blank" 
+   href="https://code.claude.com/docs/en/agents">
+  Claude Code Docs on Agents
+</a> <br>
+
+Start every task with the plan agent.  <span class="inline-code">/plan</span> . Plan is a subagent that is invoked directly.<br>
+Each subagent runs in its own context window with a custom system prompt, specific tool access, and independent permissions. When the agent is finished, it sends back to the <i>super</i> agent the main finds and the summary.<br>
+
+<p>
+  <span class="inline-code">/agents</span> to list the available agents. Manage the available agents.  Every subagent has its own context and tools. In most cases subagents are called by  other agents.
+</p>
+
+Agents can run as: 
+<ul>
+<li>Subagents: each subagent run in a single sessio and reports back to the main agent (default)</li>
+<li>Agent Teams: each teammate is a separate Claude code instance.They work in parallel and coordinate before reporting back to the main agent. </lI>
+</ul>
+
+Best practices:
+<ul>
+  <li>Build your own agent for repetitive tasks</li>
+  <li>Avoid coflict by making each subagent task-specific</li>
+  <li>Build specialized agents for Skill, CLI and MCP tool use.</li>
+</ul>
+
+<h3>MCP Servers</h3>
+MCP connects the harness to local and external tools and services.<br>
+Anything that has a data channel can have a MCP server.<br>
+<ul>
+<li>Remote MCP servers
+  </li>
+<li>Local MCP servers
+  </li>
+</ul>
+
+<p>Best Prectices: install specialized MCP servers at project level to avoid tool overload.</p>
+If the MCP server has bundled skills, use that skills.<br>
+It is useful to bundle MCP server and skills.<br>
+
+<h2>Advanced Settings</h2>
+The settings configure the harness.
+<br>
+
+<h3>Setting up user-and-project-level settings</h3>
+
+Scope and priority matter. User level settings can be overridden.
+<br>
+The priority from bottom to top is: user-level, project-level, personal, IT managed.<br>
+Settings are expressed into JSON files. A giant JSON Object. <br>
+
+
+
+<!-- ************************************************************************************ -->
+<hr>
+
+<h1>Evaluating AI-Generated Code</h1>
+LinkedIn Learning Course. E Corpeno<br>
+
+<ul>
+<li>Generate</li>
+<li>Inspect</li>
+<li>Test: run the code: does it do what I intended?</li>
+<li>Verify</li>
+<li>Improve, by issuing a new command via prompt</li>
+</ul>
+
+
+
+<!-- ************************************************************************************ -->
+<hr>
+
+<h1>Claude Code 101 by Anthropic on LinkedIn Learning</h1>
+
+<div style="text-align: center;">
+  <img src="Claude_Code_images/00_agent_loop.jpg" alt="Agent Loop" style="max-width: 50%; height: auto;">
+</div>
+Code is an agentic coding tool.<br>
+Claude Code has several permission modes:
+<ul>
+<li>Default behavior: Claude asks for explicit permission before editing a file or running a shell command.</li>
+<li>Auto-accept: Files are edited without asking, but commands still require approval.</li>
+<li>Plan mode: Uses read-only tools to compile a plan of action before starting any work.</li>
+</ul>
+
+<h2>Your first prompt</h2>
+
+<h3>Agentic loop</h3>
+<ul>
+<li>Gathers context</li>
+<li>Executes actions</li>
+<li>Verifies results: if they are good, the loop is finished.</li>
+</ul>
+
+<h3>Claude Agentic Concepts</h3>
+They are: agentic loop, managed context window, tools, configurable permissions.<br>
+
+<h3>Plan mode</h3>
+In plan mode, Claude does not edit, <b>read-only tools</b>. For planning complex code changes or executing a code review. For multi step implementations.<br>
+<b>Be descriptive with your prompt</b><br>
+If the prompt is generic, Claude will search everywhere in the codebase, adding files to the CW.<br>
+Use Plan Mode to let Claude dig into the details of what you want to achieve before executing on any code.
+
+<h2>Daily workflows</h2>
+Workflow:
+<ul>
+<li>Explore and Plan: use plan mode. In the plan, add how can Claude evaluate whether what it produced is correct.   Before you commit, run a subagent code reviewer to look at your work. A subagent gets a fresh pair of eyes on the codebase — it doesn't carry the bias the main agent might have from the session.  The command is: <br>
+  /code-review
+</li>
+<li>Code </li>
+<li>Commit</li>
+
+</ul>
+
+<h3>Context Management</h3>
+<p>
+Think of the context window as the amount of space Claude can hold in its memory.
+When you approach the CW limit, the context window is automatically compacted.
+</p>
+<span class="inline-code">/compact</span> : to compact the context window, it can lose details.<p/>
+<span class="inline-code">/clear</span>  clears the context window (CW)<p/>
+<span class="inline-code">/context all</span>  shows the CW detail<p/>
+
+A vague prompt might seem smaller, but it actually costs more context in the long run. 
+ Without clear instructions, Claude is forced to explore your codebase more and do its own reasoning — which takes up far more context space than a detailed prompt would.<p/>
+
+<h3>Code review</h3>
+Before you push a PR, ask Claude to use a subagent to review your changes. The subagent runs in its own context window with fresh eyes — it doesn't carry the bias of the main agent that just spent the session writing the code.
+
+<h2>Customizing Claude Code</h2>
+<h3>CLAUDE.md</h3>
+It is read everytime you start a session.<br> The content is appended to every prompt.<br>
+<span class="inline-code">/init</span> Creates a CLAUDE.md <br>
+There is project-level CLAUDE.md in the root of the project.<br>
+There is a user-level CLAUDE.md that lives in your configuration directory. This is the place for personal preferences.<br>
+
+Instead of repeating instructions, ask Claude to add them to the ClauDE.md file.
+
+
+<h3>Subagents</h3>
+Removed
+
+<h3>Skills</h3>
+Folders of instructions, scripts and resources.
+The Skill description allows Claude to decide whether to use the tool.<br>
+<P>
+A Skill has a name and description loaded into context, and Claude only loads the full skill contents when it determines it needs to use it.
+</P>
+Store skills: personal skills in <span class="inline-code">${HOME}/.claude/skills</span>  <br>
+There are project skills, in the <span class="inline-code">.claude/skills</span> under the project root directory.<br>
+Skills load on demand when they match your request.<br>
+<b>Claude do not need to call skills explicitly</b>, it applies when the description matches the situation (the prompt).<br>
+Skills are for specialized knowledge that applies to specific tasks. Code review<br>
+
+
+<h3>MCP</h3>
+Model Context Protocol. Context can live elsewhere: databases, apps, etc.<br>
+MCP via stdio if local, via HTTP if the MCP server is remote.<br>
+Stdio servers are for local processes that run on your machine.<br>
+
+MCP servers add tool definitions to your context window — even when you're not actively using them. If you have a lot of servers configured, this eats into your available context. Run <span class="inline-code">/mcp</span> to see what's connected and disable anything you're not actively using.
+
+<h3>Hooks</h3>
+Hooks are deterministic, MCP and skills are not.<br>
+
+
+You can tell CLAUDE.ms to run e.g. a code formatter after every edit of your file, bot sometimes , it won't
+<br>
+Example: autoformatting after edit.
+<ul>
+<li>PreToolUse — runs before a tool call</li>
+<li>PostToolUse — runs after a tool call completes</li>
+<li>UserPromptSubmit — runs when you submit a prompt, before Claude processes it</li>
+<li>Stop — runs when Claude finishes responding</li>
+<li>Notification — runs when Claude sends a notification</li>
+</ul>
+
+<!-- ************************************************************************************ -->
+<hr>
+
+
+
+
+
+<hr>
+<h1>Links</h1>
+<ul>
+<li><a target="_blank" href="https://code.claude.com/docs/en/overview">Claude Code Docs</a></li>
+</ul>
+
+  <!-- Empty content area -->
+
+</div>
+</main>
+</body>
+</html>

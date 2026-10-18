@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>N8N notes</title>
+
+<style>
+    /* Global page style */
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        margin: 40px;
+        background: #f7f7f7;
+        color: #222;
+        line-height: 1.6;
+    }
+
+    /* Link styling */
+    a {
+        color: #0066cc;
+        text-decoration: none;
+        font-weight: bold;
+    }
+    a:hover {
+        text-decoration: underline;
+        color: #004999;
+    }
+
+    /* Reset counters */
+    body {
+        counter-reset: h1counter;
+    }
+
+    /* H1 numbering */
+    h1 {
+        counter-reset: h2counter;
+        counter-increment: h1counter;
+        margin-left: 0;
+        padding-left: 0;
+    }
+    h1::before {
+        content: counter(h1counter) ". ";
+        font-weight: bold;
+        color: #444;
+    }
+
+    /* H2 numbering */
+    h2 {
+        counter-reset: h3counter;
+        counter-increment: h2counter;
+        margin-left: 20px;
+        padding-left: 0;
+    }
+    h2::before {
+        content: counter(h1counter) "." counter(h2counter) " ";
+        font-weight: bold;
+        color: #555;
+    }
+
+    /* H3 numbering */
+    h3 {
+        counter-increment: h3counter;
+        margin-left: 40px;
+        padding-left: 0;
+    }
+    h3::before {
+        content: counter(h1counter) "." counter(h2counter) "." counter(h3counter) " ";
+        font-weight: bold;
+        color: #666;
+    }
+</style>
+
+</head>
+<body>
+
+<h1>Introduction</h1>
+Introduction to n8n
+diego.minguzzi.sw@gmail.com
+Spei4abHg
+
+
+<h1>Links</h1>
+<ul>
+<li> <a target="_blank" href="https://docs.n8n.io/">n8n docs page</a> </li>
+<li>n8n Basic course
+    <ul>
+    <li> <a target="_blank" href="https://blog.n8n.io/announcing-the-n8n-certification-course-for-beginners-level-1/?_gl=1*ta8bcm*_gcl_au*MzUxOTczMzI2LjE3Nzk1NTYxOTc.*_ga*MjEzNjAyMjIxLjE3Nzk1NTYxOTM.*_ga_0SC4FF2FH9*czE3Nzk1NjU2MjckbzIkZzEkdDE3Nzk1NjU2NjgkajE5JGwwJGgw">
+        non for beginners</a> </li>
+    </ul>
+  </li>
+</ul>

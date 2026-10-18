@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+  .source_code {
+    background-color: lightgray;
+    font-family: Courier New;
+    border-style: solid;
+    border-width: thin;
+    font-size: larger;
+  }
+  </style>
+
+  <title>ROS2</title>
+  <link rel="icon" type="image/x-icon" href="https://pic.vsixhub.com/ae/db/570e6089-b871-41df-9cf4-a723cb34ef01-icon.png">
+</head>
+
+<body>
+
+<h1>. ROS2 Workspaces</h1>
+
+<div class="source_code">
+<pre>
+  # Jazzy + Robot Arm from scratch.
+  source /opt/ros/jazzy/setup.bash ; source ${HOME}/repo/skunk_amr/source/fs_robot_arm_ws/install/setup.bash
+  
+  # Jazzy + Precise Robots
+  source /opt/ros/jazzy/setup.bash ; source ${HOME}/repo/skunk_amr/source/precise_robot_ws$/install/setup.bash
+  
+  # When work directory is a workspace root:
+  source /opt/ros/jazzy/setup.bash ; source install/setup.bash
+</pre>
+</div>
+
+<h1>. ROS2 and MoveIt2</h1>
+
+<div class="source_code">
+<pre>
+  colcon build --packages-select my_package       # Only builds the package my_package
+  
+  # Launches the URDF, with the panel to control the joints.
+  ros2 launch urdf_tutorial display.launch.py model:= path to the URDF file
+  
+  colcon build --packages-select my_py_publisher --symlink-install --packages-select pf3400sx_model
+  ros2 launch urdf_tutorial display.launch.py model:=$(ros2 pkg prefix pf3400sx_model)/share/pf3400sx_model/urdf/pf3400sx.urdf
+  
+  # Launches the MoveIt setup assistant.
+  ros2 launch moveit_setup_assistant setup_assistant.launch.py
+  
+  # Creates a robot descriptor package.
+  ros2 pkg create --license MIT \
+                  --maintainer-name "Diego Minguzzi" \
+                  --maintainer-email "diego.minguzzi@gmx.com" \
+                  --build-type ament_cmake \
+                  PF3400sx_model
+                  
+</pre>
+</div>
+
+
+
+
+<h2>.. ROS2 and MoveIt2: References</h2>
+<ul>
+  <li><a target="_blank" href="z">Tutorial on the MoveIt setup assistant</a></li> 
+  <li><a target="_blank" href=""></a></li>
+</ul>
+
+
+<!-- ******************************************************************************************* -->
+<hr>
+<h1>. ROS 2 from Scratch <br>Get started with ROS 2 and create -- Edouard Renard; -- 2024 -- Packt Publishing</h1>
+380 pages, read up to page: 62<br>
+
+<!-- SOURCE the ENVIRONMENT ******************************************************************** -->
+<div class="source_code">
+<pre>
+  source /opt/ros/jazzy/setup.bash && source ${HOME}/repo/skunk_amr/source/poc_ros_basics_ws/install/setup.bash
+  
+  source /opt/ros/jazzy/setup.bash && source ${HOME}/repo/skunk_amr/source/skunk_amr_ws/install/setup.bash 
+    
+  source /opt/ros/jazzy/setup.bash
+  source ${HOME}/repo/skunk_ros/ws_ros_from_scratch/install/setup.bash
+  source ${HOME}/repo/skunk_amr/source/poc_ros_basics_ws/install/setup.bash
+</pre>
+</div>
+<!-- ******************************************************************************************* -->
+
+<b>Installation</b><br>
+<a target="_blank" href="https://docs.ros.org/en/jazzy/Installation/Ubuntu-Install-Debs.html">ROS2 Jazzy Installation on Ubuntu 2024</a>
+<br>
+
+
+<b>Uninstallation</b><br>
+If you need to uninstall ROS 2 or switch to a source-based install once you have already installed from binaries, run the following command:<br>
+
+<div class="source_code">
+<pre>
+sudo apt remove ~nros-jazzy-* && sudo apt autoremove
+</pre>
+</div>
+
+You may also want to remove the repository:
+
+<div class="source_code">
+<pre>
+sudo apt remove ros2-apt-source
+sudo apt update
+sudo apt autoremove
+sudo apt upgrade # Consider upgrading for packages previously shadowed.
+</pre>
+</div>
+
+<div class="source_code">
+  source /opt/ros/jazzy/setup.bash
+  source ${HOME}/ros2_wrkdir/ros2_ws/install/setup.bash
+</div>
+
+
+<h2>.. ROS2 Scratch: Communication mechanisms</h2>
+
+<h3>... ROS2 Scratch: Nodes</h3>
+A node runs on top of a computer program, it uses ROS2 functionalities, like:
+logging, communication with other nodes, etc. ROS has mechanisms to handle communication between nodes.<br>
+
+Rename a node at runtime:
+
+<div class="source_code">
+  ros2 run my_cpp_pkg my_first_node --ros-args -r __node:=abcd
+</div>
+
+
+<h3>... ROS2 Scratch: topics</h3>
+Topics are useful to stream data and commands from a node into another.
+<ul>
+  <li> A node publishes to the topic, another node subscribes to the topic. </li>
+  <li> a topic is defined by a name and a data type. <br>
+       Publishers and subcribers use the same name to make communication successful.<br>
+       The data type of the topic is called <b>interface</b></li>
+  <li> The kind of message sent through an topic is called <b>interface</b></li>
+</ul>
+Message definitions are defined in the <b>msg</b> subbirectory in the package.<br>
+
+<h3>... ROS2 Scratch: Bag files</h3>
+
+<code>
+  <pre>
+    # Example of how to record the topic number
+    ros2 bag record --compression-mode file --topics /number
+    ros2 bag record --compression-mode file --topics /number -o number_topic
+    
+    # Play back a recorded bag.  Start paused.
+    ros2 bag play -p rosbag2_2025_12_26-09_22_50
+  </pre>
+</code>
+
+
+ROS2 commands:
+<ul>
+  <li> ros2 topic info [topic_name] </li>
+  <li> ros2 interface show [interface data type] </li>
+</ul>
+
+<h3>... ROS2 Scratch: services</h3>
+Services provide a client server mechanism·<br>
+Services are defined by a name, the interface is composed by the request data type and the response data type.<br>
+So a service is defined by a name and an interface (request, response).<br>
+A service is provided by a server.<br> 
+A service can have multiple clients.  Clients are not aware of each other.<br>
+Clients reach the server only by the service name.  They do not know the service IP address.<br>
+Service interfaces are defined in the <b>srv</b> subbirectory in the package.
+<p/>
+
+<code>
+  <pre>
+    # Example: how to call a service from the command line.
+    ros2 service call /reset_counter  my_interfaces/srv/ResetCounter "{ reset_value: 0 }"
+    
+  </pre>
+</code>
+
+<h3>... ROS2 Scratch: when using topics? when services?</h3>
+<ul>
+<li>Topics: a continuous stream of data when the most recent datum instance is the most important</li>
+<li>Services: actions on demand, requested from time to time, not periodically.   </li>
+</ul>
+
+<h3>... ROS2 Scratch: actions</h3>
+An action has a name and an interface.  The interface is composed of:
+<ul>
+  <li>goal: similar to the service request </li>
+  <li>result: similar to the service response</li>
+  <li>feedback: additional data during the action execution</li>
+</ul>
+Actions are used when you need a client/server communication and the action takes time to execute.<br>
+An action is identified by a name and an interface.  There is only one action server for each action name-interface.<br>
+
+<table border="1" width="100%">
+  <tr>
+    <th>Action Client</th>
+    <th>Action Server</th>
+  </tr>
+  <tr>
+    <td>The client requests a Goal (service request)</td>
+    <td>The server either accepts or rejects the Goal.</td>
+  </tr>
+  <tr>
+    <td>...</td>
+    <td>...</td>
+  </tr>
+  <tr>
+    <td>The client can later cancel the Goal (service request)</td>
+    <td>The server returns a response code.</td>
+  </tr>
+  <tr>
+    <td>...</td>
+    <td>...</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>The server can return feedback (topic)</td>
+  </tr>
+  <tr>
+    <td>...</td>
+    <td>...</td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td>The server can return Goal status (topic)</td>
+  </tr>
+  <tr>
+    <td>...</td>
+    <td>...</td>
+  </tr>
+  <tr>
+    <td>The client can request the Result of the action execution (service request).</td>
+    <td>The server returns the Result.</td>
+  </tr>
+</table>
+
+
+Example of calling an action from the terminal:
+<code>
+  <pre>
+    ros2 action send_goal /MyTurtle/rotate_absolute turtlesim/action/RotateAbsolute "{theta: 1.57}"
+  </pre>
+</code>
+
+<h3>... ROS2 Scratch: parameters</h3>
+Parameters are runtime settings to a node. Parameters exists within a node<br>
+It is possible to set parameters on the fly during a node execution. <br>
+
+<b>Syntax to override/set parameters from the command line.</b>
+Otherwise, it is possible to set parameters when a node is run.<br>
+<code>
+  <pre>
+    ros2 run turtlesim turtlesim_node --ros-args -p background_r:=0 -p background_g:=120 -p background_b:=0
+    
+    # Syntax to override parameters from the command line.
+    ros2 run my_py_pkg my_publisher --ros-args -p number:=10  -p publish_period:=0.5       
+  </pre>
+</code>
+
+<h4>.... ROS2 Scratch: parameter files</h4>
+Dumping parameters to a file, loading them at launch time.
+
+<code>
+  <pre>
+    # Dump parameters to a file
+    ros2 param dump /my_publisher > params/my_publisher_params.yaml
+    
+    # Then, parameters can be installed by adding the lines below to the CMakeLists.txt
+    install( DIRECTORY params/ DESTINATION share/${PROJECT_NAME}/params )
+    
+    # Then refer to the installed parameters when running a node:
+    ros2 run my_cpp_pkg my_publisher \
+             --ros-args \
+             --params-file $(ros2 pkg prefix my_cpp_pkg)/share/my_cpp_pkg/params/my_publisher_params.yaml
+  </pre>
+</code>
+
+
+
+$(ros2 pkg prefix my_cpp_pkg)
+
+
+<h3>... ROS2 Scratch: launch files</h3>
+A launch file allows you to start several nodes and parameters from one file.
+Example:
+<div class="source_code">
+<pre>
+  ros2 launch demo_nodes_cpp talker_listener.launch.xml
+</pre>
+</div>
+
+<h2>.. .. ROS2 Scratch: Developing a ROS2 node</h2>
+In ROS2, code is organized into:
+<ul>
+  <li>Workspace: a folder organization:
+    </li>
+  <li>Package</li>
+  <li>Node</li>
+</ul>
+
+<h2>.. ROS2 Scratch: How to create and build a workspace</h2>
+
+To create a workspace, for example called <code>ws</code>, create a directory called: <code>ws/src</code>
+<div class="source_code">
+<pre>
+cd ws 
+colcon build
+
+tree
+
+.
+├── build
+├── install
+├── log
+└── src
+
+source install/setup.bash # SOURCE THE WS INSTALL DIRECTORY every time you rebuild.
+</pre>
+</div>
+<p/>
+
+<div class="source_code">
+<pre>
+  # How to create a Python package
+  ros2 pkg create my_py_publisher --dependencies rclpy --build-type ament_python --license MIT --node-name my_py_publisher --maintainer-email diego.minguzzi.sw@gmail.com --maintainer-name Diego 
+  
+  # Example of how to create a Python package
+  ros2 pkg create \
+           my_py_pkg \
+           --license MIT \
+           --build-type ament_python \
+           --maintainer-name "Diego Minguzzi" \
+           --maintainer-email "diego.minguzzi.sw@gmail.com" \
+           --dependencies rclpy
+           
+  # Example of how to create a C++ package
+  ros2 pkg create my_cpp_pkg \
+           --license MIT \
+           --build-type ament_cmake \
+           --maintainer-name "Diego Minguzzi" \
+           --maintainer-email "diego.minguzzi.sw@gmail.com" \
+           --dependencies rclcpp
+           
+  
+  ros2 pkg create my_cpp_publisher --build-type ament_cmake --node-name my_cpp_publisher --dependencies rclcpp example_interfaces --maintainer-email
+  ros2 pkg create cpp_base --build-type ament_cmake --dependencies rclcpp --maintainer-email  diego.minguzzi.sw@gmail.com --maintainer-name "Diego Minguzzi" --license MIT
+  
+  ros2 pkg create my_interfaces --maintainer-email diego.minguzzi.sw@gmail.com --maintainer-name "Diego Minguzzi" --description "My custom interfaces"  --license MIT
+  
+  
+  ros2 pkg create base_cpp  --maintainer-email diego.minguzzi.sw@gmail.com --maintainer-name "Diego Minguzzi" --description "Base C++ Library"  --license MIT
+</pre>
+</div>
+
+<p>
+<b>Always build the workspace from the workspace root directory</b><p/>
+
+<div class="source_code">
+<pre>
+mkdir -p ros2_ws/src
+cd ros2_ws
+colcon build
+
+Summary: 0 packages finished [0.38s]
+
+colcon build --packages-select my_cpp_pkg                   # Builds a specific package.
+colcon build --packages-select my_py_pkg                    # Builds a specific package.
+colcon build --packages-select my_py_pkg --symlink-install  # Builds a package, avoids having to build every time.
+colcon build --packages-select my_py_publisher --symlink-install 
+colcon build --packages-select my_cpp_pkg --symlink-install 
+</pre>
+</div>
+</p>
+<p>
+<b>Source the workspace, also every time you build it.</b> <br>
+Example:
+<div class="source_code">source ${HOME}/ros2_wrkdir/ros2_ws/install/setup.bash</div>
+</p>
+
+<h3>... ROS2 Scratch: how to create a Python package</h3>
+<p>
+Create a Python package inside the <code>src</code> directory.<br>
+
+<div class="source_code"> ros2 pkg create my_py_pkg --build-type ament_python --dependencies rclpy</div>
+</p>
+
+To expose a Python executable, modify the <code>entry_points</code> section in <code>setup.py</code>:
+
+<div class="source_code">
+<pre>
+    entry_points={
+        'console_scripts': [
+          'my_py_node = my_py_pkg.my_first_node:main'
+        ],
+    },
+</pre>
+</div>
+To run it: 
+<div class="source_code"><pre>ros2 run my_py_pkg my_py_node</pre></div>
+
+Thus:
+<ul>
+<li>Filename: the Python source file</li>
+<li>Node name: defined in the constructor of the Node subclass</li>
+<li>Executable name: defined in <code>setup.py</code></li>
+</ul>
+
+<h3>... ROS2 Scratch: how to create a C++ package</h3>
+</p>
+Create a C++ package inside the <code>src</code> directory.<br>
+<div class="source_code"> ros2 pkg create my_cpp_pkg --build-type ament_cmake --dependencies rclcpp</div>
+</p>
+
+<h3>... ROS2 Scratch: How to run a node </h3>
+Suppose that the node creates a topic named <code>number</code>.<br>
+At launch, time, the topic name can become <code>my_number</code>.
+
+<div class="source_code">
+  <pre>
+    colcon build --packages-select my_cpp_publisher --symlink-install
+
+    ros2 run my_cpp_publisher my_cpp_publisher --ros-args -r number:=my_number
+    
+    # How to change a node name at launch.
+    ros2 run my_cpp_publisher my_cpp_publisher --ros-args -r __node:=my_publisher # Runs my_cpp_publisher with node name my_publisher
+    
+    ros2 run my_cpp_publisher my_cpp_publisher --ros-args -r __node:=my_publisher # Runs my_cpp_publisher with node name my_publisher
+    
+    ros2 run my_cpp_pkg my_publisher --ros-args --remap number:=my_number # Changes the topic name into my_number , new syntax.
+    
+    # If my_cpp_publisher publishes on the topic number , remaps the topic name to xyz_number
+    ros2 run my_cpp_publisher my_cpp_publisher --ros-args -r number:=xyz_number
+    
+    ros2 run my_cpp_publisher my_cpp_publisher --ros-args -r number:=xyz_number
+    ros2 run my_cpp_publisher number_subscriber --ros-args -r number:=xyz_number
+  </pre>
+</div>
+
+<h3>... Create a GTest unit test for a C++ library</h3>
+
+<div class="source_code">
+<pre>
+  colcon test --ctest-args tests      # Compile and run unit tests
+  colcon test-result --all            # See test results
+  colcon test-result --verbose        # See test results, summary.
+  colcon test-result --all --verbose  # See test results, see which test cases fail.
+</pre>
+</div>
+
+
+<ul>
+<li><a target="_blank" 
+       href="https://docs.ros.org/en/jazzy/Tutorials/Intermediate/Testing/Cpp.html">
+      Writing Basic Tests with C++ with GTest
+    </a>
+  </li>
+<li><a target="_blank" 
+       href="https://docs.ros.org/en/jazzy/Tutorials/Intermediate/Testing/CLI.html">
+      Running Tests in ROS 2 from the Command Line
+    </a>
+  </li>  
+</ul>
+
+<h3>... ROS2 Scratch: How to create a package for interfaces</h3>
+<p>
+  <a target="_blank" href="https://docs.ros.org/en/rolling/Concepts/Basic/About-Interfaces.html">ROS2 docs: interfaces</a>
+</p>
+<div class="source_code">
+  <pre>
+    ros2 pkg create my_interfaces
+  </pre>
+</div>
+No need to specify the build system.
+
+
+
+
+<div class="source_code">
+<pre>
+  # Activate as overlay.
+  source /home/minguzzi/ros2_ext_ws/src/book_ros2/install/setup.bash
+</pre>
+</div>
+
+<h1>. Packages Install/uninstall</h1>
+<h2>.. Install on ROS2 Humble on LUbuntu2022.04 </h2>
+<p>
+  <a target="_blank" href="https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html">Instructions</a>
+</p>
+<div class="source_code">
+<pre>
+locale  # check for UTF-8
+
+sudo apt update && sudo apt install locales
+sudo locale-gen en_US en_US.UTF-8
+sudo update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
+export LANG=en_US.UTF-8
+
+locale  # verify settings
+
+sudo apt install software-properties-common
+sudo add-apt-repository universe
+
+sudo apt update && sudo apt install curl
+sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
+
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
+
+sudo apt update
+
+sudo apt upgrade
+
+sudo apt install ros-humble-desktop
+
+sudo apt install ros-dev-tools
+
+sudo apt install ros-humble-moveit ros-humble-moveit-core ros-humble-moveit-kinematics ros-humble-moveit-planners ros-humble-moveit-visual-tools ros-humble-pick-ik ros-humble-librealsense2 ros-humble-ompl
+
+# Replace ".bash" with your shell if you're not using bash
+# Possible values are: setup.bash, setup.sh, setup.zsh
+source /opt/ros/humble/setup.bash
+
+# ROSDEP initialization and update.
+sudo rosdep init
+rosdep update
+</pre>
+</div>
+
+<h2>.. Uninstall on ROS2 Humble on LUbuntu2022.04 </h2>
+<div class="source_code">
+<pre>
+sudo apt remove ~nros-humble-* && sudo apt autoremove
+
+# You may also want to remove the repository:
+sudo rm /etc/apt/sources.list.d/ros2.list
+sudo apt update
+sudo apt autoremove
+# Consider upgrading for packages previously shadowed.
+sudo apt upgrade
+</pre>
+</div>
+
+<h2>.. Install Realsense </h2>
+<a target="_blank" href="https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md">Instructions</a>
+<div class="source_code">
+<pre>
+  sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key F6E65AC044F831AC80A06380C8B3A55A6F3EFCDE
+
+  # Use the line below if the previous instruction does not work. It worked for me.
+  sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-key F6E65AC044F831AC80A06380C8B3A55A6F3EFCDE
+
+  sudo add-apt-repository "deb https://librealsense.intel.com/Debian/apt-repo $(lsb_release -cs) main" -u
+
+  sudo apt-get install librealsense2-dkms
+  sudo apt-get install librealsense2-dev
+  sudo apt-get install librealsense2-dbg
+
+  sudo apt-get install librealsense2-utils
+</pre>
+</div>
+
+<h2>.. Upgrade Realsense packages</h2>
+<div class="source_code">
+<pre>
+  sudo apt-get update
+  sudo apt-get upgrade
+</pre>
+</div>
+
+<h2>.. Remove Realsense packages</h2>
+Important Removing Debian package is allowed only when no other installed packages directly refer to it. For example removing librealsense2-udev-rules requires librealsense2 to be removed first.
+<div class="source_code">
+<pre>
+  # Remove a single package with:
+  sudo apt-get purge <package-name>
+
+  #Remove all RealSense™ SDK-related packages with:
+  dpkg -l | grep "realsense" | cut -d " " -f 3 | xargs sudo dpkg --purge
+</pre>
+</div>
+
+<!-- ******************************************************************************************* -->
+<hr>
+
+<h1>. ROS2 MoveIt 2 Robot Simulation</h1>
+<h2>.. MoveIt2 Documentation</h2>
+<ul>
+
+  <li> <a target="_blank" href="https://moveit.picknik.ai/main/">MoveIt 2 Documentation landing page</A>. 
+    </li>
+  <li> <a target="_blank" href="https://moveit.picknik.ai/main/doc/tutorials/getting_started/getting_started.html">Get started</A> </li>
+  <li> <a target="_blank" href="https://moveit.picknik.ai/main/doc/tutorials/quickstart_in_rviz/quickstart_in_rviz_tutorial.html">Until here</A> </li>
+  <li> <a target="_blank" href=""></A> </li>
+  <li> <a target="_blank" href=""></A> </li>
+  <li> <a target="_blank" href=""></A> </li>
+  <li> <a target="_blank" href=""></A> </li>
+  <li> <a target="_blank" href=""></A> </li>
+</ul>
+<h2>.. MoveIt2 Installation</h2>
+<code>
+  <pre>
+  </pre>
+</code>
+
+<h2>.. MoveIt2 Launch a Demo</h2>
+<code>
+  <pre>
+    source /opt/ros/jazzy/setup.bash && source ${HOME}/repo/skunk_ros/ws_moveit_tutorials/install/setup.bash
+    ros2 launch moveit2_tutorials demo.launch.py
+  </pre>
+</code>
+
+
+<h2>Links</h2>
+<ul>
+  <li><a target="_blank" href="https://automaticaddison.com/how-to-configure-moveit-2-for-a-simulated-robot-arm/">
+        Automatic Addison
+        </a>
+    </li>
+  <li><a target="_blank" href="https://moveit.picknik.ai/main/index.html"> MoveIt 2</a>
+    </li>
+  <li><a target="_blank" href="https://github.com/moveit/moveit2_tutorials/blob/main/doc/how_to_guides/pilz_industrial_motion_planner/pilz_industrial_motion_planner.rst">
+        Pilz Industrial Motion
+        </a>
+    </li>
+</ul>
+
+<!-- ******************************************************************************************* -->
+<hr>
+
+<h1>. Robot Programming with ROS2 book</h1>
+
+A ROS2 distribution is made-up of packages.<br>
+The base environment is  called <b>underlay</b>.<br>
+
+<div class="source_code">
+<pre>
+  # Activate as overlay.
+  source /home/minguzzi/ros2_ext_ws/src/book_ros2/install/setup.bash
+</pre>
+</div>
+
+
+<p/>
+Other need packages to use the example code in the books. Otherwise it does not build.
+<div class="source_code">
+<pre>
+  sudo apt install libqt5svg5-dev
+</pre>
+</div>
+
+A running ROS2 application forms a computation graph.<br>
+A CG is made of nodes that communicate with each other, using the provided architectural mechanisms:
+<ul>
+  <li>Publish / subscribe: N nodes publish to M subscribers using a channel called topic, accepting messages of a given type</li>
+  <li>Services</li>
+  <li>Actions: an action is an asynchronous communication</li>
+</ul>
+
+A function of a node is processing or control. Control needs iterative execution, processing requires event-oriented execution.<br>
+
+(7) The standard message to control the robot speed is <code>geometry_msgs/msg/Twist</code><p/>
+
+If a resource name begins with a tilde, it is private, if it begins with / then it is absolute.<br>
+
+<div class="source_code">
+<pre>
+  ros2 interface show sensor_msgs/msg/Image # Standard type for images
+</pre>
+</div>
+
+ROS2 is organized into packages; packages reside in the workspace.  A workspace has a <code>src</code> directory in it.<br>
+A workspace must be activated. There can be many workspaces active at the same time (11).<p/>
+The first activeted workspace is called underlay.<br>
+Suppose an underlay workspace is activated, then another package can overlay the previous.<br>
+The entire ROS2 distribution is the underlay workspace.<br>
+
+<h1>. ROS2 Architecture</h1>
+Top to bottom:
+
+<b>rclcpp, rclpy, etc.</b> are ROS Client API packages, each for a given programming language. All of them sit on RCL.<br>
+<b>rcl</b>: ROS Client Library: the language specific APIs sit on top the the RCL: rclcpp, rclpy, etc.<br>
+<b>rmw</b>: ROS Middleware Layer: the communication layer, in turn it uses a DDS version. RMW adapts the underlying DDS version to the RCL.
+
+<p/>
+
+<h2>.. ROS2 Arch: logging</h2>
+All nodes send their logging to the topic <code>/rosout</code>; the data type is <code>rcl_interfaces/msg/Log</code>.<br>
+<b>Setting the log level</b>
+<div class="source_code">
+<pre>
+  # Runs a node and sets the log level.
+  ros2 run first_pkg hello_node --ros-args --log-level info
+</pre>
+</div>
+
+<h2>.. ROS2 Arch: pubsub</h2>
+<ul>
+<li>Multiple publishers can publish to the same topic.  The QOS queue is on the publisher.</li>
+<li>Multiple subscribers can subscribe to the same topic</li>
+<li>The topic communication mechanism is many-to-many</li>
+</ul>
+
+<h3>... ROS2 Arch: pubsub. QoS</h3>
+<ul>
+  <li><a target="_blank" href="https://docs.ros.org/en/humble/Concepts/About-Quality-of-Service-Settings.html">
+      About-Quality-of-Service-Settings</a></li>
+  <li><a target="_blank" href=""></a></li>
+  <li><a target="_blank" href=""></a></li>
+  <li><a target="_blank" href=""></a></li>
+</ul>
+QoS policies form a QoS profile:<br>
+<cite>The Subscriber must have a policy less or as restrictive then the publisher</cite>.
+<ul>
+  <li>History: Keep last N / Keep All</li>
+  <li>Depth: honored if History is Keep last</li>
+  <li>Reliability: Best effort / Reliable may try multiple times</li>
+  <li>Durability: Transient local= late joining subscribers receive the last sample / Volatile= samples are not persisted</li>
+  <li>Deadline: duration: the expected maximum amount of time between subsequent messages being published to a topic</li>
+  <li>Lifespan: the max time between publish and message receive. If exceeded, the message is considered stale</li>
+  <li>Liveliness: whether a topic is still considered alive (Automatic / Manual)</li>
+  <li>Lease Duration:  the maximum period of time a publisher has to indicate that it is alive before the system considers it to have lost liveliness (losing liveliness could be an indication of a failure).</li>
+</ul>
+
+
+<h2>.. ROS2 Arch: interfaces</h2>
+In ROS2, messages, services and actions are interfaces.
+
+
+<h2>.. ROS2 Arch: messages</h2>
+ROS2 messages are defined in packages that by default end with <code>_msgs</code>
+Messages are composed of fields. Stamped messages have an header field.
+<div class="source_code">
+<pre>
+  ros2 interface show geometry_msgs/msg/Point
+  ros2 interface show geometry_msgs/msg/PointStamped # Contains header and Point
+
+  ros2 interface proto std_msgs/msg/String      # Provides an example of a message of a given type.
+</pre>
+</div>
+
+
+Suppose that a message is called <code>std_msgs/msg/Int32</code> :
+<ul>
+  <li>The header is <code>std_msgs/msg/int32.hpp</code> </li>
+  <li>The data type is <code>std_msgs::msg::Int32</code> </li>
+</ul>
+
+
+
+<!-- ******************************************************************************************* -->
+<hr>
+
+<h1>. ROS2 Tools</h1>
+
+<h2>.. ROS2 tools: colcon</h2>
+<a target="_blank" href="http://colcon.readthedocs.io/">http://colcon.readthedocs.io/</a><br>
+<p/>
+<div class="source_code">
+<pre>
+  colcon build --symlink-install
+
+  # Builds only first_pkg, to save time.
+  colcon build --symlink-install --packages-select first_pkg
+  colcon build --symlink-install --packages-up-to first_pkg
+</pre>
+</div>
+
+Creates the directories: build, log, install. They can be removed.<br>
+Useful commands:
+<div class="source_code">
+<pre>
+  colcon list   # List all packages in the workspace
+  colcon graph  # List all packages in the workspace in topological order
+                # and visualize their dependencies
+
+</pre>
+</div>
+
+<h2>.. ROS2 tools: ros2 RQt Console</h2>
+<div class="source_code">
+<pre>
+  ros2 run package node arg1 arg2 arg3 etc
+
+  ros2 run rqt_console rqt_console  # View logs, set the log level.
+  ros2 run rqt_graph rqt_graph      # Shows the computational graph.
+</pre>
+</div>
+<b>Hint:</b> In RQT graph, uncheck Dead sinks and Leaf topics.
+<p/>
+
+<h2>.. ROS2 tools: ros2 cli</h2>
+<div class="source_code">
+<pre>
+  # Publishes / subscribes to a message.
+  ros2 topic pub --qos-depth 5   greetings std_msgs/String "data: Hello World"
+  ros2 topic echo  /greetings std_msgs/String
+
+  # Creates a default instance of a message, example:
+  ros2 interface proto  geometry_msgs/msg/Point
+
+  # Creates a new package
+  ros2 pkg create 01_first_pkg  --dependencies rclcpp std_msgs \
+                                --maintainer-name "Diego Minguzzi" \
+                                --build-type cmake \
+                                --license MIT
+
+  ros2 pkg create my_pkg        --dependencies rclcpp std_msgs \
+                                --maintainer-name "Diego Minguzzi" \
+                                --build-type ament_cmake \
+                                --license MIT
+
+  ros2 pkg create precise_pf3400sx \
+                                --dependencies rclcpp std_msgs urdf xacro \
+                                --maintainer-name "Diego Minguzzi" \
+                                --build-type ament_cmake \
+                                --license MIT
+
+  ros2 pkg create precise_pf3400sx \
+                                --dependencies rclpy std_msgs urdf xacro \
+                                --maintainer-name "Diego Minguzzi" \
+                                --build-type ament_python \
+                                --license MIT
+
+  # Executes the executable: logger_node of the package: first_pkg
+  ros2 run first_pkg logger_node
+
+  ros2 run first_pkg subscriber_node # Executes subscriber_node of the package: first_pkg
+
+  ros2 run my_pkg logger --ros-args --log-level error # Runs a node executable with a given log level.
+
+  # Launches a file containes in the launch directory under the package root.
+  ros2 launch precise_pf3400sx display_launch.py urdf_package:=precise_pf3400sx urdf_package_path:=model/PF3400SX.xacro
+</pre>
+</div>
+
+<h2>.. ROS2 tools: RQT Console to view log messages</h2>
+<div class="source_code">
+<pre>
+  ros2 run rqt_console rqt_console
+</pre>
+</div>
+
+ros2 run rqt_console rqt_console
+
+<h2>.. ROS2 tools: parameters</h2>
+<div class="source_code">
+<pre>
+  ros2 param list   # Dumps the list of parameters.
+
+  $ ros2 param describe /counter_subscriber number_of_particles
+  Parameter name: number_of_particles
+    Type: integer
+    Constraints:
+
+  ros2 param get /counter_subscriber number_of_particles      # Prints the parameter.
+
+  ros2 param set /counter_subscriber number_of_particles 350  # Sets a parameter.
+</pre>
+</div>
+
+<h2>.. ROS2 tools: launch</h2>
+<a target="_blank"
+    href="https://docs.ros.org/en/humble/Tutorials/Intermediate/Launch/Creating-Launch-Files.html">
+    Launch file documentation
+</a>
+<br>
+
+<a target="_blank"
+    href="https://docs.ros.org/en/foxy/Tutorials/Intermediate/URDF/Using-URDF-with-Robot-State-Publisher.html">
+    Launcher files for RViz and URDF models
+</a>
+<br>
+
+<h2>.. ROS2 tools: Useful tools</h2>
+
+<h3>... Terminator</h3>
+<ul>
+  <li>Ctrl + Shift + O: Split horizontally</li>
+  <li>Ctrl + Shift + E: Split vertically</li>
+  <li>Ctrl + Shift + X: the current terminal fills the entire window.  Press again to revert.</li>
+  <li>Ctrl + Shift + W: closes a terminal</li>
+</ul>
+
+
+
+<!-- ******************************************************************************************* -->
+<hr>
+
+<h1>. References</h1>
+<ul>
+  <li><a target="_blank" href="https://colcon.readthedocs.io/">Colcon: Read the Docs</a></li>
+  <li><a target="_blank" href="https://docs.ros.org/en/humble/p/rclcpp/generated/index.html">Humble RCL C++</a></li>
+  <li><a target="_blank" href="https://docs.isaacsim.omniverse.nvidia.com/latest/index.html">NVidia Isaac SIM</a></li>
+  <li><a target="_blank" href=""></a></li>
+</ul>
+
+
+</body>
+</html>

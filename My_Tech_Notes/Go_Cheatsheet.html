@@ -1,0 +1,721 @@
+<html>
+<title>Go Cheatsheet</title>    
+<body>
+Notes:
+To run the local documentation server, the command is:
+<pre>
+nohup godoc -http=:6060 > /dev/null &
+</pre>
+The documentation becomes available at:
+<a target="_blank" href="http://localhost:6060/">http://localhost:6060</a>
+<pre>
+go get golang.org/x/tools/cmd/goimports # Installs common tools to aid code formatting, etc.  
+</pre> 
+<hr>
+<h1>Program Structure</h1>
+
+<h2>Names</h2>
+A name begins with a letter or an underscore.<br>
+Go has keywords, that cannot be used as symbols.<br>
+There are also predeclared names, that can be used in declarations, but they can create confusion.<br>
+  Example: true, false, iota, nil.(28)
+<p/>  
+If an entity is in a function, it is local to that function, otherwise it is visible in all files of the package where it belongs.<br>
+<b>If a name begins with an uppercase letter, it is exported to other packages</b>, otherwise the name is only visible in that package.<br>
+Camel case is the preferred way.<br>
+
+DECLARATIONS: var, const, type, funct.
+
+<b>Variables</b>
+
+<div>    
+  <b>Variable declaration</b> <br>
+  <code>var name type = expression</code> : type or name can be omitted, but not both.<br>
+  Multiple variables can be declared in the same declaration:<br>
+  <code>var b, f ,s = true, 2.3, "four"</code>
+  In case the expression is missing: the var is initialized with the zero-value of that type.<p/>
+  <b>Short variable declaration</b>: <code>name := expression </code> : <i>It is preferred for local variables.</i><br>
+  Short variable declarations can only be used in a function, not at package level.<br/>
+  <cite>The short var declaration must declare at least a new variable</cite>. It assigns existing vars in the same declaration.<br>
+  It can be used for local variables.
+  <p/>
+  A variable can be created using the built-in function new(). new(T) creates an <cite>unnamed variable</cite> of type T.<br>
+<h2>Scope</h2>  
+  The variable lifetime lasts until the variable becomes unreachable (35), then it is garbage collected. 
+  The variable lifetime does not depend on whether the variable is allocated with new or with var.<br>
+  <b>Synctactic block</b>: a sequence of statements enclosed in braces: a named inside a synctactic block is not visible outside that block.<br>
+  The generalization of a synctactic block is a <cite>lexical block</cite>.(46)<br>
+  A program can contain multiple declarations of the same name as long as each declaration is in a different lexical block.
+  Lexical blocks can be <cite>nested</cite>, so a declaration may <cite>shadow</cite> another.<br>
+  (47) A for loop creates the explicit block of the loop body and the implicit block that encloses the variables declared in the initialization cause.
+  A variable declared in the implicit block has a scope: the condition, the post statement and the loop body.<p/>  
+  Note: <code>if</code> and <code>switch</code> statements can create implicit blocks:
+  <pre>
+  if x := f(); x < 0 {
+      // ...
+  }
+  </pre>
+  At package level all declarations have the same scope, so it is possible to create mutually recursive types (48)<p/>
+</div>  
+<p/>
+
+<h2>Constants</h2>
+(75)<br>
+<div>
+<ul>
+  <li>They can be declared one per line, or grouped as <code>const ( )</code></li>    
+  <li>Constant generator <code>iota</code> to define enumerations<br>
+  <pre>
+      const (
+        Red int = iota
+        Green
+      )   
+  </pre>  
+  </li>
+  <li>Untyped constants exists (78) precision is adapted for every usage.</li>
+</ul>    
+</div>
+<p/>
+
+<h2>Pointers</h2>
+<center>The type pointer to int is: *int</center>
+<div>
+    Example: the pointer to an integer has type <code>*int</code>.<br>
+    (32) The expressions that denote variables are the only expressions to which the address operator (ampersand) can be applied.<br>
+    In Go, is it possible to return the address of a local variable, for example to implement a constructor or a factory method. <br>    
+</div>
+<p/>
+
+A function can return the address of a local variable.<br>
+<p/>
+Assignment operators like += *= /= exist.<br>
+Prefix and postfix ++ and -- exist.<br>
+Variables may escape from the scope where they were created.<br>
+<p/>
+
+(10) Printf format string, conversion characters; conversions are called <b>verbs</b>:<br>
+<ul>
+<li>%d dec integer</li>
+<li>%f, %g, %e floating point number</li>
+<li>%x hex, %o octal</li>
+<li>%b binary</li>
+<li>%t boolean</li>
+<li>%s string</li>
+<li>%q quoted string</li>
+<li>%v any value</li>
+<li>%T value type</li>
+</ul>
+(134) Example of an adverb that prints a string padded with a <i>variable number of spaces</i>. <br>
+<pre>fmt.Printf("%*s%d", depth*2, "", myValue)</pre>
+
+FILE LAYOUT:
+(28)
+<ul>
+  <li> package </li>  
+  <li> import declarations </li>  
+  <li> package-level declarations, in any order: functions and other package level entities can be declared in any order (11) </li>  
+</ul>  
+  
+<h2>Basic Types</h2>  
+<div>
+  Go types fall into four categories (51): basic types, aggregate types, reference types, interface types (51).     
+  <ul>
+  <li>Basic types:
+      <ul>
+          <li>Integers: <code>int, uint, int8, int16, int32, int64</code>, <code>uint8</code>, etc.<br> 
+              <code>rune==int32</code>: a unicode code point, <code>byte==uint8</code>, <br>
+              <code>uintptr</code> holds a pointer value. <br>
+              (54) <b>signed ints are used</b>, even for quantities that cannot be negative.
+          </li>
+          <li><code>float32 float54</code>: they can be printed with example: <pre>%8.3f</pre> width.numeric_precision</li>
+          <li><code>bool</code> for booleans. Note that AND and OR operators have short-circuit behavior.</li>
+          <li><code>string</code>: strings are immutable sequences of bytes. UTF-8 sequences are called <i>runes</i>.<br>
+              <code>len()</code> returns the number of bytes, and the index accesses the index-th byte, not the index-th rune.<br>
+              The string copy and substring operation are cheap, because they do not create new string instances. <br>
+              <b>Raw strings</b> are written using backquotes instead of double quotes.<br>
+              <pre>`...`</pre>
+              Important packages to work with strings are:<code>bytes</code>, <code>strings</code>, <code>strconv</code>, <code>unicode</code>.<br>
+              <code>strconv</code> has functions to convert between strings and numbers.
+            </li>
+          <li><code>byte</code> (73) strings can be converted to byte slices and back again.
+            </li>
+      </ul>
+    </li>    
+  <li><b>Reference types</b>: slice, pointer, map, channel, function</li>    
+  </ul>
+  
+  <h3>Type declarations</h3>
+  A type declaration defines a new named type that has the same underlying type as an existing type.<br>
+  <code>type NAME UNDERLYING-TYPE</code><br>
+  Types, even with the same underlying type, cannot be compared or combined in expressions.<br>
+  The <b>cast</b> to the type <code>T</code> is <code>T(x)</code> expression.<br>
+  It is possible to compare and to assign a value with another of the same underlying type.
+  Two values of different named types cannot be compared directly.<br>
+  The advantage of declaring a named type is bit for complicated types.<br>
+  
+</div>  
+
+<h2>Operators</h2>
+Each operator has an assignment operator, for example:
+<pre>*=</pre>
+The operators like i++ and j++ are only postfix.
+<br>
+Tuple assignment exists (37): <code>x, y = y, x // Swap</code> right-hand side expressions are all evaluated before the assignment.<br>
+Assignment is always legal if the left-hand side and the right-hand side have the same type.(38).<br>
+Two entities can be assigned one to the other if they can be compared for equality (38)<br>
+
+
+<h2>Methods and functions</h2>
+(40) It is possible to define a method for a type:
+<pre>func (c Celsius) String() string {...} </pre>
+Note that the Celsius type appears before the function name.<br>
+<p/>
+
+<h2>Packages</h2>
+Package names are in lower case (28).<br>
+(42) A package is identified by a unique string called <i>import path</i>: example: <code>gopl.io/ch2/tempconv</code><br>
+A package has also a package name, which is the short, and not necessarily unique name that appears in a package declaration.<br>
+By convention, the package name matches the last part of the import path.<p/>
+
+<h3>Package Initialization</h3>
+<ul>
+<li>Package level variables are initialized in the order in which they appear</li>    
+<li><b>init functions</b>. Any file can contain any number of init functions <code>funct init(){ ... }</code>, <br>
+    they are automatically executed when the program starts, in the order in which those init() functions are declared.
+  </li>
+</ul>
+
+<h2>Flow Control</h2>
+The variables declared in the for loop are part of the loop scope.
+<p/>
+
+<hr>
+<h1>Composite types</h1>
+<h2>Arrays</h2>
+<code>len()</code> returns the number of items. Examples of declarations:
+<ul>
+<li><code>myArray := [3]int{1,2,3}</code></li>    
+<li><code>var myArray [3]int = [3]int{1,2,3}</code></li>    
+<li><code>var myArray = [3]int{1,2,3}</code></li>    
+<li><code>var myArray = [...]int{1,2,3}</code><br>
+    <code>var betterWay = [...]int{10, 20, 30}</code></li>    
+</ul>
+The size of the array is part of its type: it is not possible to assign an array to an array object of different size.<br>
+<b>Arrays as maps or dictionaries</b>: an array declaration can declare a map there the index is not an integer, so it becomes a map/dictionary of fixed length.(82)<br>
+<pre>
+const ( 
+    USD Currency = iota 
+    EUR
+)    
+symbol := [...]string{ USR:"usd", EUR:"eur" }
+</pre>
+<br>
+This kind of initialization is the same for arrays, slices, maps and structs.<br>
+<b>Index-value pairs</b> : it is possible to initialize arrays, slices and maps.<br>
+In arrays, unspecified indexes take the zero-value for that type. <br>
+Arrays can be compared (83).
+<p/>
+
+<h2>Slices</h2>
+A slice can be declared as an array, but without the size:
+<pre>
+[]T // A slice of type T.    
+</pre>
+A slice has a pointer to the underlying array, a length and a capacity.<br>
+(88) The built-in function can create a slice of a specified element type, length and capacity.
+Under the hood, <code>make()</code> creates an unnamed array and returns a slice of it.
+<p/>
+<code>append()</code> appends a new value an item to a slice ( or more items).
+
+<h2>Maps</h2>
+(93) An unordered collection of key/value pairs where keys are distinct. Update, remove, retrieve take a costant number of comparisons on average.<br>
+A map of key K and value V can be declared as:
+<pre>map[K]V</pre>
+To create a map:
+<pre>
+    ages := make(map[string]int) // Maps strings to ints.
+    ages := map[string]int {"Alice":31, "Charlie":34}
+</pre>
+
+<h2>Structs</h2>
+(99) A struct is an aggregate data type that groups zero or more named values of arbitrary types as a single entity.<br>
+Each value is called a <i>field</i>. Multiple fields, of the same type, can be declared in a single line.<br>
+A field is exported if its name begins with a capital letter.
+<pre>
+type Employee struct {
+    Name     string
+    Address  string
+    Position string
+}    
+</pre>
+
+A pointer to a field can be declared as:
+<pre>position := &dilbert.Position</pre>
+
+(102) Struct literals. Two forms:
+<pre>
+type Point struct { X, Y int }    
+p:= Point{10, 20}
+p2:=Point{X:10, Y:25}
+
+pp := &Point{ 1,2} // Shorthand notation to create a pointer to an initialized struct.
+</pre>
+(104) Structs can be compared, the comparison is field by field.
+<p/>
+<b>Struct embedding and anonymous fields</b> (104)
+Example:
+<pre>
+type Point struct { X, Y int }
+
+type Circle struct {
+    Point       // Anonymous field
+    Radius int
+}    
+</pre>
+(106) The struct literal must follow the shape of the type declaration.
+
+<h2>JSON</h2>
+(109) 
+
+<h2>Text and HTML templates</h2>
+(113)
+
+<hr>
+<h1>Functions</h1>
+Arguments are passed by value (120)<br>
+(126) Multiple return values: the result of a function returning multiple values can be passed to another function.
+The two code snippets below are equivalent:
+<pre>
+    log.Println(findLinks(url))
+    
+    links, err := findLinks(url)        
+    log.Println(links, err)
+</pre>
+(126) Convention dictates that a final <code>bool</code> indicates success or failure.<br>
+
+<b>Bare return</b> In case a function returns named values, the operands of a return statement may be omitted.
+<pre>
+funct myFunct() (width, height int, err error) {
+    [...]
+    return 
+}    
+</pre>
+<p/>
+
+<h2>Error handling in Go</h2>
+(128)
+<ul>
+    <li>In case there is one possible way to fail, failure is indicated as the last return value, usually called <code>ok</code>> </li>
+    <li>In other cases an error may need an explanation: in such cases, the type of the additional result is <code>error</code></li>
+    <li>The <code>error</code> is an interface type</li>
+    <li>In go there is no exception mechanism</li>
+</ul>
+Error handling strategies:
+<ul>
+    <li>Propagate the error directly to the caller</li>
+    <li>Construct a new error, for example using <code>fmt.Errorf()</code> error messages are all lowercase, separated by semicolons </li>
+    <li>Retry the operation, possibly with a delay between the operations, before giving up</li>
+    <li>Log the error and continue, for example logging or printing to stderr</li>
+    <li>Ignore the error completely</li>
+</ul>
+(131) In go, after checking an error, failure is usually dealt with before success. 
+Logic for success is not indented within an <code>else</code> block but follows at the outer level.<p/>
+<p/>
+
+<b>End of File (EOF)</b>(131) there is a distinct error, <code>io.EOF</code> to signal any error caused by trying to read beyond the end of a file or stream.<br>
+<p/>
+
+<h2>Function values</h2>
+(133) Function values can be compared against <code>nil</code>, but they cannot be compared against each other.<br>
+Named functions can be declared at package level only.<br>
+
+(135) Function literals can be used to denote a function value within any expression. Declaration of an anonymous function:<br>
+<pre>func(n int) int { return 2*n}</pre>
+<b>It is the same of a function, without function name.</b><br>
+Functions defined in this way have access to the entire lexical environment (<i>closures</i>).<br>
+<b>Cavreat: capturing iteration variables</b>(141) example: dir must be declared, 
+otherwise all the anonymous functions would capture the same value.<br>
+Avoid capturing iteration variables.<br>
+<pre>
+var rmdirs []func()
+for _, d := range tempDirs() {
+    dir := d // NOTE: necessary!
+    os.MkdirAll(dir, 0755) // creates parent directories too
+    rmdirs = append(rmdirs, func() {
+        os.RemoveAll(dir)
+    })
+}    
+</pre>
+
+<h2>Variadic functions</h2>
+(142) A variadic function can be declared as below.  The type of the final parameter is preceded by an ellipsis:
+<pre>
+func sum(vals ...int) {
+    [...]
+}
+</pre>
+
+An array can be passed instead of a parameter that stands for variable arguments, example:
+<pre>
+values := []int{1,2,3}    
+sum(values...)
+</pre>
+<p/>
+
+<h2>Deferred function calls</h2>
+(143) A <code>defer</code> statement is an ordinary function or method call prefixed by the keyword <code>defer</code>.<br>
+The function and the argument expressions are evaluated when the statement is executed.
+The actual execution is <i>deferred</i> until the function that containes the <code>defer</code> statement has finished, 
+whether normally or by paniking. The right place for the defer is immediately after the resource us acquired.<br>
+Any number of calls may be deferred: they are executed in the reverse order in which they were deferred.<br>
+<p/>
+
+<h2>Panic</h2>
+(148) Run-time error cause panic.  A panic causes the program to crash, it is not an exception.<br> 
+The convention is that the program panics in case an assertion fails.<br>
+The <code>panic( s string)</code> function exists.
+<br>
+Panic is not exception: the program panics in case a logical inconsistency is detected.
+
+<h2>Recover</h2>
+If the built-in <code>recover</code> function is called is called within a deferred function, 
+and the function containing the defer statement is panicking, then <code>recover</code> ends the current 
+state of panic and returns the panic value.
+<hr>
+
+<h1>Methods</h1>
+(155) Example of method declaration.
+Declaration of a struct:<br>
+<pre>type Point struct { X, Y float64 } </pre>
+
+Declaration of a method operating on <code>Point</code>:
+<pre>
+func (p Point) Distance( q Point) float64 {
+    [...]
+}    
+</pre>
+The parameter <code>p</code> is called the <i>receiver</i>: there is no special name like <code>this</code> or <code>self</code> (156). 
+(156) a common choice is the first letter of the type name.<br>
+The fields and methods of a type inhabit the same name space, it is not possible to declare a method and a name with the same name.<br>
+On the other hand, a different type, example <code>Path</code> can have a method called <code>Distance</code>.<br>
+<p/>
+For example: <pre>type Path []Point</pre><br>
+Not that Path is a named slice type, yet we can define methods on it.<br>
+
+So, in Go, methods can be associated with any type.<br>
+The receiver can be a pointer in case the method modifies the type fields, otherwise modifications are lost.<br>
+(158) Convention dictates that if any method of a type has a receiver pointer, all methods of that type must have receiver pointers.
+Suppose that:
+<pre>
+    p := Point{1,2}
+    ptrP := &p
+    (*ptrP).ScaleBy(3.0)
+    ptrP.ScaleBy(3.0) // The compiler helps us by translating this statement in the statement above.
+</pre>
+Moreover, in case a variable is a pointer to a type and the method receiver is an object (not a pointer), 
+the compiler automatically dereferences the pointer (159).
+<p/>
+
+<b>Note</b> (159) <code>nil</code> is a valid receiver value.
+(161) In case a struct has an embedded field, its methods can be called directly:
+<pre>
+type Point struct { X, Y float64 }
+func (p *Point) ScaleBy( factor float64) {
+    [...]
+}
+
+type ColoredPoint struct {
+    Point
+    Color color.RGBA
+}
+red := color.RGBA{255, 0, 0, 255}
+cp:= ColoredPoint{ Point{5,4}, red}
+
+cp.ScaleBy(2.5)
+</pre>
+
+(162) Note that if a struct has an embedded field, there is no hieritance.<p/>
+A struct can also embed a pointer to a type, example:
+<pre>
+type YaColoredPoint struct {
+    *Point
+    Color color.RGBA    
+}    
+</pre>
+
+Method Values and Expressions (164).<br>
+<b>Method values</b><br>
+The expression <code>p.Distance</code> yields a <i>method value</i>: a function that binds a method to a specific receiver, that can be called later.<br>
+When called it only needs the non-receiver arguments.
+<pre>
+  distanceFromP := p.Distance
+  distanceFromP( Point{ 1,2} )
+</pre>
+
+<b>Method expressions</b><br>
+The expression <code>Point.Distance</code> yields a <i>function value</i> with a regular first parameter denoting the receiver.<br>
+
+<b>Encapsulation</b>
+(168): capitalized identifiers are exported from the package in which they are defined, otherwise they are not.<br>
+In Go <b>the unit of encapsulation is the package</b>, not the type (168)<br>.
+In Go, setters and getters are used, in getters the Get prefix is omitted.<br>
+
+<hr>
+<h1>Interfaces</h1>
+(174) An interface type describes the set of methods that a concrete type must possess to be considered 
+an instance of that interface.
+<p/>
+(171) In Go, interfaces are satisfied implicitly. <br>
+Simply possessing all methods is enough to adhere to an interface.<br>
+A concrete type satisfies the exact representation of its values and its methods.<br>
+(172) An interface is an abstract type: it reveals some method.<br>
+Given an interface, only what it can do is known. Example: <code>io.Writer</code> is an interface.<br>
+
+In Go, interfaces have names like: Writer, Reader, Closer (something that can be closed), etc.<br>
+It is important the <code>fmt.Stringer</code> interface, the method is. <code>String() string</code>.
+<br>
+Given the existing <code>Reader</code> and <code>Writer</code> interfaces, it is possible to use the 
+<i>interface embedding</i> and declare a new interface like below, reusing existing interface 
+declarations:
+<pre>
+type ReadWriter interface {
+    Reader
+    Writer
+}    
+</pre>
+
+In interfaces, the order does not count.<p/>
+
+(175)
+A concrete type is a particular interface, means that the type satisfies all methods of that interface.<br>
+An interface is like a data type. Example:
+<pre>
+var w io.Writer    
+</pre>
+(175) An expression can be assigned to an interface if its type satisfies that interface.
+
+The <b>Empty interface</b> is: <pre>interface{}</pre>
+(176) we can assign any value to the empty interface.
+
+
+<b>Trick</b>: we can assert at compile time that a given type implements an interface, for example using:<br>
+<pre>var _ io.Writer = (*bytes.Buffer)(nil)  // *bytes.Buffer must satisfy io.Writer</pre>
+<p/>
+(182): an interface value has two components: a dynamic type and a dynamic value.
+An interface keeps track of the type of its assigned object, if any.<br>
+A call through an interface uses the <i>dynamic dispatch</i> (183).<br>
+Interface values are equal if they are either: nil, or same type and value. Beware some types, like slices, cannot be compared.<br>
+(183) A variable of type interface contains the dynamic type and the dynamic value. It knows the actual type it is referring to .<br>
+(184) The verb percentage T reports the dynamic type of an interface.
+
+<b>Type assertions</b> (205) <br>
+A type assertion is an operation applied to an interface value.<br>
+Syntactically a type assertion looks like 
+<pre>x.(T)</pre>
+where <code>x</code> is an expression and <code>T</code> is the asserted type. 
+(203)
+<ul>
+    <li>If T is a concrete type and x type is equal to T; if the fails the operation panics</li>
+    <li>If T is an interface type, then the assertion check is x satisfies T, the valued is casted to the interface T</li>
+</ul>
+
+If the result of x.(T) is passed to two values, then the first is a reference and the second is the ok boolean.<br>
+A typical pattern is:
+<pre>
+if w, ok := w.(*os.File); ok {
+    // ...use w...
+}    
+</pre>
+
+<h2>Type switches</h2>
+Interfaces are used in two distinct styles (210).<br>
+<ul>
+    <li>To create types that express concepts and theirs similarities, hiding the representation, e.g Reader, Writer, Stringer, etc.</li>    
+    <li>To exploit the ability of interface to hold values of different concrete types ( a union of types ).
+        Type assertions are used to discriminate among those types dynamically</li>
+</ul>
+<br>
+Type switch (210).
+<pre>
+switch x.(type) {
+    case nil:
+    case int, uint:
+    case bool:
+    case string:
+    default:
+}    
+</pre>
+
+Extended form of the type switch statement:
+<pre>
+switch y := x.(type) { /* ... */ }    
+</pre>
+<code>y</code> is used by the cases to access the actual value.  The common pattern is hiding x:
+<pre>
+switch x := x.(type) { /* ... */ }    
+</pre>
+
+<hr>
+
+<h1>Go routines and channels</h1>
+(225) A channel has a type, called the <i>element type</i>. To create a channel:
+<pre>
+ch := make(chan int) // ch has type 'chan int'
+</pre>
+make() creates a reference to a channel. (225)
+<pre>
+    ch <- x   // a send statement
+    x = <-ch  // a receive expression in an assignment statement
+    <-ch      // a receive statement; result is discarded   
+    close(ch) // closes the channel.   
+</pre>
+
+A buffered channel is created with a make statement like:
+<pre>
+    ch = make(chan string, 3) // Channel with a buffer of three elements.    
+</pre>
+<code>len()</code> and <code>cap()</code> can be applied to a buffered channel.
+
+A Go routine leak occurs when (237):
+<ul>
+    <li>No go routine is draining from a channel, that for example has capacity one</li>
+    <li>More than one go routine is trying to sent to that channel</li>
+</ul>
+When the program exits, there are go routines blocked waiting for the channel to become available for the send.<br>
+(238) A <code>synch.WaitGroup</code> is an atomic counter that can block until the counter reaches the zero.<br>
+Check page: 238: one additional go routine is created to wait until a set of go routine terminate, to close the channel.<p/>
+The select statement on one or multiple channels. Example:<br>
+<pre>
+select {
+  case <-ch1:
+    // ...
+  case x := <-ch2:
+    // ...use x...
+  case ch3 <- y:
+    // ...
+  default:
+    // ...
+}    
+</pre>
+Each case can specify a send <i>or a receive</i> operation, as long as it is ready to proceed.<br>
+It is possible to send a cancellation event to one or more go routines (251). 
+Remember that when a channel is closed, all receiving go routines receive the zero for that data type.
+<ul>
+    <li>Define a <code>done</code> channel</li>    
+    <li>When it is time to close all, close the <code>done</code> channel</li>
+    <li>All interested go routines can check the <code>done</code> channel with a select, normally no event is received, 
+       but when the channel is closed they receive the zero, so they know when they have to exit</li>
+    
+</ul>
+
+
+
+<hr>
+
+<h1>Packages and the Go tool</h1>
+(283) The Go community has published packages in addition to the standard library, available at:<br>
+<a href="https://godoc.org/" target="_blank" >https://godoc.org/</a><br>
+
+(283) Each package has a namespace that encloses its identifiers.
+<ul>
+    <li>Each package is identified by a unique string called <i>import path</i>, example: 
+        <code>fmt</code>, <code>io</code>, <code>os</code>, etc.
+      </li>
+    <li>Each import path must be globally unique: non standard packages must have import paths beginning with the Internet domain name of the organization, example:
+            <code>github.com/go-sql-driver/mysql</code> (284) 
+      </li>
+    <li>The import path (292) indicates where to find the package locally and on the internet</li>
+</ul>
+
+<b>Package declaration</b> (285) every go file starts with a package declaration. For example, every file of the <code>math/rand</code> 
+   package starts with:<br>
+<code>package rand</code> <br>
+<b>Last segment convention</b>: its members are accessed by other packages with, example: <code>rand.Int()</code> <br>
+Exceptions:
+<ul>
+    <li>A package defining a command always has the name <code>main()</code>: so,<br>
+        the file with the <code>func main()</code> has <code>package main</code> at the beginning</li>
+    <li>Some files in the directory may have the suffix <code>_test</code> on the package name, if the file name ends in <code>_test.go</code>
+      </li>
+    <li>Some dependency management tools append the version number suffix to the package import path, example <code>gopkg.in/yams.v2</code>:
+        the package name is just <code>yaml</code>
+      </li>
+</ul>
+<p/>
+
+<h2>Import Declaration</h2>
+
+(286) The order of import declarations is not significant. By convention they are sorted alphabetically. <br>
+It is possible to insert blank lines to group import declarations.
+The go build tool raises an error in case of circular dependency among packages.<br>
+
+<b>Renaming import</b> the alternative name only affects the importing file<br>
+<pre>
+import (
+    "crypto/rand"       // Imported with the name rand
+    mrand "math/rand"   // Imported with the name mrand
+)    
+</pre>
+
+<b>How to suppress the unused import</b>: use a renaming import in which the alternative name is the blank identifier (286):
+<pre>_</pre>
+The blank identifier cannot be referenced.<br>
+This mechanism is used to enable additional functionalities. Example <b>SQL drivers</b> (288):
+<pre>
+import (
+    "database/mysql"
+    - "github.com/lib/pq"
+    - "github.com/go-sql-driver/mysql"
+)    
+</pre>
+
+<h2>Packages and Naming</h2>
+(289)
+<ul>
+    <li>Be short but not cryptic</li>
+    <li>Be descriptive and unambiguous</li>
+    <li>Use the singular form</li>
+    <li>Naming of package members: consider how the package name and the member work together</li>
+</ul>
+
+<h2>The Go tool</h2>
+(290)
+
+<h3>Workspace organization</h3>
+<pre>export GOPATH="${HOME}/go_wrkdir/podcasts_downloader"</pre>
+<br>
+
+The Go tool relies heavily on conventions.
+<ul>
+    <li>GOPATH points to the workspace</li>
+    <li>Under the directory referenced by GOPATH, there are:
+        <ul>
+        <li><code>src</code> stores packages in source form. For example, the package <code>my_package</code> has its code in <code>src/my_package</code> </li>        
+        <li><code>pkg</code> packages in compiled form</li>
+        <li><code>bin</code> executable programs, like <code>helloworld</code></li>
+        </ul>
+    </li>
+</ul>
+
+<h2>go env</h2>
+(292) prints the environment variables relevant to the toolchain.<br>
+
+<h2>go get</h2>
+Go get installs new packages. Example:
+<pre>go get -v golang.org/x/net/html</pre> (155)
+
+(293) the directories that <code>go get</code> creates are true clients of remote repositories, not just copies of the files.<br>
+<b>Vendoring the code</b> (293): making a persistent local copy of all necessary dependencies and update the copy carefully: this practice is called vendoring.
+<p/>
+
+<h2>go build</h2>
+(293)
+
+<h2>Documenting packages</h2>
+(296) 
+
+<h1>Testing</h1>
+
+(257)
+</body>    
+</html>

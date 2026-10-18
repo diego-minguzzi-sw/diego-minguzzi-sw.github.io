@@ -1,0 +1,102 @@
+<html>
+  <title>Coding with AI Tools</title>    
+
+<body>  
+
+
+<h1>. Courses</h1>    
+<h2>.. Linkedin Course: Structured Vibe Coding with AI Coding Agents (LinkedIn Learning course)</h2>
+<a target=_blank" href="https://www.linkedin.com/learning/structured-vibe-coding-with-ai-coding-agents/moving-beyond-simple-vibe-coding?resume=false&u=126118074">Link</a> 
+<hr>
+
+There is a Vibe Coding interface, a Coding agent interfaced to an LLM, connected to tools via MCP.<br>
+Harness: what the agent sees and observes from the environment.
+<br>
+Among coding agents, lists Claude Code, Copilot, both via VSCode.
+<br>
+The course uses Cursor via Visual Code. And he uses Claude Sonnet 4.<br>
+Gemini 2.5 is considered a good contender.<br>
+<p/>
+Agents have:
+<ul>
+  <li>Planning mode: the agent plans the actions</li>
+  <li>Agent mode: the agent executes the actions</li>  
+</ul>
+
+<h3>... Tools and MCPs</h3>
+<b>Equipping Agents with Essential tools and MCPs.</b> <br>
+
+Selects tools to support the entire workflow:+1:
+<ul>
+  <li>Plan the work</li>
+  <li>Research</li>
+  <li>Write and test the code</li>
+  <li>Commit the changes to git</li>
+  <li>Push to gitHub</li>
+  <li>Trigger to CI/CD (?)</li>
+  <li>Deploy to production</li>
+</ul>
+In Claude, use in the prompt keywords like: think harder, think longer, ultrathink, think very hard.
+<p/>
+
+Claude has Rules files: called context engineering.<br>
+<ul>
+  <li>Coding Agent Harness: System prompts to orchestrate coding agents</li>
+  <li>Context is the attention span of the agent</li>
+  <li>Rules files: background information on the project, similar to instruction file of gitHub </li>
+</ul>
+
+<h2>.. AI Pair programming</h2>
+Two people on the same code: the human as navigator, AI as driver.<br>
+Other idea: an agent writes the test:  another agent can then write the code to pass the test (called ping-pong).<br>
+<br>
+In Claude Code, there is a document called Claude.md <br>
+In Claude, there is a planning mode, where the user provides high level requirements, Claude creates a list of tasks and subtasks.
+<p/>
+Before executing the plan, Clause asks for confirmation.
+<p/>
+Key phrases: 
+<ul>
+<li>think ultra hard</li>
+</ul>
+
+Uses MCP with PlayWright to automate the web browser test.<br>
+
+<h2>Beyond code generation: AI for code understanding</h2>
+Uses the Markdown Preview VS Code extension to render Mermaid diagrams.<br>
+Subagents: it asks to execute the task using subagents. To parallelize work.<p/>
+
+<h3>Generating diagrams for system comprehension</h3>
+Generates an entity-relationship model
+
+<h2>Best practices and avoiding pitfalls</h2>
+<b>Software stack selection</b> for AI agent success: pick a software stack that is popular and well supported.<br>
+Use widely used languages, frameworks, and open source architectures.<br>
+<b>Monorepos: the AI coding agent best friend</b> 
+<hr>
+
+The Claude.md can become big and unmanageable.<br>
+We can break down the Claude.md file into multiple files.<br>
+<ul>
+<li>Set CLAUDE.md to manage and share context.</li>
+<li>Setup allowlist and denylist for terminal commands</li>
+</ul>
+
+Common pitfalls and antidotes:
+<UL>
+<li>Use git, to be able to revert changes</li>
+<li>Sometimes the agent can get stuck, in that case restart the task</li>
+<li>Run standard security and unit tests</li>
+<li>Review with a critical eye</li>
+<li>Delegate, do not abdicate</li>
+</ul>
+
+<ul>
+  <li><a target=_blank" href="https://www.youtube.com/watch?v=PpabUwGYLTE">gitHub Copilot Agent Mode and MCP servers</a></li>
+  <li><a target=_blank" href="https://www.linkedin.com/learning/structured-vibe-coding-with-ai-coding-agents/moving-beyond-simple-vibe-coding?resume=false&u=126118074">Structured Vibe Coding with AI Coding Agents (LinkedIn Learning course)</a></li>
+  <li><a target=_blank" href=""></a></li>
+  <li><a target=_blank" href=""></a></li>
+</ul>
+
+</body>
+</html>

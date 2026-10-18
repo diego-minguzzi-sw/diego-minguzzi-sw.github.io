@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Robotics: DART and OMPL</title>
+
+<style>
+    /* Global page style */
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        margin: 40px;
+        background: #f7f7f7;
+        color: #222;
+        line-height: 1.6;
+    }
+
+    /* Link styling */
+    a {
+        color: #0066cc;
+        text-decoration: none;
+        font-weight: bold;
+    }
+    a:hover {
+        text-decoration: underline;
+        color: #004999;
+    }
+
+    /* Reset counters */
+    body {
+        counter-reset: h1counter;
+    }
+
+    /* H1 numbering */
+    h1 {
+        counter-reset: h2counter;
+        counter-increment: h1counter;
+        margin-left: 0;
+        padding-left: 0;
+    }
+    h1::before {
+        content: counter(h1counter) ". ";
+        font-weight: bold;
+        color: #444;
+    }
+
+    /* H2 numbering */
+    h2 {
+        counter-reset: h3counter;
+        counter-increment: h2counter;
+        margin-left: 20px;
+        padding-left: 0;
+    }
+    h2::before {
+        content: counter(h1counter) "." counter(h2counter) " ";
+        font-weight: bold;
+        color: #555;
+    }
+
+    /* H3 numbering */
+    h3 {
+        counter-increment: h3counter;
+        margin-left: 40px;
+        padding-left: 0;
+    }
+    h3::before {
+        content: counter(h1counter) "." counter(h2counter) "." counter(h3counter) " ";
+        font-weight: bold;
+        color: #666;
+    }
+    .source_code {
+      background-color: lightgray;
+      font-family: Courier New;
+      border-style: solid;
+      border-width: thin;
+      font-size: normal;
+    }    
+</style>
+
+</head>
+<body>
+
+
+644 pages.
+Read up to page: xv.
+
+
+
+<h1>Links</h1>
+<ul>
+<li> <a target="_blank" href="https://dart.readthedocs.io/en/latest/">https://dart.readthedocs.io/en/latest/</a> </li>
+
+<li> <a target="_blank" href="https://dart.readthedocs.io/en/latest/user_guide/index.html">DART User Guide: Build a Simulation, Step-by-Step</a> 
+    <ul>
+    <li><a target="_blank" href="https://dart.readthedocs.io/en/latest/user_guide/getting_started/installation.html">1. Installation (OK)</a> 
+      </li>
+    <li><a target="_blank" href="https://dart.readthedocs.io/en/latest/user_guide/getting_started/hello_dart.html">2. Hello Dart (OK)</a> 
+      </li>
+    <li><a target="_blank" href="https://dart.readthedocs.io/en/latest/user_guide/getting_started/simulation_loop.html">3. The simulation loop (OK)</a></li>
+    <li><a target="_blank" href="https://dart.readthedocs.io/en/latest/user_guide/concepts/world.html">4. The World (OK)</a></li> 
+    <li><a target="_blank" href="https://dart.readthedocs.io/en/latest/user_guide/concepts/rigid_bodies.html">5. Rigid Bodies and Shapes (_)</a></li> 
+    <li><a target="_blank" href="">6. (_)</a></li> 
+    <li><a target="_blank" href="">7. (_)</a></li> 
+    <li><a target="_blank" href="">8. (_)</a></li> 
+    <li><a target="_blank" href="">9. (_)</a></li> 
+    </ul>
+  </li>
+
+
+</ul>
+
+Run scripts using the command below, for example to run 00_check_dart_install.py in the current directory.
+
+<div class="source_code">   
+  PYTHONPATH=${HOME}/ext_repo/dart/build/default/cpp/Release/python \
+  pixi run -m ${HOME}/ext_repo/dart/ \
+  python 00_check_dart_install.py
+  <br>    
+  PYTHONPATH=${HOME}/ext_repo/dart/build/default/cpp/Release/python \
+  pixi run -m ${HOME}/ext_repo/dart/ \
+  python 01_hello_dart.py
+  <br>
+  PYTHONPATH=${HOME}/ext_repo/dart/build/default/cpp/Release/python \
+  pixi run -m ${HOME}/ext_repo/dart/ \
+  python 02_dart_world.py
+</div>
+
+
+
+<hr>
+
+<h1>Links</h1>
+<ul>
+<li><a target="_blank" href="file://wsl.localhost/Ubuntu-24.04/home/minguzzi/ext_repo/dart/docs/readthedocs/_build/html/index.html">Read The Docs (local)</a></li> 
+</ul>
+
+
+<!--
+
+https://lavalle.pl/planning/
+
+https://hades.mech.northwestern.edu/index.php/Modern_Robotics
+https://hades.mech.northwestern.edu/index.php/Modern_Robotics
+https://modernrobotics.northwestern.edu/nu-gm-book-resource/foundations-of-robot-motion/
+
+
+
+Installed Pixi
+
+-- Run 'cmake --build .' to build all the components
+-- Run 'cmake --build . --target tests' to build all the tests
+-- Run 'cmake --build . --target examples' to build all the examples
+-- Run 'cmake --build . --target tutorials' to build all the tutorials
+-- Run 'cmake --build . --target view_docs' to see the API documentation
+-- Run 'cmake --build . --target install' to install all the C++ components
+-- Run 'cmake --build . --target dartpy' to build the python bindings
+
+curl -fsSL https://pixi.sh/install.sh | sh
+
+Documentation 
+
+--:>

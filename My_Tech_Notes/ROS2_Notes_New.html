@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ROS2 Notes</title>
+
+<style>
+  /* =========================================================
+     RESET
+     ========================================================= */
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family:
+      Inter,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      Roboto,
+      Helvetica,
+      Arial,
+      sans-serif;
+
+    background: #f5f7fa;
+    color: #1f2937;
+    line-height: 1.7;
+  }
+
+
+  /* =========================================================
+     PAGE LAYOUT
+     ========================================================= */
+
+  .page {
+    width: 100%;
+    min-height: 100vh;
+    background: #ffffff;
+  }
+
+  .content {
+    width: 100%;
+    max-width: 1900px;
+    margin: 0 auto;
+    padding: 25px clamp(24px, 5vw, 80px);
+  }
+
+
+  /* =========================================================
+     TYPOGRAPHY
+     ========================================================= */
+
+  h1,
+  h2,
+  h3 {
+    line-height: 1.2;
+    color: #111827;
+  }
+
+  .content {
+    counter-reset: chapter;
+  }
+
+  h1 {
+    counter-increment: chapter;
+    counter-reset: section;
+
+
+    margin-top: 20px;
+    margin-bottom: 24px;
+
+    font-size: clamp(2rem, 4vw, 2.5rem);
+    font-weight: 750;
+    letter-spacing: -0.03em;
+
+    color: #111827;
+  }
+
+  h1:first-child {
+    margin-top: 0;
+  }
+
+  h1::before {
+    content: counter(chapter) ": ";
+
+    color: #2563eb;
+    font-weight: 700;
+  }
+
+  h2 {
+    counter-increment: section;
+    counter-reset: subsection;
+
+    margin-top: 10px;
+    margin-bottom: 14px;
+
+    font-size: clamp(1.25rem, 2vw, 1.75rem);
+    font-weight: 650;
+    letter-spacing: -0.015em;
+
+    color: #374151;
+  }
+
+  h2::before {
+    content: counter(chapter) "." counter(section) ": ";
+
+    color: #6b7280;
+    font-weight: 600;
+  }
+
+  h3 {
+    counter-increment: subsection;
+    margin-top: 5px;
+    margin-bottom: 10px;
+
+    font-size: 1.15rem;
+    font-weight: 600;
+  }
+
+  h3::before {
+    content: counter(chapter) "." counter(section) "." counter(subsection) ": ";
+  }
+
+
+  /* =========================================================
+     PARAGRAPHS & LISTS
+     ========================================================= */
+
+  p {
+    max-width: 900px;
+    margin-bottom: 18px;
+
+    font-size: 1.05rem;
+    color: #4b5563;
+  }
+
+  ul,
+  ol {
+    max-width: 900px;
+    margin: 0 0 24px 24px;
+    color: #4b5563;
+  }
+
+  li {
+    margin-bottom: 2px;
+  }
+
+
+  /* =========================================================
+     LINKS
+     ========================================================= */
+
+  a {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+
+  /* =========================================================
+     CODE
+     ========================================================= */
+
+  code {
+    padding: 3px 7px;
+
+    border-radius: 6px;
+
+    background: #555555;
+    color: #000000;
+
+    font-family:
+      "SFMono-Regular",
+      Consolas,
+      "Liberation Mono",
+      monospace;
+
+    font-size: 0.9em;
+  }
+
+  pre {
+    width: 100%;
+    overflow-x: auto;
+
+    margin: 28px 0;
+
+    padding: 24px;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+
+    background: #111827;
+    color: #e5e7eb;
+
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  }
+
+  pre code {
+    padding: 0;
+    background: transparent;
+    color: inherit;
+  }
+
+
+  /* =========================================================
+     BLOCKQUOTES
+     ========================================================= */
+
+  blockquote {
+    max-width: 900px;
+
+    margin: 30px 0;
+    padding: 20px 24px;
+
+    border-left: 4px solid #2563eb;
+    border-radius: 0 8px 8px 0;
+
+    background: #eff6ff;
+
+    color: #374151;
+    font-style: italic;
+  }
+
+
+  /* =========================================================
+     TABLES
+     ========================================================= */
+
+  .table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    margin: 30px 0;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+  }
+
+  th,
+  td {
+    padding: 14px 16px;
+    text-align: left;
+
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  th {
+    background: #f8fafc;
+    color: #111827;
+    font-weight: 650;
+  }
+
+  tr:hover td {
+    background: #f8fafc;
+  }
+
+
+  /* =========================================================
+     CARDS
+     ========================================================= */
+
+  .card {
+    width: 100%;
+
+    margin: 30px 0;
+    padding: 28px;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+
+    background: #ffffff;
+
+    box-shadow:
+      0 4px 12px rgba(0, 0, 0, 0.04),
+      0 1px 3px rgba(0, 0, 0, 0.03);
+  }
+
+
+  /* =========================================================
+     HORIZONTAL RULE
+     ========================================================= */
+
+  hr {
+    margin: 50px 0;
+
+    border: 0;
+    border-top: 1px solid #e5e7eb;
+  }
+
+
+  /* =========================================================
+     RESPONSIVE
+     ========================================================= */
+
+  @media (max-width: 768px) {
+    .content {
+      padding: 40px 20px;
+    }
+
+    h1 {
+      margin-top: 20px;
+    }
+
+    h2 {
+      margin-top: 10px;
+    }
+
+    p {
+      font-size: 1rem;
+    }
+
+    .card {
+      padding: 20px;
+    }
+  }
+
+
+  /* =========================================================
+     PRINT
+     ========================================================= */
+
+  @media print {
+    body {
+      background: #ffffff;
+      color: #000000;
+    }
+
+    .content {
+      max-width: none;
+      padding: 0;
+    }
+
+    h1 {
+      break-before: page;
+    }
+
+    h1:first-child {
+      break-before: auto;
+    }
+
+    .card {
+      box-shadow: none;
+      border: 1px solid #ccc;
+    }
+  }
+</style>
+</head>
+
+<body>
+<main class="page">
+  <div class="content">
+
+
+<h1>ROS2: </h1>
+
+<h2>Links</h2>
+<ul>
+  <li>ROS Documentation
+      <ul>
+      <li> <a target="_blank" href="https://docs.ros.org/">ROS Developer Documentation</a> </li>
+      <li> <a target="_blank" href="https://docs.ros.org/en/lyrical/Tutorials.html">Lyrical Luth Tutorials</a>
+          <ul>
+          <li> <a target="_blank" href="https://docs.ros.org/en/lyrical/Tutorials/Intermediate/Tf2/Tf2-Main.html">TF2 Tutorials</a>
+            <ul>
+            <li> <a target="_blank" href="https://docs.ros.org/en/lyrical/Tutorials/Intermediate/Tf2/Quaternion-Fundamentals.html">Quaternion fundamentals</a> ! ! </li>
+            </ul>
+          </li>
+          <li> <a target="_blank" href="https://docs.ros.org/en/lyrical/Tutorials/Intermediate/Testing/Testing-Main.html">Testing</a> </li>
+          <li> <a target="_blank" href="https://docs.ros.org/en/lyrical/Tutorials/Intermediate/URDF/URDF-Main.html">URDF Tutorials</a> </li>
+          <li> <a target="_blank" href=""></a> </li>
+          <li> <a target="_blank" href=""></a> </li>
+          <li> <a target="_blank" href=""></a> </li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+  <li>rclcpp Jazzy
+    <ul>
+    <li> <a target="_blank" href="https://docs.ros.org/en/jazzy/p/rclcpp/">Rcl Cpp reference</a> </li>
+    </ul>
+  </li>
+
+  <li>rclpy Jazzy
+    <ul>
+    <li> <a target="_blank" href="https://docs.ros.org/en/jazzy/p/rclpy/">Rcl Py reference</a> </li>
+    </ul>
+  </li>
+
+
+
+  <li>MoveIT
+    <ul>
+    <li> <a target="_blank" href="https://moveit.ai/">MoveIT.AI</a> </li>
+    <li> <a target="_blank" href="https://moveit.picknik.ai/main/doc/examples/move_group_interface/move_group_interface_tutorial.html">Move Group C++ Interface Tutorial</a> </li>
+    <li> <a target="_blank" href="https://moveit.picknik.ai/main/api/html/classmoveit_1_1planning__interface_1_1MoveGroupInterface.html">Move Group Interface C++ reference</a> </li>
+    <li> <a target="_blank" href="https://moveit.picknik.ai/main/doc/examples/examples.html#using-moveit-directly-through-the-c-api">Using MoveIt Directly Through the C++ API</a> ( * * * ),
+        not through the Move Group Interface</li>
+    <li> <a target="_blank" href="https://github.com/moveit/moveit2/tree/main">MoveIT repository</a> </li>
+    </ul>
+  </li>
+
+  <li>Automatic Addison
+    <ul>
+    <li> <a target="_blank" href="https://automaticaddison.com">Home Page</a> </li>
+    <li> <a target="_blank" href="https://automaticaddison.com/configure-moveit-2-for-a-simulated-robot-arm-ros-2-jazzy/">Automatic Addison: Configure MoveIt 2</a> </li>
+    <li> <a target="_blank" href="https://automaticaddison.com/add-and-plan-around-objects-using-moveit-2-ros-2-jazzy/?utm_source=copilot.com">Add and Plan Around Objects</a> </li>
+    <li> <a target="_blank" href="https://automaticaddison.com/inverse-kinematics-ros-2-jazzy-moveit-task-constructor/?utm_source=copilot.com">Home Page</a> </li>
+    </ul>
+  </li>
+
+
+</ul>
+
+<hr>
+
+<h1>MoveIt</h1>
+<h2>Links</h2>
+<ul>
+
+<li>
+  <a target="_blank" href="https://moveit.picknik.ai/main/doc/examples/move_group_interface/move_group_interface_tutorial.html">
+    Move Group Interface Tutorial
+    </a>
+</li>
+
+<li>
+  <a target="_blank" href="https://moveit.picknik.ai/main/doc/examples/examples.html#using-moveit-directly-through-the-c-api">MoveIt C++ interface</a>
+</li>
+</ul>
+
+
+
+
+
+
+<h2>Tutorial</h2>
+Chapters:
+<ul>
+<li> <a target="_blank" href="https://moveit.picknik.ai/main/doc/tutorials/quickstart_in_rviz/quickstart_in_rviz_tutorial.html">1. Quickstart</a> </li>
+<li> <a target="_blank" href="https://moveit.picknik.ai/main/doc/tutorials/your_first_project/your_first_project.html">2. Your First project</a> </li>
+</ul>
+
+
+
+<div class="code">
+<pre>
+ros2 launch moveit2_tutorials demo.launch.py
+</pre>
+</div>
+
+
+<hr>
+
+<h1>Tricks</h1>
+
+<h2>CLI Tools</h2>
+
+<h3>ROS2 Bag</h3>
+Record a topic: my_number
+<div class="code">
+<pre>
+ros2 bag record --topics /my_number
+</pre>
+</div>
+
+Play back a bag, in infinite loop:
+<div class="code">
+<pre>
+ros2 bag play -l rosbag2_2026_08_14-17_31_08/
+</pre>
+</div>
+
+
+
+<h3>ROS2 Run</h3>
+
+<p>
+To run a node renaming the node name to my_node2:
+<div class="code">
+ros2 run my_cpp_pkg my_cpp_node --ros-args -r __node:=my_node2
+</div>
+</p>
+
+Runs number_publisher. The topic named <code>number</code> becomes <code>my_number</code>
+<pre>
+<div class="code">
+ros2 run my_py_pkg number_publisher --ros-args -r number:=my_number
+
+ros2 run my_cpp_pkg number_subscriber --ros-args -r number:=my_number
+
+# The same CLI argument can rename a service, for example:
+ros2 run my_cpp_pkg number_publisher --ros-args -r reset_counter:=my_reset_counter
+
+# Load a parameters file before running a node.
+ros2 run my_cpp_pkg number_publisher  --ros-args --params-file ${HOME}/skunk_ros_ws/src/my_cpp_pkg/param/number_params.yaml
+
+ros2 run my_cpp_pkg number_publisher  --ros-args __node:=num_pub2 --params-file ${HOME}/skunk_ros_ws/src/my_cpp_pkg/param/number_params.yaml
+
+# Overrides the node name and loads the parameters file.
+ros2 run my_cpp_pkg number_publisher  --ros-args -r __node:=num_pub2 --params-file ${HOME}/skunk_ros_ws/src/my_cpp_pkg/param/number_params.yaml
+</div>
+</pre>
+
+<hr>
+
+<h1>TF (TransForms)</h1>
+Make sure that RViz and additional packages are installed:<br>
+<pre>
+<div class="code">
+  sudo apt install ros-jazzy-tf2-tools
+</div>
+</pre>
+
+
+
+Example URDF files are available in the package urdf_tutorial.<br>
+Example of how to launch RViz with a model:
+<pre>
+<div class="code">
+  ros2 launch urdf_tutorial display.launch.py model:=/opt/ros/jazzy/share/urdf_tutorial/urdf/07-physics.urdf
+</div>
+</pre>
+
+<ul>
+  <li>A link is a rigid part: a solid part without articulation</li>
+  <li>TF: frames</li>
+</ul>
+
+Coordinate systems follow the right-hand rule in ROS:
+<ul>
+  <li>X points forward</li>
+  <li>Y points on the left</li>
+  <li>Z points up </li>
+</ul>
+
+In RViz, arrows represent the relationships between links (the rigid parts).
+
+<ul>
+  <li><b>Link</b>: a rigid part of the robot: define visual aspects, inertial and collision properties</li>
+  <li><b>Frame</b>: the origin of a link, called Axis in RViz, the reference frame of a link</li>
+  <li><b>TF</b>: the relationship between two frames, that is: the relationship between the parent link origin and the child link origin.<br>
+      TFs define how links are connected and how they move between each other </li>
+</ul>
+
+In order to show the TF tree:
+<pre>
+<div class="code">
+  # Export a Ghostview and PDF representation of the TF tree:
+  ros2 run tf2_tools view_frames
+</div>
+</pre>
+
+
+<h2>Quaternions and RPY</h2>
+<a target="_blank" href="https://eater.net/quaternions">
+  https://eater.net/quaternions</a> Videos<br>
+
+
+
+<h3>The Fixed frame RPY</h3>
+There are several ways of applying Euler angles. <br>
+The one which ROS 2 adopts, is called fixed (or static) frame RPY. <br>
+This means that the three individual rotations are applied to the original, unmoving coordinate axes. <br>
+This is contrary to relative frame, where rotations are applied to the coordinate axes that get transformed by preceding rotations.<br>
+
+<h3>Think in RPY, then Convert to Quaternion</h3>
+<a target="_blank" href="https://docs.ros.org/en/lyrical/Tutorials/Intermediate/Tf2/Quaternion-Fundamentals.html#think-in-rpy-then-convert-to-quaternion">
+  Think in RPY, then Convert to Quaternion</a> <br>
+
+Example of applying a rotation as a quaternion:<br>
+<pre>
+<div class="code">
+  #include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
+  ...
+
+  tf2::Quaternion q_orig, q_rot, q_new;
+
+  q_orig.setRPY(0.0, 0.0, 0.0);
+  // Rotate the previous pose by 180* about X
+  q_rot.setRPY(3.14159, 0.0, 0.0);
+  q_new = q_rot * q_orig;
+  q_new.normalize();
+</div>
+</pre>
+
+
+<h3>Chained Rotations</h3>
+Three consecutive elemental rotations are sufficient to reach any target frame. <a target="_blank" href="https://en.wikipedia.org/wiki/Euler_angles">Wikipedia</a><br>
+Three elemental rotations can be
+<ul>
+  <li><b>Extrinsic</b>: rotations about the axes x, y, z of the original coordinate system, which is assumed to remain motionless </li>
+  <li><b>Intrinsic</b>: rotations about the axes of the rotating coordinate system X, Y, Z, solidary with the moving body, which changes its orientation with respect to the extrinsic frame after each elemental rotation</li>
+</ul>
+
+https://www.firgelliauto.com/blogs/engineering-calculators
+
+<a target="_blank" href="https://www.firgelliauto.com/blogs/engineering-calculators/roll-pitch-yaw-to-euler-angle-converter?srsltid=AfmBOoqR-jhNGzw4wMnVTQrXeEkxb3zmEvuzrHbMeJgMZ25JbFXZzMZA">
+  Roll-Pitch-Yaw to Euler Angle Converter.  Extrinsic</a> <br>
+<p>
+<center>
+<iframe
+  src="https://firgelli-widget-embed.firgelliwidgets.workers.dev/tool-embed?tool=roll-pitch-yaw-to-euler-angle-converter"
+  width="100%"
+  height="760"
+  style="border:1; max-width:100%;"
+  loading="lazy">
+</iframe>
+</center>
+</p>
+
+
+
+</main>
+</body>
+</html>

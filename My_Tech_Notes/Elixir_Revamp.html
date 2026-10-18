@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+  .source_code {
+    background-color: lightgray;
+    font-family: Courier New;
+    border-style: solid;
+    border-width: thin;
+    font-size: normal;
+  }
+  </style>
+
+  <title>Elixir Revamp</title>
+  <link rel="icon"
+        type="image/x-icon"
+        href="https://www.veryicon.com/download/png/business/vscode-program-item-icon/elixir?s=32">
+</head>
+
+
+<body>
+<!--
+<li><a target="_blank" href=""></a></li>
+<li><a target="_blank" href=""></a></li>
+<li><a target="_blank" href=""></a></li>
+<li><a target="_blank" href=""></a></li>
+-->
+
+<h1>. References</h1>
+<ul>
+<li><a target="_blank" href="https://hexdocs.pm/elixir/introduction.html">Quick Start</a></li>
+</ul>
+
+<h1>. Elixir</h1>
+
+
+<h1>. Interactive </h1>
+Elixir program have the <code>exs</code> extension. Run with the command:
+<div class="source_code">
+<pre>
+  elixir simple.exs
+</pre>
+</div>
+
+<h1>. Command Line Tools</h1>
+<h1>.. Command Line Tools: iex</h1>
+
+<ul>
+  <li>The function i() prints informations about a variable</li>
+  <li>When stuck in an incomplete expression typing #iex:break exits</li>
+  <li>In iex, typing <code>h</code> prints the help about a <b>function</b></li>
+</ul>
+
+<h1>. Macros</h1>
+In module and function definitions, defmodule and def are macros.
+
+<h1>. Data Types</h1>
+Data is immutable in Elixir.
+
+<h2>.. Data Types: Atoms</h2>
+<div class="source_code">
+<pre>
+  :anAtom
+  :true
+  :false
+  :ok
+  :nil
+  AnAtom == Elixir.AnAtom
+</pre>
+</div>
+AnAtom is added implicitly to the module Elixir<br>
+
+<h2>.. Data Types: Booleans</h2>
+Booleans are just atoms that have value true or false.<br>
+
+<h2>.. Data Types: Truthiness</h2>
+nil and false are falsy values, everything else is true.<br>
+This property is used with Elixir short-circuit operators.<br>
+
+<h2>.. Data Types: Tuples</h2>
+Untyped structures, or records.  Tuples group a small number of elements together.<br>
+<b>Immutability</b>: if a tuple is modified, a shallow copy is created and then modified with the new value.<br>
+Most of the data is not copied.<br>
+
+<h2>.. Data Types: Maps</h2>
+<div class="source_code">
+<pre>
+iex(1)> squares= %{ 1 => 1,
+...(1)> 2 => 4,
+...(1)> 3 => 9,
+...(1)> 4 => 16}
+%{1 => 1, 2 => 4, 3 => 9, 4 => 16}
+
+iex(2)> squares[3]
+9
+
+iex(3)> Map.get(squares, 5, :not_found)
+:not_found
+
+iex(4)> squares= Map.put( squares, 5, 25)
+%{1 => 1, 2 => 4, 3 => 9, 4 => 16, 5 => 25}
+
+iex(5)> Map.fetch( squares, 5)
+{:ok, 25}
+
+iex(6)> Map.fetch( squares, 7)
+:error
+</pre>
+</div>
+
+<h2>.. Data Types: Maps to create structured data</h2>
+It is stull a map, all Map functions apply, but it can be used to manage strutures.
+<div class="source_code">
+<pre>
+iex(10)> bob = %{ :name => "Bob", :age => 25, :works_at => "Initech"}
+%{name: "Bob", age: 25, works_at: "Initech"}
+iex(11)> bob[:name]
+"Bob"
+
+iex(12)> jill = %{ name: "Jill", age: 32, works_at: "Megacorp"}
+%{name: "Jill", age: 32, works_at: "Megacorp"}
+
+iex(13)> jill.name
+"Jill"
+
+%{ bob | age: 27, works_at: "Initrode" } # Modifies multiple fields of a structure.
+</pre>
+</div>
+
+<h2>.. Data Types: Lists</h2>
+Lists manage dynamic, variable sized collections of data
+<div class="source_code">
+<pre>
+  prime_numbers = [1,3,5,7]
+
+  iex(7)> 3 in prime_numbers
+  true
+
+  iex(9)> Enum.at(prime_numbers,2) # Accesses an item at a given index. Traverses the list. O(n)
+  5
+
+  iex(11)> prime_numbers= List.replace_at(prime_numbers, 0, 121) # Rebinds to the same variable.
+  [121, 3, 5, 7]
+
+  prime_numbers = List.delete_at(prime_numbers,0)
+</pre>
+</div>
+<p/>
+<div class="source_code">
+<pre>
+  list = [ head | tail ]
+  iex(14)> [ 1 | [ 2 | [ 3 | [] ] ] ]
+  [1, 2, 3]
+
+  # Pushes a new element in first position
+  list = [ 0 | list ]
+</pre>
+</div>
+
+<h1>. Functions</h1>
+Conventions:
+<ul>
+  <li>If a function ends with a question mark, it returns <code>true</code> or <code>false</code></li>
+  <li>If a function ends with an exclamation mark, it may raise a runtime error</li>
+</ul>
+The return value of a function is it last expression.
+<div class="source_code">
+<pre>
+defmodule Geometry do
+  def rectangle_area(a,b) do
+    a * b
+  end
+
+  def rectangle_area2( a, b), do: a * b
+
+end
+</pre>
+</div>
+
+<b>Arity</b> a function is identified by its containing module and its arity, the number of its arguments.<br>
+Multiple functions with the same name can exist in the same module, as long as the arity is different.<br>
+<div class="source_code">
+<pre>
+defmodule AModule
+  def add( a, a1\\0, a2\\0, a3\\0, a4\\0, a5\\0, a6\\0, a7\\0, a8\\0, a9\\0, a10\\0) do
+    a + a1 + a2 + a3 + a4 + a5 + a6 + a7 + a8 + a9 + a10
+  end
+end
+</pre>
+</div>
+Example of default arguments.
+<p/>
+<b>Public and private functions</b>: use <code>def</code> or <code>defp</code>.<br>
+
+<h2>.. Function type specification</h2>
+Ref: <a target="_blank" href="https://hexdocs.pm/elixir/typespecs.html">https://hexdocs.pm/elixir/typespecs.html</a>
+<div class="source_code">
+<pre>
+  @spec rectangle_area2(number, number) :: number
+  def rectangle_area2(a, b), do: a * b
+</pre>
+</div>
+
+<hr>
+
+<h1>. Modules</h1>
+Module names are camelcase.<br>
+Module / submodule names are divided by the dot
+A file can contain multiple module definitions.<br>
+A module can contain multiple functions<br>
+Usually a common prefix is added to all modules in a project.<br>
+
+<h2>.. Importing Modules</h2>
+<code>import IO</code> imports a module<br>
+<code>alias IO, as: MyIO</code> imports a module with a different name.<br>
+
+<h2>.. Module Attributes</h2>
+<div class="source_code">
+<pre>
+  defmodule Circle do
+    @pi 3.14159
+  end
+</pre>
+</div>
+
+In the example, the Circle.pi constant exists at compile time. Its references are inlined.<br>
+
+
+<h1>. Literals</h1>
+
+<h2>. Literals: Binaries</h2>
+<div class="source_code">
+<pre>
+<<1,2,3,4>> # A sequence of bytes, values are: 1,2,3,4
+iex(21)> <<0::4,1::4>> # Stores 0 in 4bitm the 1 in 4 bit.
+
+<< 0::4, 15::4>> <> <<15::4,0::4>> # <> contatenares two byte sequences.
+</pre>
+</div>
+
+<h2>. Literals: Strings</h2>
+Strings are represented as a binary or a list.  A string literal is represented as a string of bytes.<br>
+<div class="source_code">
+<pre>
+iex(27)> my_string = "This is
+...(27)> a multiline
+...(27)> string."
+
+iex(29)> IO.puts(my_string)
+This is
+a multiline
+string.
+:ok
+</pre>
+</div>
+
+<h3>. Literals: Strings: String sigils</h3>
+<div class="source_code">
+<pre>
+
+</pre>
+</div>
+
+
+
+<hr>
+
+<h1>. Build System</h1>
+To compile a module:
+<div class="source_code">
+<pre>
+  elixirc geometry.ex
+</pre>
+</div>
+Then, run <b>iex</b> in the same directory.<br>
+
+<hr>
+<h1>Reference</h1>
+<ul>
+  <li> <a target="_blank" href="https://hexdocs.pm/elixir/Kernel.html#content">Std lib: Kernel module</a>.
+  </li>
+</ul>
+</body>
+</html>

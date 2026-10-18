@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+.source_code {
+  background-color: lightgray;
+  font-family: Courier New;
+  border-style: solid;
+  border-width: thin;
+  font-size: larger;
+}
+</style>
+
+<title>Dart and Flutter</title>
+<link rel="icon" type="image/x-icon" href="https://pic.vsixhub.com/3a/a8/f97c0874-41f7-448b-bf52-676617972a79-icon.png">
+</head>
+
+<body>
+  
+<script type="text/javascript">
+  var indxHeader01=1;
+  var indxHeader02=0;
+  var indxHeader03=1;
+</script>
+
+	
+<h1>Marius Bancila - Modern C++ Programming Cookbook, 2nd ed.<br>
+ Master C++ core language and standard library features, with over 100 recipes, updated to C++20
+</h1>	
+751 pages.
+
+<!-- ******************************************************************************************* -->
+<h2>Language features</h2>
+(5) <code>auto</code> is only a specifier for the type, not for const / volatile / reference, etc.<br>
+(6) <code>decltype(auto)</code> can be used to make sure that the object declared with auto retains the comst, reference etc.Example:<br>
+<div class="source_code"> 
+<pre>
+  decltype(auto) refX= fooObj.refX();
+</pre>
+</div>
+
+(8) <b>using</b>: <code>using byte= unsigned char;</code><br>
+using and typedef do not introduce a new type, just an alias to an existing type (9).<br>
+
+(30) Add unqualified enumerators to a given scope.
+<div class="source_code"> 
+  <pre>
+    enum class HouseState : uint8_t { UnderConstruction, Sold, ForRent }; // Speficies the underlying type.
+     
+    class House
+    {
+    public:
+      HouseState state() const { return _state; }
+
+      void setState( HouseState state) { _state= state; }
+
+    private:
+      using enum HouseState;  // Adds the enumerators identifiers to the outer scope.
+      /* ALTERNATIVE
+      using HouseState::ForRent;            // Adds unqualified ForRent to the current scope.
+      using HouseState::Sold;               // Adds unqualified Sold to the current scope.
+      using HouseState::UnderConstruction;  // Adds unqualified UnderConstruction to the current scope.
+      */
+
+      HouseState _state{UnderConstruction};
+    };    
+  </pre>
+</div>
+
+<p/>
+
+(49) Unnamed namespaces <code><pre>namespace { }</pre></code><br>
+
+<H3>Literals</H3>
+<h4>Cooked User-defined literals</h4>
+(89) Always prefix the user-defined suffix with an underscore.<br>
+The operator function has signature:
+
+<div class="source_code"> 
+  <pre>
+  // constexpr T operator"" _KB( unsigned long long value);  // Other types are possible.
+      
+  constexpr unsigned long long operator"" _KB( unsigned long long value)
+  {
+    return 1024*value;
+  } 
+  
+  // Example:
+  auto fileSize= 4_MB;
+  </pre>
+</div>
+
+<b>Note</b>: std::chrono_literals exist (94) to create constants like 32s, 5h, etc.<br>
+
+<H3>Structured bindings</H3>
+(57) Example of structured binding and use of statement in if constructs. <br>
+Called <b>if(init; condition)</b>. There is also <b>switch(init; condition)</b> (59).<br>
+<div class="source_code"> 
+  <pre>
+  if (auto [result,errorCode]= find(); ErrorCode::OK!=errorCode)
+  {
+    UNIT_TEST_DBG1("Failed");
+  } 
+  </pre>
+</div>
+
+<h2>Templates</h2>
+(62) Starting from C++17, there is class template argument deduction.<br>
+It is thus possible to avoid template types in most cases:
+<div class="source_code"> 
+  <pre>
+  std::mutex mtx;
+  {
+    std::lock_guard lg{mtx};    
+  }
+  </pre>
+</div>
+<p/>
+
+<h3>Variadic function templates</h3>
+Function templates with a variable number of arguments are called <cite>variadic function templates</cite> (163).<br>
+<div class="source_code"> 
+  <pre>
+  /* Overload that ends compile-time recursion.*/
+  template &lt;typename T&gt;
+  T myAdd(T value)
+  {
+    return value;
+  }
+
+  /* typename... Ts   is a template parameter pack, it indicates a variable number of arguments.
+   * Ts... rest   is a function parameter pack. 
+   * The compiler replaces the parameter pack with the elements, in their order.*/
+  template &lt;typename T, typename... Ts&gt;
+  T myAdd(T head, Ts... rest)
+  {
+    return head + myAdd(rest...);
+  }
+  </pre>
+</div>
+
+<H3>Strings</H3>
+(129) std::string_view can be used anywhere a function is passed a constant reference to a string.<br>
+
+<!-- ******************************************************************************************* -->
+<h2>Classes</h2>
+
+<h3>Explicit constructors</h3>
+(44) Using explicit constructors and conversion operators to avoid implicit conversion.<br>
+Declare <code>explicit</code> all constructors and check cast operators.
+<div class="source_code"> 
+  <pre>
+    class StringBuffer
+    {
+    public:
+      explicit operator bool() const { return !_buffer.empty(); } // Explicit cast operator.
+    private:
+      std::string _buffer;
+    };
+  </pre>
+</div>
+<p/>
+
+<h3>Defaulted and deleted functions</h3>
+(144) Special member functions are (<b>the big five</b>):
+<ul>
+  <li>default constructor</li>
+  <li>destructor</li>
+  <li>copy constructor</li>
+  <li>move constructor</li>
+  <li>copy assignment</li>
+  <li>move assignment</li>
+</ul>
+Only special member functions can be defaulted (144). <br>
+On the other hand, any function can be deleted (144). <br>
+<ul>
+  <li>In case a user defined constructor exists, the compiler does not generate any default constructor</li>
+  <li>If a virtual destructor exists, the compiler does not generate any destructor</li>
+  <li>If a move constructor or move assignment exists, the compiler does not generate any copy constructor or copy assignment</li>
+  <li>If a move or copy, either constructor or assignment exist, no move constructor or assignment is generated</li>
+</ul>
+
+<center>
+<cite><b>Rule of Five</b>: if you define any copy constr, move constr, copy assign, move assign, destructor, then you must explicitly define or default, or delete all of them.</cite>
+</center>
+<br>
+
+<!-- ******************************************************************************************* -->
+  
+<h2>Functions</h2>  
+
+Functions with a variable number of arguments are called variadic functions (163).<br>
+
+<h3>Function Attributes</h3>
+(330)
+<ul>
+  <li> <code>[[nodiscard]]</code> (C++17) to ensure that the return value from a function cannot be ignored. </li>
+  <li> <code>[[nodiscard(text)]]</code> (C++20) Same as above, but a message can be added. </li>
+  <li> <code>[[maybe_unused]]</code> (C++17) so that the compiler does not emit a warning for unused variables </li>
+  <li> <code>[[fallthrough]]</code> (C++17) </li>
+  <li> <code>[[likely]]</code> <code>[[unlikely]]</code>  </li>
+</ul>
+
+
+(233)
+<h3>Lambda functions</h3>
+(152) Lambda capture semantics. Equal sign captures by copy Ampersand captures by reference.<br>
+(155) Generic and template lambdas.  Generic lambdas use the <code>auto</code> type specifier instead of the actual types.
+<div class="source_code"> 
+  <pre> auto lsum= []( auto s, auto n){ return s+n; }; </pre>
+</div>
+
+(238) A lambda expression is usually a class.  In order to call it, the compiler must instantiate an object of that class.  
+The object instantiated from the lmbda expression is called <cite>lambda closure</cite> (238).<p/>
+
+A lambda expression has a capture list (239).
+
+<h2>Preprocessor and Compilation</h2>
+(311) <code>static_assert</code> can be used to check assertions at compile time. The typical use is to check that types have the expected size.<p/>
+
+
+
+(182)  
+  
+<!-- ******************************************************************************************* -->
+<hr>  
+<h1>SW Architecture with C++</h1><br>
+522 pages.<br>
+  
+<h1>Modern C++ Programming Cookbook, Marius Bancila</h1><br>
+921 pages.<br>
+
+<ul>
+  <li> <a href="https://nixos.org/" target="_blank">NixOS package manager</a> </li>
+</ul>
+
+
+The architecture must support what is expected from software (10): functional requirements, attributes of the solution, constraints coming from different places.<br>
+Many requirements came from the architecture context:
+<ul>
+  <li>Stakeholders: 
+      <ul>
+        <li>Users are: end-users (user-experience, performance, functionalities) and administrators (users management, sys configuration, backup and recovery)</li>
+      </ul>
+    </li>
+  <li>Business and technical environment. Tech environment: technologies already used by the company</li>
+  <li>Architecture and Agile</li>
+  <li>Domain Driven Design: in order to make the proper design decisions, you have to understand the domain first.<br>
+      The concepts in the code must be named after the entities that are part of the <cite>ubiquitous language</cite>
+    </li>
+</ul>
+
+SOLID and DRY principles
+<ul>
+  <li>Single Responsability: (17) if a function has an AND in its name it is violating the Single Responsability Principle.<br> 
+      If a function has comments marking different sections, violates the principle.</li>
+  <li>Open for Extension, Closed for modification</li>
+  <li>Liskov substitution principle</li>
+  <li>Interface segregation: no client should be forced to depend on methods it does not use (20).</li>
+</ul>
+
+
+(21)
+
+
+<!-- ******************************************************************************************* -->
+
+
+<h2>The Standard Library</h2>
+STD library pillars are (219): containers, iterators, algorithms.<br>
+
+<h3>Bitsets</h3>
+
+<h3>Vector</h3>
+A vector has a capacity (the number of items that can be stored without reallocating memory) and a size (that actual number of items in the container) (224).
+<p/>
+The <code>clear()</code> method removes the elements but it does not free any memory.<br>
+
+<hr>
+
+(240)
+
+</body>
+</html>

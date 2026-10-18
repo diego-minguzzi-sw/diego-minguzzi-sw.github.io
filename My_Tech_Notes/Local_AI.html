@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+  .source_code {
+    background-color: lightgray;
+    font-family: Courier New;
+    border-style: solid;
+    border-width: thin;
+    font-size: larger;    
+  }
+  </style>
+  
+  <title>Local AI Project</title>
+  <link rel="icon" type="image/x-icon" href="https://pic.vsixhub.com/ae/db/570e6089-b871-41df-9cf4-a723cb34ef01-icon.png">
+</head>
+
+<body>
+  
+<h1>. Local AI project</h1>
+<ul>
+  <li><a target="_blank" href="https://localai.io/">Project homepage</a></li>    
+  <li><a target="_blank" href="https://github.com/mudler/LocalAI">github repository</a></li>    
+</ul>  
+  
+<h1>. Installation</h1>
+<h2>.. Installation: Manual, no Docker</h2>
+
+<div class="source_code"> 
+<pre>
+  git clone https://github.com/go-skynet/LocalAI
+  cd LocalAI
+  make build
+
+It works by setting 
+export INSTALLED_PACKAGES="/home/minguzzi/repo/LocalAI/backend/cpp/grpc/cpp_installed_packages"  
+
+export INSTALLED_LIB_CMAKE="${INSTALLED_PACKAGES}/lib/cmake"  
+export ADDED_CMAKE_ARGS="-Dabsl_DIR=${INSTALLED_LIB_CMAKE}/absl"
+export ADDED_CMAKE_ARGS="${ADDED_CMAKE_ARGS} -DProtobuf_DIR=${INSTALLED_LIB_CMAKE}/protobuf"
+export ADDED_CMAKE_ARGS="${ADDED_CMAKE_ARGS} -Dutf8_range_DIR=${INSTALLED_LIB_CMAKE}/utf8_range"
+export ADDED_CMAKE_ARGS="${ADDED_CMAKE_ARGS} -DgRPC_DIR=${INSTALLED_LIB_CMAKE}/grpc"
+export ADDED_CMAKE_ARGS="${ADDED_CMAKE_ARGS} -DCMAKE_CXX_STANDARD_INCLUDE_DIRECTORIES=${INSTALLED_PACKAGES}/include"
+
+export _PROTOBUF_PROTOC=${INSTALLED_PACKAGES}/bin/protoc
+export _GRPC_CPP_PLUGIN_EXECUTABLE=${INSTALLED_PACKAGES}/bin/grpc_cpp_plugin
+export PATH=${PATH}:${INSTALLED_PACKAGES}/bin
+
+CMAKE_ARGS="${ADDED_CMAKE_ARGS}" make build
+
+
+wget https://huggingface.co/TheBloke/Luna-AI-Llama2-Uncensored-GGUF/resolve/main/luna-ai-llama2-uncensored.Q4_0.gguf -O models/luna-ai-llama2
+cp -rf prompt-templates/getting_started.tmpl models/luna-ai-llama2.tmpl
+
+cp -rf prompt-templates/getting_started.tmpl models/ggml-model-f16.tmpl
+
+List the models
+curl http://localhost:8080/v1/models
+
+curl http://localhost:8080/v1/chat/completions -H "Content-Type: application/json" -d '{
+     "model": "luna-ai-llama2",
+     "messages": [{"role": "user", "content": "How are you? Be short and concise. Tell me about the news."}],
+     "temperature": 0.9
+   }'
+
+curl http://localhost:8080/v1/chat/completions -H "Content-Type: application/json" -d '{
+     "model": "ggml-model-q4_0.bin",
+     "messages": [{"role": "user", "content": "How are you?"}],
+     "temperature": 0.9
+   }'
+   
+curl http://localhost:8080/v1/chat/completions -H "Content-Type: application/json" -d '{
+  "model": "gpt-4",
+  "messages": [{"role": "user", "content": "Hi, can you summarize the mails that I received today?"}],
+  "grammar": "command ::= \"summarize_emails\" | \"summarize_news\" "
+}'   
+
+
+</pre>
+</div>
+  
+  
+
+
+
+</body>
+</html>

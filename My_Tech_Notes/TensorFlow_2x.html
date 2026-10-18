@@ -1,0 +1,82 @@
+<html>
+<body>
+<h1>TensorFlow 2.x</h1>
+<pre>
+conda create -n tf_latest
+conda activate tf_latest
+conda install tensorflow
+conda install spyder
+conda install numpy matplotlib
+
+</pre>
+[26] Tensorboard is a graph visualization tool that runs in a browser.<br>
+Save a graph in a directory, e.g. tmp abc, and then open the graph by:
+<pre>
+tensorboard –logdir /tmp/abc
+</pre>
+A scalar number is a zeroth order tensor, a vector is a first order tensor, matrix is second order, etc.<br>
+TF data types: e.g. tf.float32, tf.float64, int8,16,32,64, tf.uint8, string, bool (27).<p/>
+
+Primitive types are constants and variables. Variables are trainable. <br>
+Variables have a given shape: they can be assigned to values of same shape.
+However, rows can be assigned.<br>
+<pre>
+  v[1].assign([1.,2.,3.])
+</pre>
+Constants are not modified during the training phase.<br>
+<p/>
+<code>tf.rank(x)</code> retrieves the rank of x: the dimensionality of the tensor.<br>
+Each tensor has <code>the get_shape()</code> method to retrieve the shape.<br>
+
+Variables (33):
+<ul>
+  <li>can be updated by operations</li>
+  <li>hold learned parameters</li>
+  <li>can be stored and restored</li>
+</ul>
+
+Tensors are the intermediate representations of data as it passes through the model.
+<p/>
+The <code>tf.function</code> decorator converts a Python function into a function backed by a graph.<br>
+If a decorated function calls an undecorated function, the undecorated function becomes part of the graph too.
+<p/>
+(35) Constants that are defined outside a decorated python function can print their values inside the function 
+using the python print function.<br>
+If a constant is defines inside a decorated function, its value can be printed using the <code>tf2.print()</code> function.
+<p/>
+
+Autograph creates callable graphs from python functions (39).
+(40) Arithmetic functions in TF2: add(), subtract(), multiply(), tf.math.divide().
+<p/>
+<b>Differentiation and TF gradient tape in TF2</b>
+(50) During eager execution, the TF2 context manager traces operations for computing gradients.<br>
+This context manager has a <code>watch()</code> method to specify a tensor that will be differentiated.<br>
+The gradient tape can only compute one gradient (50).<p/>
+
+(52) How to calculate the <i>second order derivative</i> using nested gradient tape loops.<br>
+
+<h2>Useful TF2 APIs</h2>
+(64) 
+Note:
+<ul>
+  <li><code>tf.rank()</code> the number of indexes required to uniquely select an element of the tensor.<br>
+      The tensor rank is not the same as the matrix rank.
+  </li>
+  <li><code>tf.size()</code> returns the number of elements</li>
+  <li><code>tf.shape()</code> returns the number of elements in each dimension</li>
+  <li><code>tf.cast()</code> casts a tensor into a target data type</li>
+</ul>
+
+<code>tf.math.divide(x,y)</code>: x and y must have the same shape. Returns the element-wise division.
+<p/>
+
+<h2>TF2 Datasets</h2>
+In a dataset, columns are features and rows are instances or samples.<br>
+Dataset(s) in TF handle big dataset, that what can be stored in memory.<br>
+
+
+
+Up to page n.128 of 250.
+<br>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<html>
+<head>
+  <title>DevOp Notes</title>    
+</head>  
+<body>  
+
+<code>
+<pre>
+  docker pull ubuntu:jammy-20220428
+  docker run --interactive --tty --rm --read-only --name jammy_go ubuntu:jammy-20220428 /bin/bash
+  docker run \
+        --interactive \
+        --tty --rm --read-only \
+        --env MY_ENVIRONMENT_VAR="This is a test" \
+        --tmpfs /tmp \
+        --name jammy_go ubuntu:jammy-20220428 \
+        /bin/bash
+</pre>
+</code>
+
+</body>

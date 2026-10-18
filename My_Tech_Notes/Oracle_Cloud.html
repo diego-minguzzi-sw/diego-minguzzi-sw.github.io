@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+  .source_code {
+    background-color: lightgray;
+    font-family: Courier New;
+    border-style: solid;
+    border-width: thin;
+    font-size: larger;
+  }
+  </style>
+  <title>Oracle Cloud Infrastructure</title>
+</head>
+
+<body>
+  
+<h1>Oracle </h1>  
+Links:
+<ul>  
+  <li><a target="_blank" href="https://docs.oracle.com/en/">Oracle help Center</a></li>  
+  <li><a target="_blank" href="https://www.oracle.com/cloud/sign-in.html">Sign in</a></l>
+  <li><a target="_blank" href="https://www.whatismyip.com/">What is my IP</a></l>  
+</ul>
+
+<div class="source_code"> 
+<pre>
+Abcd
+</pre>
+</div>
+
+
+<h1>. Networking</h1>
+<a target="_blank" href="https://docs.oracle.com/en-us/iaas/Content/Network/Concepts/overview.htm">Netowkring overview in docs</a><br>
+<h2>.. Security Rules</h2>
+Virtual firewall rules for your VCN. <br>
+They are ingress and egress rules that specify the types of traffic (protocol and port) allowed in and out of the 
+instances. You can choose whether a given rule is stateful or stateless.
+To implement security rules, you can use network security groups or security lists.<br> 
+A network security group consists of a set of security rules that apply only to the resources in that group.<br> 
+Contrast this with a security list, where the rules apply to all the resources in any subnet that uses the list.
+
+<ul>
+  <li><a target="_blank" href="https://docs.oracle.com/en-us/iaas/Content/Network/Concepts/overview.htm">
+  </a></li>
+  <li><a target="_blank" href=""></a></li>
+  <li><a target="_blank" href=""></a></li>
+</ul>
+
+<h2>.. How to open ports on an instance</h2>
+<a target="_blank" href="https://docs.oracle.com/en-us/iaas/developer-tutorials/tutorials/apache-on-ubuntu/01oci-ubuntu-apache-summary.htm#add-ingress-rules">
+  Enable Internet Access</a><br>
+For example, to enable HTTP access to Apache, the following rule ,must be added.<br>
+The Ubuntu firewall is disabled by default.<br>
+However, you still need to update your iptables configuration to allow HTTP traffic.  
+Update iptables with the following commands.
+<div class="source_code"> 
+<pre>
+sudo iptables -I INPUT 6 -m state --state NEW -p tcp --dport 80 -j ACCEPT    # Opens the port 80
+sudo iptables -I INPUT 6 -m state --state NEW -p tcp --dport 12321 -j ACCEPT # Opens the port 12321 
+sudo netfilter-persistent save
+</pre>
+</div>
+
+To summarize:
+<ul>
+  <li>Create the instance, with the Network Security Group</li>
+  <li>Open the port in the firewall, with the iptables</li>  
+</ul>
+<div class="source_code"> 
+<pre>
+# In the client: 
+nc -v 129.152.19.136 12321     # Connects the client to the server instance
+nc -v -z  129.152.19.136 12321 # Just scans the port.
+
+# In the instance:
+printf "Hello\n" | nc -v -l 12321
+</pre>
+</div>
+
+Note: for example, BBBELL IP address is: 77.108.39.98   CIDR  77.108.39.0/24<br>
+
+<h1>. Storage</h1>
+<h2>.. Block Volumes</h2>
+<ul>
+  <li><a target="_blank" href="https://docs.oracle.com/en-us/iaas/Content/Block/Concepts/overview.htm">Block Volumes docs</a></li>
+  <li><a target="_blank" href=""></a></li>
+  <li><a target="_blank" href=""></a></li>
+</ul>
+<b>Volume attachment</b>: iSCSI and paravirtualized.<br>  
+<b>Volume</b> can be a boot volume or a block volume: boot volume contains the image used for boot.  Block volume contains data.<br>
+Attached a block volume, as paravirtualized, to the device <code>/dev/oracleoci/oraclevdb</code> <br>
+Appearently, the device is /dev/sdb  <br>
+<div class="source_code"> 
+<pre>
+sudo mkfs -V  -t ext4 /dev/sdb        # Created the filesystem into the device.
+sudo mkdir -vp /mnt/ext_volume        # Created the directory where it will be mounted.
+sudo mount /dev/sdb /mnt/ext_volume
+
+ubuntu@iot-server:~$ df -h
+Filesystem      Size  Used Avail Use% Mounted on
+tmpfs            97M  1.1M   96M   2% /run
+/dev/sda1        45G  2.5G   43G   6% /
+tmpfs           483M     0  483M   0% /dev/shm
+tmpfs           5.0M     0  5.0M   0% /run/lock
+/dev/sda15      105M  5.3M  100M   5% /boot/efi
+tmpfs            97M  4.0K   97M   1% /run/user/1001
+/dev/sdb         49G   32K   47G   1% /mnt/ext_volume
+</pre>
+</div>
+
+<h1>. Database</h1>
+<a target="_blank" href="https://docs.oracle.com/en/cloud/paas/atp-cloud/index.html">Autonomous Database </a><br>
+
+</body>
+</html>

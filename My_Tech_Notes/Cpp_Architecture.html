@@ -1,0 +1,91 @@
+<html>
+<body>
+  
+<h1>SW Architecture with C++</h1><br>
+522 pages.<br>
+  
+
+<ul>
+  <li> <a href="https://direnv.net/" target="_blank">NixOS package manager</a> </li>
+  <li> <a href="https://nixos.org/" target="_blank">NixOS package manager</a> </li>
+</ul>
+
+
+The architecture must support what is expected from software (10): functional requirements, attributes of the solution, constraints coming from different places.<br>
+Many requirements came from the architecture context:
+<ul>
+  <li>Stakeholders: 
+      <ul>
+        <li>Users are: end-users (user-experience, performance, functionalities) and administrators (users management, sys configuration, backup and recovery)</li>
+      </ul>
+    </li>
+  <li>Business and technical environment. Tech environment: technologies already used by the company</li>
+  <li>Architecture and Agile</li>
+  <li>Domain Driven Design: in order to make the proper design decisions, you have to understand the domain first.<br>
+      The concepts in the code must be named after the entities that are part of the <cite>ubiquitous language</cite>
+    </li>
+</ul>
+
+SOLID and DRY principles
+<ul>
+  <li>Single Responsability: (17) if a function has an AND in its name it is violating the Single Responsability Principle. If a function has comments marking different sections, violates this principle as well.</li>
+  <li>Open for Extension, Closed for modification. <br>
+	OCP: Open Close Principle (27).</li>
+  <li>Liskov substitution principle</li>
+  <li>Interface segregation: no client should be forced to depend on methods it does not use (20).</li>
+  <li>Dependency Inversion: high level modules should not depend on low level modules, rather on interfaces</li>
+</ul>
+
+Coupling: how strongly one software unit depends on another software unit. If a modification to a sw unit means that the other must be changed as well (26).<br>
+Cohesion: how strongly the elements of a sw unit are related.
+<ul>
+  <li>High cohesion, low coupling: a class method always use the same fields, a few calls to a few classes</li>
+  <li>Low cohesion, high coupling: a class has a low of fields, every method uses a few of them; many calls to other classes</li>
+</ul>
+(21)
+
+  <h2>Architectural Styles</h2>
+<ul>
+  <li>Stateful services: the service keeps track of the session state</li>
+  <li>Stateless: two requests, with the same parameters return the same results, if data are the same.  REST: all the state needed to process a request must be trasferred within it.</li>
+</ul>  
+
+Microservices:  an application is split into loosely coupled services that communicate using lightweight protocols (38).<br>
+
+
+<!-- ******************************************************************************************* -->
+<h1>Modern C++ Programming Cookbook, Marius Bancila</h1><br>
+921 pages.<br>
+
+<h2>Exploring functions</h2>
+
+(234) <b>Rule of Five</b>: if you define any copy constr, move constr, copy assign, move assign, destructor, then you must explicitly define or default, or delete all of them.<P/>
+
+(233)
+<h3>Lambdas</h3>
+(238) A lambda expression is usually a class.  In order to call it, tje compiler must instantiate an object of that class.  
+The object instantiated from the lmbda expression is called <cite>lambda closure</cite> (238).<p/>
+
+A lambda expression has a capture list (239).
+
+
+<h2>Preprocessor and Compilation</h2>
+(311) <code>static_assert</code> can be used to check assertions at compile time. The typical use is to check that types have the expected size.<p/>
+
+<h3>Function Attributes</h3>
+(330)
+<ul>
+  <li> [[nodiscard]] (C++17) to ensure that the return value from a function cannot be ignored. </li>
+  <li> [[maybe_unused]] (C++17) so that the compiler does not emit a warning for unused variables </li>
+  <li> [[fallthrough]] (C++17) </li>
+</ul>
+
+
+<h2>The Standard Library</h2>
+
+<hr>
+
+(534)
+
+</body>
+</html>

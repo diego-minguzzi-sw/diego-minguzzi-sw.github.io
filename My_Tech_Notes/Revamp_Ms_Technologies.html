@@ -1,0 +1,156 @@
+<html>
+  <title>Revamp Microsoft Technologies</title>
+<body>
+<h1>Learn C# Quickly (2020) (202 pages)</h1>
+CodeQuickly.org<br>
+Access modifiers (37):
+<ul>
+  <li>public</li>
+  <li>private: accessed only from its own class (this is the default)</li>
+  <li>protected: accessed from its own class and every derived class</li>
+  <li>internal: accessible in its own assembly</li>
+</ul>
+
+(52)
+<h1>Pro C# 9 with .NET 5: Foundational Principles and Practices in Programming (2021)</h1>
+
+The class that contains the Main is called application object (50).<br>
+(62): Numerical format characters. c=currency, d=decimal, e=exponential, f=fixed point, g=general, n=numerical, x=hexadecimal formatting.<br>
+(67) It is possible to declare variables and initialize them to their default value using:<br>
+<pre>
+  var myInt = default(int);
+  var myBool = new bool();
+  bool b = new();
+</pre>
+
+(67) Note: object references (including string are null by default.<br>
+In Cs, objects of value types are allocated on the stack : e.g. int, byte, etc.<br>
+(86) The <code>checked</code> keyword can be used to wrap a set of statements.
+  An Overflow exception is raised in case any operation results in an overflow.<br>
+  
+
+
+<p>(99)</p>
+
+<hr>
+(8)
+
+<ul>
+<li>.NET Framework was the old .NET, with CLR (COmmon Language Runtime) and BCL Base Class Library.
+<li>Then .NET was rewritten, now it is called .NET Core
+<li>.NET Core has a cross-platform runtime called CoreCLR
+<li>.NET Core has also a library called CoreFX
+<li>.NET Core was renamed to .NET 
+</ul>
+
+(14) ASP.NET MVC and ASP.BET Web API are newer technologies for web applications.<br>
+Entity Framework is now called Entity Framework Core.<br>
+
+(17) CoreCLR is the .NET Virtual Machine.<br>
+The Intermediate Language is compiled just-in-time.<br>
+
+<br>
+It is possible to open the terminal using the menu item: View / Terminal.
+<br>
+
+(37) : how to comment / uncomment blocks of code.
+
+<ul>
+<li> <a target=_blank" href="https://devblogs.microsoft.com/dotnet/">Microsoft .NET homepage</a>
+    <ul>
+    <li> <a target=_blank" href="https://docs.microsoft.com/en-us/dotnet/">.NET documentation</a>
+      </li>
+    <li><a target=_blank" 
+           href="https://docs.microsoft.com/en-us/dotnet/api/?view=netcore-3.1&preserve-view=true">
+          .NET API
+        </a>
+    </li>               
+    </ul>
+  </li>
+<li>  <a target=_blank" href="https://www.youtube.com/playlist?list=PL0M0zPgJ3HSesuPIObeUVQNbKqlw5U2Vr">
+        https://www.youtube.com/playlist?list=PL0M0zPgJ3HSesuPIObeUVQNbKqlw5U2Vr
+      </a>
+  </li>
+</ul>
+
+<hr>
+<h2>Getting help on dotnet commands</h2>
+<pre>
+dotnet help new    # Opens the online documentation on a given command.
+dotnet new --help  # Opens the command line documentation on a given command.
+csc -langversion:? # Checks the CS compiler version.
+</pre>
+
+Coding standard:
+<ul>
+  <li> Camel case first letter lowercase: parameter names, local variables, private fields</li>
+  <li> Title case (aka Pascal Casing) first letter uppercase: Types, non private fields, other member-like methods </li>
+</ul>
+<a target=_blank" href="https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/naming-guidelines">Microsoft Naming guidelines</a>
+<p/>
+
+(54) In .NET, local variables of value types are released immediately, when the method finishes, reference types must wait for the garbage collector (54).<p/>
+
+<code>var</code> can be used as <code>auto</code> in C++.<p/>
+
+(56) arrays are declared with a syntax like:
+<pre>
+var anArray = new int[6];
+</pre>
+
+<p/>
+
+(59) nullable types set at project and file level.<br>
+
+CsProj template file:
+<pre>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+	  <LangVersion>preview</LangVersion> <!-- Uses the highest available compiler version. -->
+    <Nullable>enable</Nullable>        <!-- Enables nullable reference types. -->
+  </PropertyGroup>
+</Project>
+
+</pre>
+
+<hr>
+(89): the for loop has the same syntax as the C language.<br>
+(99): example of try-catch constructs.<br>
+
+<h3>How to load a configuration setting from JSON appsettings files</h3>
+(133)
+<pre>
+dotnet add package Microsoft.Extensions.Configuration
+dotnet add package Microsoft.Extensions.Configuration.Binder
+dotnet add package Microsoft.Extensions.Configuration.Json
+dotnet add package Microsoft.Extensions.Configuration.FileExtensions
+</pre>
+
+<h3>Class Libraries</h3>
+A class can have 
+<ul>
+  <li>Methods: Plain, Constructor, Property, Indexer, Operator.<br>
+      Properties are the preferred way of storing fields, unless the memory address of the field must be exposed.
+    </li>
+  <li> Fields (144):
+      <ul>
+      <li>Plain field
+        </li>
+      <li>Constant: the data never changes: the compiler inserts the constant in every place where it is referred.
+          When a constant is changed, the code must be rebuild.</li>
+      <li>Read Only: the data can be changed when the object is instantiated.
+        </li>
+      <li>Event: the data references one or more methods that are called when the event is raised.
+        </li>
+      </ul>
+    </li>
+  
+</ul>
+
+<p>Read until page:165</p>
+
+</body>
+
+</html>

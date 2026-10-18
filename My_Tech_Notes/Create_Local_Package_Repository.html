@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+  .source_code {
+    background-color: lightgray;
+    font-family: Courier New;
+    border-style: solid;
+    border-width: thin;
+    font-size: larger;
+  }
+  </style>
+
+  <title>Create a local package repository</title>
+  <link href="data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAD///8/////P////z////8/////P////z////8/////P////z////8/////P////z////8/////P////z////8/2NjY8Hp6evBtbW3wbW1t8GxsbPBsbGzwbGxs8GxsbPBsbGzwbGxs8Gtra/BpaWnwampq8GlpafB6enrw2NjY8IiIiP8BAQH/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8gICD/QkJC/y8vL/87Ozv/AgIC/4iIiP+BgYH/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/VFRU/6enp/99fX3/lZWV/wMDA/+BgYH/np6e/xQUFP8NDQ3/DQ0N/w0NDf8NDQ3/DQ0N/w0NDf8NDQ3/DQ0N/xUVFf8fHx//GRkZ/xwcHP8UFBT/np6e//Pz8/++vr7/srKy/7Ozs/+zs7P/s7Oz/7Ozs/+zs7P/s7Oz/7Ozs/+ysrL/srKy/7Kysv+xsbH/vr6+//Pz8/+3t7f/Ozs7/zAwMP8wMDD/MDAw/zAwMP8wMDD/MDAw/zAwMP8wMDD/MDAw/zExMf8wMDD/MTEx/zo6Ov+3t7f/goKC/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/0FBQf+Dg4P/YWFh/3V1df8CAgL/goKC/4ODg/8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP84ODj/cXFx/1NTU/9lZWX/AgIC/4KCgv/BwcH/TU1N/0JCQv9CQkL/QkJC/0JCQv9CQkL/QkJC/0JCQv9CQkL/QUFB/0FBQf9BQUH/QEBA/01NTf/BwcH/8PDw/7W1tf+oqKj/qamp/6mpqf+pqan/qamp/6mpqf+pqan/qamp/6ioqP+np6f/qKio/6enp/+1tbX/8PDw/5eXl/8LCwv/BQUF/wUFBf8FBQX/BQUF/wUFBf8FBQX/BQUF/wUFBf8SEhL/ISEh/xgYGP8dHR3/CwsL/5eXl/+BgYH/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/WFhY/66urv+CgoL/m5ub/wQEBP+BgYH/jIyM/wICAv8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/xgYGP8zMzP/JCQk/y0tLf8DAwP/jIyM/+Hh4fCRkZHwhYWF8IWFhfCFhYXwhYWF8IWFhfCFhYXwhYWF8IWFhfCEhITwgoKC8IODg/CCgoLwkZGR8OHh4fD///8/////P////z////8/////P////z////8/////P////z////8/////P////z////8/////P////z////8///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//8AAA==" rel="icon" type="image/x-icon">
+</head>
+
+<body>
+
+Adapted from <a target="_blank"
+                href="https://earthly.dev/blog/creating-and-hosting-your-own-deb-packages-and-apt-repo/">
+ Creating and hosting your own deb packages and apt repo</a>
+
+<a target="_blank"
+  href="https://mauriziosiagri.wordpress.com/2020/10/03/apt-key-deprecated-the-following-signatures-couldnt-be-verified-because-the-public-key-is-not-available-no_pubkey-7fcc7d46accc4cf8/">
+  See here the reason why
+  </a>
+
+<!-- ******************************************************************************************* -->
+
+<h1>. Prerequisites</h1>
+
+<div class="source_code">
+<pre>
+sudo apt-get install gcc dpkg-dev gpg
+</pre>
+</div>
+
+package name scheme:<br>
+&lt;package-name&gt;_&lt;version&gt;-&lt;release-number&gt;_&lt;architecture&gt;
+
+<h1>. Create a custom package</h1>
+<div class="source_code">
+<pre>
+mkdir -pv hello-world_0.0.1-1_amd64/usr/bin/
+mkdir -pv hello-world_0.0.1-1_amd64/DEBIAN/
+cp hello_world hello-world_0.0.1-1_amd64/usr/bin
+cp -v control hello-world_0.0.1-1_amd64/DEBIAN/
+</pre>
+</div>
+
+<h2>.. Creates the DEB file</h2>
+<div class="source_code">
+<pre>
+$ dpkg --build hello-world_0.0.1-1_amd64
+dpkg-deb: building package 'hello-world' in 'hello-world_0.0.1-1_amd64.deb'.
+
+# Verifies the content
+dpkg -c hello-world_0.0.1-1_amd64.deb
+
+# Dumps the package information.
+dpkg --info  hello-world_0.0.1-1_amd64.deb
+</pre>
+</div>
+
+<h2>.. Creates the local DEB file</h2>
+<div class="source_code">
+<pre>
+# Installs the DEB package
+sudo dpkg -i hello-world_0.0.1-1_amd64.deb
+
+# Removes the DEB package
+sudo apt-get remove hello-world
+</pre>
+</div>
+
+<h1>. Creates the apt repository</h1>
+
+<div class="source_code">
+<pre>
+mkdir -pv sentilab-repo/pool/main/gateway-scanner/
+mkdir -pv sentilab-repo/pool/main/gateway-objmanager/
+mkdir -pv sentilab-repo/dists/stable/main/binary-amd64
+
+cp -v hello-world_0.0.1-1_amd64.deb sentilab-repo/pool/main/gateway-scanner/
+
+( cd sentilab-repo && dpkg-scanpackages --arch amd64 pool/ )
+( cd sentilab-repo && \
+  dpkg-scanpackages --arch amd64 pool/ > dists/stable/main/binary-amd64/Packages && \
+  cat dists/stable/main/binary-amd64/Packages && \
+  cat dists/stable/main/binary-amd64/Packages | gzip -9 > dists/stable/main/binary-amd64/Packages.gz && \
+  ls -lah dists/stable/main/binary-amd64
+)
+</pre>
+</div>
+
+<h2>.. Generate the release file</h2>
+<div class="source_code">
+<pre>
+( cd sentilab-repo/dists/stable &&
+  ../../../generate-release.sh > Release &&
+  cat Release )
+</pre>
+</div>
+
+<h2>.. Test the repo with a HTTP server</h2>
+<div class="source_code">
+<pre>
+  python3 -m http.server
+</pre>
+</div>
+
+<h2>.. Add the repo to the apt repositories</h2>
+<div class="source_code">
+<pre>
+  sudo apt-get update --allow-insecure-repositories
+  sudo apt-get install hello-world
+
+  # Disinstall the package and remove the repo from apt.
+  sudo apt-get remove hello-world
+  sudo rm -v /etc/apt/sources.list.d/sentilab.list
+  sudo apt-get update
+</pre>
+</div>
+
+<h1>. Sign the repository</h1>
+<h2>.. Generate the key-pair</h2>
+
+<div class="source_code">
+<pre>
+  rm -rfv pgp-keys-sentilab
+  mkdir -vp pgp-keys-sentilab
+
+  export GNUPGHOME="$(pwd)/pgp-keys-sentilab"
+  echo "GNUPGHOME: ${GNUPGHOME}"
+  gpgconf --kill gpg-agent # Restart the GPG agent
+
+  gpg -v --no-tty --batch --gen-key generate-sentilab-pgp-key.batch
+
+  gpg --list-keys
+
+  # Exports a single key
+  gpg --armor --export sentilab > sentilab-pgp-key.public
+
+  # List the packets of an exported key, there should be only one.
+  gpg --armor --export sentilab | gpg --list-packets
+
+  # Exports the sentilab private key.
+  gpg --armor --export-secret-keys sentilab > sentilab-pgp-key.private
+
+</pre>
+</div>
+
+<h2>.. Signes the Release file</h2>
+<div class="source_code">
+<pre>
+  rm -rfv pgp-keys-sentilab
+  mkdir -vp pgp-keys-sentilab-repo
+  export GNUPGHOME="$(pwd)/pgp-keys-sentilab-repo"
+  echo "GNUPGHOME: ${GNUPGHOME}"
+  gpgconf --kill gpg-agent # Restart the GPG agent
+
+  gpg --list-keys # Should be empty
+
+  # Imports the Sentilab secret key in the Sentilab Repo PGP key store.
+  cat sentilab-pgp-key.private | gpg -v --import
+
+  gpg --list-keys # There should be one secret key.
+
+  cat sentilab-repo/dists/stable/Release | gpg --default-key sentilab -abs > sentilab-repo/dists/stable/Release.gpg
+  ls -la sentilab-repo/dists/stable
+
+  # Combines Release and Release.pgp
+  cat sentilab-repo/dists/stable/Release | gpg --default-key sentilab -abs --clearsign > sentilab-repo/dists/stable/InRelease
+</pre>
+</div>
+
+
+<h2>.. Uses the signed repo</h2>
+
+<a target="_blank"
+  href="https://mauriziosiagri.wordpress.com/2020/10/03/apt-key-deprecated-the-following-signatures-couldnt-be-verified-because-the-public-key-is-not-available-no_pubkey-7fcc7d46accc4cf8/">
+  See here the reason why
+  </a>
+
+<div class="source_code">
+<pre>
+  cat sentilab-pgp-key.public | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/sentilab.gpg
+  echo "deb [arch=amd64] http://127.0.0.1:8000/sentilab-repo stable main" | sudo tee /etc/apt/sources.list.d/sentilab.list
+
+  echo "deb [arch=amd64 signed-by=/home/minguzzi/temp_create_local_repo/sentilab-pgp-key.public] http://127.0.0.1:8000/sentilab-repo stable main" | sudo tee /etc/apt/sources.list.d/sentilab.list
+</pre>
+</div>
+
+
+<h2>.. Installs the package from the signed repo</h2>
+<div class="source_code">
+<pre>
+  # In a separate shell run the HTTP server.
+  cd /home/minguzzi/temp_create_local_repo
+  python3 -m http.server
+
+  # Return back to the previous shell.
+  sudo apt-get clean
+  sudo apt-get update
+  sudo apt-get update --allow-insecure-repositories
+  sudo apt-get install hello-world
+
+  sudo rm -vf /etc/apt/sources.list.d/sentilab.list
+</pre>
+</div>
+
+</body>
+</html>
+

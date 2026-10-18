@@ -1,0 +1,1421 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+  .source_code {
+    background-color: lightgray;
+    font-family: Courier New;
+    border-style: solid;
+    border-width: thin;
+    font-size: larger;
+  }
+  </style>
+  <title>ROS</title>
+  <link rel="icon" type="image/x-icon" href="https://simpleicons.org/icons/ros.svg">
+</head>
+
+<body>
+  
+<!-- *************************************************************** 
+     *************************************************************** -->
+
+<h1>. 00 ROS1 book:</h1>
+    <cite>A Systematic Approach to Learning Robot Programming with ROS</cite> <br>
+    Wyatt S.Newman, CRC Press, 2018 [NW18]
+</h1>
+(159)
+
+<b>IMPORTANT -------------------------------------------------------</b>
+<div class="source_code">
+<pre>
+  # Source to use book:
+  source /opt/ros/melodic/setup.bash
+  source ${HOME}/pmb2_public_ws/devel/setup.bash
+  env | grep -e ROS
+</pre>
+</div>
+
+<p/>
+Preface (xx): ROS is: plumbing (pub/sub), tools, capabilities (libraries), ecosystem.<br>
+<b>A node is a program that uses the ROS middleware for communications</b> (5).<br>
+The roscore coordinates the communication. The master computer is the one where the roscore is running.(6)<br>
+A publisher advertises its topics to the roscore (6).  Subscribers can be launched before the publisher.  A node can be both a publisher and a subscriber.<br>
+It is possible to define pipelines through topics: a node subscribes to images and publishes edges, another node subscribes to edges and publishes the detected shapes. (7)<br>
+Packages should be logical groups of code (9).
+<p/>
+Git repositories located at: 
+<a target="_blank" href="https://github.com/wsnewman/learning_ros">learning_ros</a> and 
+<a target="_blank" href="http://github.com/wsnewman/learning_ros_external_packages">learning_ros_external_packages</a>.
+<p/>
+
+<div class="source_code"> 
+<pre>
+  sudo apt-get install -y ros-${ROS_DISTRO}-turtle-tf2 
+  sudo apt-get install -y ros-${ROS_DISTRO}-tf2-tools 
+  sudo apt-get install -y ros-${ROS_DISTRO}-tf
+  
+  # The demo of a turtle that runs and the other that follows.
+  roslaunch turtle_tf2 turtle_tf2_demo.launch
+  
+  # Echoes the difference between turtle1 and the world
+  rosrun tf tf_echo world turtle1
+  rosrun tf tf_echo turtle1 turtle2
+  
+  # Launches RVIS to display the frames.
+  rosrun rviz rviz -d `rospack find turtle_tf2`/rviz/turtle_rviz.rviz
+  
+  # There are CLI tools to publish reference frames.
+  static_transform_publisher x y z yaw pitch roll frame_id child_frame_id
+  
+  # Static transforms are published to the topic /tf_static . 
+  # A user published transform is published as a child of the /tf_static topic. 
+  rostopic echo /tf_static
+</pre>
+</div>
+
+<h2>.. ROS1 book: Messages, Classes and Servers</h2>
+(40) The method <code>ros::Time::now()</code> generates a timestamp.<br>
+
+(42) Variable length messages can be sent and received (vectors of items). Example of definition:<br>
+<code><pre>float64[] doubleVect</pre></code>
+<p/>
+
+A node can be implemented as a C++ class (54):
+<ul>
+  <li>The constructor initializes the publishers and subscribers</li>
+  <li>Callbacks can be class methods</li>
+  <li>All data are stored in private data members</li>
+  <li>The class constructor receives a pointer/reference to a <b><code>ros::NodeHandle</code></b> </li>
+</ul>
+
+<h3>... ROS1 book: Action Servers and Action Clients</h3>
+(64) The pattern is called action server - action client.  They are useful for long-running actions.<br>
+
+<h3>... ROS1 book: the Parameter server</h3>
+A parameter server is a shared, multi-variate dictionary that is accessible via network APIs. <br>
+Nodes use this server to store and retrieve parameters at runtime. <br>
+As it is not designed for high-performance, it is best used for static, non-binary data such as configuration parameters. <p/>
+The Parameter Server is implemented using XMLRPC and runs inside of the ROS Master, which means that its API is accessible via normal XMLRPC libraries. 
+<a target="_blank" href="http://wiki.ros.org/Parameter%20Server">Wiki on the Parameter server</a> <br>
+The parameter server is used for:
+<ul>
+  <li>Controller gains </li>
+  <li>Coordinate transform parameters </li>
+  <li>Sensor intrinsing and extrinsic calibration parameters </li>
+  <li>Robot models </li>
+</ul>
+Remove all constants from the code and store them as parameters loaded when the node starts.<br>
+<cite>Nodes typically read parameters upon start-up, then they are unaware of changes to the parameters.</cite> <br>
+<div class="source_code"> 
+<pre>
+  rosparam set /gains "p: 1.0
+  i: 2.0
+  d: 3.0"
+</pre>
+</div>
+
+Then:
+<div class="source_code"> 
+<pre>
+  rosparam list
+  /gains/d
+  /gains/i
+  /gains/p
+</pre>
+</div>
+
+Parameters can change data type during the session (!).<br>
+<b>
+  The entire robot description is loaded as a parameter file, to a given parameter item.<br>
+  The model is then available both for control algorithms and visualization displays.
+</b> (88).<p/>
+
+<h2>.. ROS1 book: Simulation and Visualization in ROS</h2>
+(93) Code written for simulation requires no modifications to run on the target physical system.<br>
+
+<h3>... ROS1 book: The Simple 2D Robot Simulator</h3>
+(95) 
+<div class="source_code"> 
+<pre>
+  A topic named /robot/cmd_vel is the standard to control a robot in velocity command mode.
+  The topic type is geometry_msgs/Twist 
+  
+  By convention, a robot must publish its odometry in a message of type nav_msgs/Odometry (102)
+</pre>
+</div>
+
+<h3>... ROS1 book: Modeling for dynamic simulation</h3>
+(103) Modeling details are organized as: 
+<ul>
+  <li>dynamic model: inertial properties (ROS includes Open Dynamics Engine (ODE))</li>
+  <li>collision model</li>
+  <li>visual model: it can be identical to the collision model, or more accurate since it is less expensive.  It can be of higher fidelity.</li>  
+</ul>
+
+<h2>.. ROS1 book: Unified Robot Description Format</h2>
+TF2 is a prerequisite to URDF (<a target="_blank" href="http://wiki.ros.org/tf2/Tutorials">http://wiki.ros.org/tf2/Tutorials</a>)<br>
+<p/>
+<img src="http://wiki.ros.org/tf2?action=AttachFile&do=get&target=frames2.png" width="40%" border="1">
+<p/>
+
+(105) (<a target="_blank" href="http://wiki.ros.org/urdf">http://wiki.ros.org/urdf</a>) . <br>
+
+<h3>... ROS1 book: TF2 </h3>
+
+<ul>
+  <li> <a target="_blank" href="http://wiki.ros.org/tf2/Tutorials/Introduction%20to%20tf2">Tutorial: Intro to TF2</a>  </li>
+</ul>
+
+
+<h3>... URDF to create a robot model</h3>
+ROS contains tutorials on the URDF (<a target="_blank" href="http://wiki.ros.org/urdf/Tutorials">http://wiki.ros.org/urdf/Tutorials</a>) <p/>
+
+The URDF contains information about: the kinematic chain, the geometry, the collision volumes, the masses.<p/>
+
+<ul>
+  <li><a target="_blank" href="http://wiki.ros.org/urdf/Tutorials/Building%20a%20Visual%20Robot%20Model%20with%20URDF%20from%20Scratch">
+      Building a Visual Robot Model with URDF from Scratch</a></li>
+  <li><a target="_blank" href="http://wiki.ros.org/urdf/Tutorials/Building%20a%20Movable%20Robot%20Model%20with%20URDF">
+      Building a Movable Robot Model with URDF</a></li>
+  <li><a target="_blank" href="http://wiki.ros.org/urdf/Tutorials/Using%20Xacro%20to%20Clean%20Up%20a%20URDF%20File">Skipped the tutorial on Xacro</a></li>
+  <li><a target="_blank" href=""></a></li>
+  <li><a target="_blank" href=""></a></li>
+</ul>
+
+<div class="source_code"> 
+<pre>
+  sudo apt install -y joint-state-publisher
+  
+  # It contains the check_urdf tool to validate a URDF file.
+  sudo apt-get install -y liburdfdom-tools 
+  
+  # This one is needed to control the joints via a GUI tool.
+  sudo apt-get install -y ros-melodic-joint-state-publisher-gui
+  
+  # For example:
+  check_urdf 01-myfirst.urdf
+  
+  # In order to view the model in RViz, for example run.
+  roslaunch urdf_tutorial display.launch model:=01-myfirst.urdf
+  roslaunch urdf_tutorial display.launch model:=05-r2d2.urdf
+  roslaunch urdf_tutorial display.launch model:=06-flexible.urdf
+  
+  # Model of a robot arm. ----------------------------------------------
+  roslaunch urdf_tutorial display.launch model:=robot_arm.urdf 
+</pre>
+</div>
+
+In the URDF, each link is referred to its frame.<br>
+<cite>
+<b>Moreover, the base link must be called base_link .</b>, otherwise RViz fails and all shapes are painted white. <p/>
+</cite>
+
+<b>Kinematic model</b> (105).<br>
+In URDF, links are described, joints connect links. <br>
+The base_link has, implicitly the base as reference.<br>
+Each link has a single reference frame, and it has a single reference frame that moves with the link..<br>
+<b>Important</b> (106) a joint connects two links.  The joint reference is referred to the reference of the parent.<br>
+The Collision model con be added to the URDF model (112).<br>
+
+<h2>. ROS1 book: URDF and robot models</h2>
+<div class="source_code">
+<pre>
+  roslaunch urdf_tutorial display.launch model:=01-myfirst.urdf
+  
+  # To convert a URDF into a XACRO file:
+  rosrun xacro xacro -o minimal_kinem_chain.xacro minimal_kinem_chain.urdf
+  
+  # Convert a URDF into a PDF and Graphiz files.
+  urdf_to_graphiz minimal_kinem_chain.urdf  
+</pre>
+</div>  
+The robot description, expressed as a XACRO file, is usually in the <b><code>/robot_description</code></b> param.<p/>
+URDF file:
+<img src="http://wiki.ros.org/urdf/XML/link?action=AttachFile&do=get&target=inertial.png" width="40%" border="1">
+<ul>
+  <li>Each link has a reference, referred to its base.  Such a reference moves with the base. <br>
+      The geometry and collision can have their own reference, but they do not affect the joint.</li>  
+  <li>The joint defines the position of a child link wrt the base</li>   
+  <li>(107) In URDF, a child link's reference has its origin coincident with the joint frame that connects the parent to the child</li>   
+</ul>
+<p/>
+<a target="_blank" href="http://wiki.ros.org/urdf/XML">ROS Wifi URDF Xml docs.</a> 
+<p/>
+
+<b>IMPORTANT -------------------------------------------------------</b>
+<div class="source_code">
+<pre>
+  # Source to use book:
+  source /opt/ros/noetic/setup.bash
+  env | grep -e ROS
+</pre>
+</div>
+
+<h3>... ROS1 book: Using a URDF model in Gazebo</h3>
+
+<a target="_blank" href="https://gazebosim.org/">Gazebo Sim home page</a>.<br>
+Gazebo can simulate sensors and dynamics.<br>
+
+(114) A Gazebo simulation needs a world model and one or more robot models.<br>
+
+<div class="source_code"> 
+<pre>
+  # Runs Gazebo with an empty world.
+  roslaunch gazebo_ros empty_world.launch
+  
+  # Then it is possible to load additional models in Gazebo, once it is running.
+  rosrun  gazebo_ros spawn_model -file model-1_4.sdf -sdf  -model rect_prism
+  rosrun  gazebo_ros spawn_model -file /home/minguzzi/ros_book/learning_ros/exmpl_models/models/rect_prism/model-1_4.sdf -sdf  -model rect_prism
+  
+  # Then, it is possible to subscrube to the model state, position and orientation.
+  rostopic echo -n 1  /gazebo/model_states
+  
+  # Load an URDF file into Gazebo. In order to be displayed, the model must have geometry, collision and inertia defined.
+  # Otherwise, the model is not displayed.
+  rosrun gazebo_ros spawn_model -urdf -file /home/minguzzi/ros_wrkdir/poc_urdf/gazebo_robot_arm.urdf  -model robot_arm
+  rosrun gazebo_ros spawn_model -urdf -file /home/minguzzi/ros_wrkdir/poc_urdf/gazebo_robot_arm.urdf  -model robot_arm
+  
+  rosrun gazebo_ros spawn_model -urdf -model min_robot -file /home/minguzzi/ros_book/learning_ros/Part_2/minimal_robot_description/minimal_robot_description.urdf 
+</pre>
+</div>
+
+<b>Real time factor</b>: how much Gazebo has slowed down the time to keep the simulation running.<br>
+Example Real Time Factor = 0.5 : the simulation is slowed down twice to keep um with the computation.
+
+
+
+<div class="source_code"> 
+<pre>
+  sudo apt-get install ros-melodic-urdf-sim-tutorial
+  
+</pre>
+</div>
+
+<div class="source_code">
+<pre>
+  sudo apt install ros-noetic-cob-gazebo-worlds 
+  
+  roslaunch gazebo_ros empty_world.launch
+  
+  # How to include a URDF Robot model in Gazebo
+  rosrun gazebo_ros spawn_model -urdf  -file robot_arm.urdf   -model robot3 
+</pre>
+</div>
+  
+  
+<h2>.. ROS1 book: Coord Transforms in ROS</h2>
+(153) n, t, b are the axis vectors for the x, y, z axis.<br>
+The 4x4 matrix is called T (154).<br>
+The matrix that defines B wrt A is T B/A or upperscriptA T lowerscriptB.<br>
+The metrix that defines C wrt B is : upperscript B T lowerscript C, or T C/B, so
+The matrix that defines C wrt A: upperA T lowerC = upperA T lowerB * upperB T lower C <br>
+There is a correspondence between quaternions and rotation matrices.<br>
+<!--
+  <a target="_blank" href=""></a>
+  <a target="_blank" href=""></a>
+  <a target="_blank" href=""></a>
+  <a target="_blank" href=""></a>
+  <a target="_blank" href=""></a>
+ -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- --------------------------------------------------------------- -->
+<h1>. Concepts Overview</h1>
+The ROS2 graph is composed of: nodes, services, actions, topics.<br>
+
+Artifacts are distributed as <b>packages</b>, packages compose <b>stacks</b>. e.g. the navigation stack.<br>
+
+A <b>node</b> is an <cite>active entity</cite>, responsible for a single purpose.<br>
+An executable can contain one or more nodes.<br>
+A node can send and receive data via topics, services, actions, parameters.<br>
+<img src="https://docs.ros.org/en/humble/_images/Nodes-TopicandService.gif" width="40%" border="1"> <br> 
+
+A node may publish data to any number of topics and simultaneously have subscriptions to any number of topics.<br>
+<b>Topics</b> are a publish-subscribe mechanism. Topics are one of the main ways in which data is moved between nodes and therefore between different parts of the system.<br>
+<img src="https://docs.ros.org/en/humble/_images/Topic-SinglePublisherandSingleSubscriber.gif" width="40%" border="1">
+<p/>
+<b>Services</b> are a request-response mechanism. <br>
+<img src="https://docs.ros.org/en/humble/_images/Service-MultipleServiceClient.gif" width="40%" border="1">
+<p/>
+
+([NW18]) The Pub/Sub mechanism is flexible, but the publisher does not know if its messages are received. <br>
+Moreover, the subscribes does not know who is the publisher.<br>
+Using a req/reply service, the client and the server must be running at the same time.
+
+
+Most nodes have the same structure for managing parameters:
+<div class="source_code">
+<pre>
+  /teleop_turtle/describe_parameters
+  /teleop_turtle/get_parameter_types
+  /teleop_turtle/get_parameters
+  /teleop_turtle/list_parameters
+  /teleop_turtle/set_parameters
+  /teleop_turtle/set_parameters_atomically
+</pre>
+</div>
+<p/>
+The format of the service call is :
+<cite><div class="source_code">
+<pre>ros2 service call &lt;service_name&gt; &lt;service_type&gt; &lt;arguments&gt;</pre>
+</div>
+</cite>
+The &lt;arguments&gt; part is optional. For example, services that have Empty type as arguments don’t have any arguments.
+<p/>
+
+<b>Parameters</b>
+A parameter is a configuration value of a node. <br>You can think of parameters as node settings.<br> 
+A node can store parameters as integers, floats, booleans, strings, and lists. <br>
+In ROS 2, each node maintains its own parameters.<br>
+
+<div class="source_code">
+<pre>
+  ros2 param list --param-type # Lists all parameters 
+  
+  ros2 param dump /turtlesim &gt; turtle_params.yaml # Dumps params to a file (saves them).
+  ros2 param load /turtlesim turtle_params.yaml # Loads all parameters to a node.  
+  ros2 run turtlesim turtlesim_node --ros-args --params-file turtle_params.yaml # Loads the params when it runs an exec.
+</pre>
+</div>
+<p/>
+<b>Actions</b><br>
+Actions are one of the communication types in ROS 2 and are intended for long running tasks.<br> 
+Actions are like services that allow you to execute long running tasks, provide regular feedback, and are cancelable.<br>
+Actions: 
+<ul>
+  <li>accept a goal</li>
+  <li>provide a feedback stream</li>
+  <li>provide a result</li>
+</ul>
+The Action client requests a goal to the server.<br>
+The Action server acknowledges the goal, starts sending a feedback stream and eventually a result.<br>
+
+<img src="https://docs.ros.org/en/humble/_images/Action-SingleActionClient.gif" width="40%" border="1">
+<p/>
+In the tutorial, the <code>/turtle1/rotate_absolute</code> action has <code>/teleop_turtle</code> as client and <code>/turtlesim</code> as server.<br>
+Note that a node declares to be a client to a given action.<br>
+
+Given an action, for example <code>/turtle1/rotate_absolute</code>, in order to inspect the action data type:
+<div class="source_code">
+<pre>
+  minguzzi@mingux:~$ ros2 action list -t
+  /turtle1/rotate_absolute [turtlesim/action/RotateAbsolute]
+  
+  minguzzi@mingux:~$ ros2 action info  -t /turtle1/rotate_absolute
+  Action: /turtle1/rotate_absolute
+  Action clients: 1
+      /teleop_turtle [turtlesim/action/RotateAbsolute]
+  Action servers: 1
+      /turtlesim [turtlesim/action/RotateAbsolute]
+      
+  minguzzi@mingux:~$ ros2 interface show turtlesim/action/RotateAbsolute
+  # The desired heading in radians
+  float32 theta
+  ---
+  # The angular displacement in radians to the starting position
+  float32 delta
+  ---
+  # The remaining rotation in radians
+  float32 remaining  
+</pre>
+</div>
+<p/>
+When we show the interface:
+<ul>
+  <li>the first section describes the goal</li>
+  <li>the second section describes the result</li>
+  <li>the third describes the feedback</li>
+</ul>
+<hr>
+<!-- --------------------------------------------------------------- -->
+
+
+<hr>
+<!-- *************************************************************** 
+     *************************************************************** 
+     *************************************************************** -->
+<h1>. ROS</h1>  
+  
+<h1>. Installation</h1>  
+Adapted from <a target="_blank" href="https://docs.ros.org/en/humble/Installation.html">Installation</a> <br>
+<a target="_blank" href="https://docs.ros.org/en/humble/index.html">Docs about the current distribution</a> <br>
+
+<div class="source_code"> 
+<pre>
+  locale  # check for UTF-8
+
+  sudo apt update && sudo apt install locales
+  sudo locale-gen en_US en_US.UTF-8
+  sudo update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
+  export LANG=en_US.UTF-8
+
+  locale  # verify settings
+
+  sudo apt update && sudo apt install curl gnupg lsb-release
+  sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
+  echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(source /etc/os-release && echo $UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
+
+  sudo apt install -y ros-humble-ros-base   # ROS base bones
+  sudo apt install -y ros-humble-desktop    # ROS Desktop install (recommended)   
+</pre>
+</div>
+
+<b>Env setup</b>
+<div class="source_code"> 
+<pre>
+  source /opt/ros/noetic/setup.bash
+</pre>
+</div>
+
+<hr>
+<!-- --------------------------------------------------------------- -->
+<h1>. ROS Startup</h1>
+Every time run:
+<div class="source_code"> <pre>source /opt/ros/humble/setup.bash</pre> </div>
+<p/>
+<div class="source_code">
+<pre>
+  source /opt/ros/humble/setup.bash
+  export ROS_HOME="/home/minguzzi/repos/ros_works/ros_home"
+  export ROS_LOG_DIR="/home/minguzzi/repos/ros_works/ros_log"
+  export ROS_MASTER_URI=http://192.168.20.215:11311/
+  export PYTHONPATH=$PYTHONPATH:$ROS_ROOT/core/roslib/src
+  export ROS_DOMAIN_ID=100
+</pre>  
+</div>
+(<a target="_blank" href="http://wiki.ros.org/ROS/EnvironmentVariables">See link</a>)<br>
+Running:
+<div class="source_code"> <pre>  printenv | grep -i ROS</pre> </div><br>
+Should list, at least: ROS_VERSION, ROS_PYTHON_VERSION, ROS_DISTRO=humble <br>
+
+<h2>.. Create a ROS workspace</h2>
+<div class="source_code"> <pre>  source /opt/ros/humble/setup.bash</pre> </div>
+
+<!-- <a target="_blank" href=""></a> -->
+
+<hr>
+<!-- --------------------------------------------------------------- -->
+<h1>. ROS Tools and Techniques</h1>
+<h2>.. ROS Tools: ros2 pkg</h2>
+<div class="source_code"><pre>
+  ros2 pkg executables --full-path turtlesim
+</pre></div><br>
+
+<h2>.. ROS Tools for Nodes</h2>
+<div class="source_code"><pre>
+  ros2 run [package] [exec] # Runs an executable contained in a given package.
+</pre></div><br>
+
+<h2>.. ROS Tools for Topics</h2>
+<div class="source_code"><pre>
+  ros2 topic info /turtle1/cmd_vel # Topic Info: Type, number of pub/sub for a given topic.
+  
+  Type: geometry_msgs/msg/Twist
+  Publisher count: 1
+  Subscription count: 1
+</pre></div><br>
+
+<b>Remapping</b>: it is possible  to reassign default node properties, like node name, topic names, service names, etc., to custom values.
+<div class="source_code"><pre>
+  ros2 run turtlesim turtlesim_node --ros-args --remap __node:=my_turtle
+  ros2 run [package] [executable] --ros-args --remap __node:=my_turtle
+</pre></div><br>
+
+<h2>.. ROS Tools: Turtlesim</h2>
+<div class="source_code">
+<pre>
+  ros2 run turtlesim turtlesim_node
+  ros2 run turtlesim turtle_teleop_key
+</pre>
+</div>
+
+<h2>.. ROS Tools: rqt_console to inspect logs</h2>
+<div class="source_code">
+<pre>
+  ros2 run rqt_console rqt_console
+</pre>
+</div>
+<p/>
+Explanation of log levels:
+<ul>
+<li><b>Fatal</b> messages indicate the system is going to terminate to try to protect itself from detriment.</li>
+<li><b>Error</b> messages indicate significant issues that won’t necessarily damage the system, but are preventing it from functioning properly.</li>
+<li><b>Warn</b> messages indicate unexpected activity or non-ideal results that might represent a deeper issue, but don’t harm functionality outright.</li>
+<li><b>Info</b> messages indicate event and status updates that serve as a visual verification that the system is running as expected.</li>
+<li><b>Debug</b> messages detail the entire step-by-step process of the system execution.</li>
+</ul>
+
+<div class="source_code">
+<pre>
+ros2 run turtlesim turtlesim_node --ros-args --log-level WARN
+</pre>
+</div>
+
+<h2>.. ROS Tools: Bag to record and playback</h2>
+Example: to record a topic called <code>/turtle1/cmd_vel</code>, run:
+
+<div class="source_code">
+<pre>
+ros2 bag record /turtle1/cmd_vel    # Records a topic
+
+ros2 bag info /turtle1/cmd_vel      # Information about a topic
+
+Files:             rosbag2_2022_10_12-21_47_30_0.db3
+Bag size:          17.0 KiB
+Storage id:        sqlite3
+Duration:          54.400s
+Start:             Oct 12 2022 21:47:51.848 (1665604071.848)
+End:               Oct 12 2022 21:48:46.249 (1665604126.249)
+Messages:          13
+Topic information: Topic: /turtle1/cmd_vel | Type: geometry_msgs/msg/Twist | Count: 13 | Serialization Format: cdr
+
+# bag play to play back a previous recording:
+ros2 bag play rosbag2_2022_10_12-21_47_30
+</pre>
+</div>
+
+<h2>.. ROS Tools: colcon to build packages</h2>
+In order to install <b><code>colcon</code></b>:
+<div class="source_code">
+<pre>
+  sudo apt install python3-colcon-common-extensions
+</pre>
+</div>
+
+<h2>.. ROS Tools: roslaunch</h2>
+
+(142) Note that it is possible to remap topics when calling <code>rosrun</code> or in the <code>roslaunch</code> file.<br>
+
+<hr>
+
+
+<h1>. ROS 1</h1>
+Installing ROS 1 on LUbuntu 2020.04.5<br>
+
+<div class="source_code">
+<pre>
+  sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+  
+  sudo apt install -y curl # if you haven't already installed curl
+  curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -
+  
+  sudo apt update
+  sudo apt install -y ros-noetic-ros-base
+  sudo apt install -y ros-noetic-desktop-full
+  
+  # Dependencies for building packages.
+  sudo apt install -y python3-rosdep python3-rosinstall python3-rosinstall-generator python3-wstool build-essential
+  
+  # rosdep enables you to easily install system dependencies for source you want to compile and is required to run some core components in ROS
+  sudo apt install -y python3-rosdep
+  
+  sudo rosdep init
+  rosdep update
+</pre>
+</div>
+
+<h2>.. ROS1: Session setup</h2>
+<div class="source_code">
+<pre>
+  source /opt/ros/noetic/setup.bash ; printenv | grep ROS
+</pre>
+</div>	
+  
+<h2>.. ROS1: Setting-up a workspace</h2>
+<div class="source_code">
+<pre>
+  # Creates a workspace in a directory called workspace.
+  mkdir -vp workspace/src
+  cd workspace 
+  catkin_make	 
+  source devel/setup.bash ; echo $ROS_PACKAGE_PATH
+</pre>
+</div>	
+
+<h2>.. ROS1: CLI tools</h2>
+<ul>
+  <li><code>rospack</code>: retrieves information about packages.</li>
+  <li><code>rosnode</code>: information about a running node</li>
+  <li><code>rosrun</code>: it runs a node of a package</li>
+  <li><code>rosservice</code>: commands related to services</li>
+  <li><code>rosparam</code>: node parameters</li>
+  <li><code>rqt_console</code></li>
+  <li><code>rosrun rqt_logger_level rqt_logger_level</code> : sets the log level to running nodes.</li>
+  <li><code>rosrun rqt_console rqt_console </code>: log viewer</li>
+  <li><code>rosed [package name] [filename]</code> VIM is the default editor </li>
+  <li><code>rossrv</code> </li>
+  <li><b><code>rqt_graph</code></b> a graphical display of the running system.</li>
+</ul>
+
+The Noetic distribution uses <b>rqt</b><br>
+<a target="_blank" href="http://wiki.ros.org/rqt_common_plugins?distro=noetic">Wiki page on CLI tools</a>.<br>
+
+<h2>.. ROS1: Packages</h2>
+A package has a directory structure, a manifest and a CMake file. Packages cannot be nested.<br>
+The tutorial creates a package inside the workspace created above.<br>
+<div class="source_code">
+<pre>
+  # Creates a workspace in a directory called workspace.
+  mkdir -vp workspace/src
+  cd workspace 
+  catkin_make	 
+  source devel/setup.bash ; echo $ROS_PACKAGE_PATH
+  cd src
+  
+  # Creates the package my_package, that depends on std_msgs rospy roscpp.
+  catkin_create_pkg my_package std_msgs rospy roscpp   
+</pre>
+</div>
+
+<h2>.. ROS1: Messages and services</h2> 
+<a target="_blank" href="http://wiki.ros.org/ROS/Tutorials/CreatingMsgAndSrv">See the tutorial on Msg and services</a>, on how to set-up the CMake and package.xml files.<br>
+
+Example commands:
+<div class="source_code">
+<pre>
+  rosmsg package my_package 
+  rosmsg show my_package/Num
+</pre>
+</div>
+<p/>
+
+Example of a srv file:
+<div class="source_code">
+<pre>
+  int64 a
+  int64 b
+  ---
+  int64 sum	
+</pre>
+</div>
+<p/>
+
+In order to generate the code corresponding to the messages, run the <code>catkin_make</code> in the workspace root directory.<br>
+Suppose that the package is called <code>my_package</code>: the generated code can be found at the path <code>devel/include/my_package</code><br>
+The generated executable is created at the path:<code>devel/lib/my_package</code>
+
+
+<h2>.. ROS1: Concepts</h2>
+Master is the naming service in ROS1.<br>
+roscore is the ros service, that must be run locally.<br>
+
+<hr>
+<!-- --------------------------------------------------------------- -->
+<h1>. PAL-Robotics Documentation</h1>
+
+<h2>.. PAL-Robotics: Navigation</h2>
+<a target="_blank" href="https://docs.pal-robotics.com/tiago-base/handbook.html#navigation">https://docs.pal-robotics.com/tiago-base/handbook.html</a>.<br>
+
+<a target="_blank" href="http://wiki.ros.org/navigation">ROS Navigation stack</a>.<p/>
+
+To launch the RViz with advanced plugins:
+<div class="source_code">
+<pre>
+  source /opt/pal/ferrum/setup.bash
+  
+  roslaunch pmb2_2dnav_gazebo pmb2_navigation.launch advanced_navigation:=true
+</pre>
+</div>
+
+<div class="source_code">
+<pre>
+  # Publishes a move base goal to be reached.
+  rostopic pub /move_base_simple/goal geometry_msgs/PoseStamped -f pmb_target_1.yaml    
+  
+  # Subscribes and echoes the next goal.  The topic type is geometry_msgs/PoseStamped
+  rostopic echo -n 1 /move_base_simple/goal
+</pre>
+</div>
+See <a target="_blank" href="https://docs.pal-robotics.com/tiago-base/handbook.html#topic-interfaces">Tiago Base Handbook</a>.<p/>
+
+<p/>
+Example of Pose Stamped:
+<div class="source_code">
+<pre>
+header: 
+  seq: 6
+  stamp: 
+    secs: 610
+    nsecs: 692000000
+  frame_id: "map"
+pose: 
+  position: 
+    x: -3.57052373886
+    y: -11.5517024994
+    z: 0.0
+  orientation: 
+    x: 0.0
+    y: 0.0
+    z: -0.175572451787
+    w: 0.984466512469
+</pre>
+</div>
+
+
+<h2>.. PAL-Robotics: Mapping</h2>
+<div class="source_code">
+<pre>
+  roslaunch pmb2_2dnav_gazebo pmb2_mapping.launch
+
+
+  
+</pre>
+</div>
+
+
+On the docker :
+# Adapted from: https://docs.pal-robotics.com/tiago-base/handbook.html#mapping
+
+
+
+
+# On another console:
+rosrun key_teleop key_teleop.py
+
+Once the map is build, run:
+rosrun map_server map_saver # This writes 
+
+rosservice call /pal_map_manager/save_map "directory: ''"
+
+rosservice call /pal_navigation_sm "input: 'LOC'"
+
+</pre>
+</div>
+
+
+
+<hr>
+<!-- --------------------------------------------------------------- -->
+<h1>. PAL-PMB2_Ubuntu18</h1>
+
+<h2>.. PAL-PMB2_Ubuntu18: Installation on Lubuntu 2018.04.5</h2>
+<b>This version works.</b><br>
+Adapted from <a target="_blank" href="http://wiki.ros.org/Robots/PMB-2/Tutorials/Installation/InstallUbuntuAndROS">Install Ubuntu and ROS</a>.<p/>
+<div class="source_code">
+<pre>
+  sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+  sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+  sudo apt install curl
+  curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -
+  
+  sudo apt-get update
+  sudo apt install ros-melodic-desktop-full
+  sudo apt-get install -y git python-rosinstall 
+  sudo apt install ros-melodic-desktop-full
+  sudo apt install python-rosdep python-rosinstall python-rosinstall-generator python-wstool build-essential  
+  sudo apt install python-rosdep
+  sudo rosdep init
+  sudo apt-get update
+  sudo apt-get install git python-rosinstall ros-melodic-desktop-full python-catkin-tools ros-melodic-joint-state-controller ros-melodic-twist-mux ros-melodic-ompl ros-melodic-controller-manager ros-melodic-joy ros-melodic-joy-teleop ros-melodic-teleop-tools ros-melodic-control-toolbox ros-melodic-sound-play ros-melodic-navigation ros-melodic-eband-local-planner ros-melodic-depthimage-to-laserscan  ros-melodic-openslam-gmapping ros-melodic-gmapping ros-melodic-moveit-commander
+  
+  
+  # To setup the session:
+  source /opt/ros/melodic/setup.bash
+</pre>
+</div>
+<p/>
+<b>Source based installation</b>
+<div class="source_code">
+<pre>
+  mkdir ~/pmb2_public_ws
+  cd ~/pmb2_public_ws
+  
+  wget https://raw.githubusercontent.com/pal-robotics/pmb2_tutorials/kinetic-devel/pmb2_public-melodic.rosinstall
+  rosinstall src /opt/ros/melodic pmb2_public-melodic.rosinstall
+  
+  # To set the environment:
+  source /opt/ros/melodic/setup.bash
+  source /home/minguzzi/pmb2_public_ws/src/setup.bash
+  
+  # run the following instruction to make sure that all dependencies referenced in the workspace are installed 
+  rosdep install --from-paths src --ignore-src --rosdistro melodic --skip-keys "pal_gazebo_plugins speed_limit_node sensor_to_cloud pmb2_rgbd_sensors pal_vo_server pal_karto pal_usb_utils pal_local_planner pal_filters hokuyo_node rrbot_launch robot_pose pal_pcl rviz_plugin_covariance pal-orbbec-openni2 slam_toolbox"
+  
+  # Builds the workspace.
+  source /opt/ros/melodic/setup.bash
+  catkin build -DCATKIN_ENABLE_TESTING=0 -j $(expr `nproc` / 2)
+</pre>
+</div>
+
+<h3>... PAL-PMB2_Ubuntu18: Testing the TIAGo Base simulation</h3>
+Adapted from <a target="_blank" href="http://wiki.ros.org/Robots/PMB-2/Tutorials/Installation/PMB2Simulation">PMB2 Simulation</a>.<p/>
+<div class="source_code">
+<pre>
+  source ./devel/setup.bash
+  
+  # The base simulation works:
+  roslaunch pmb2_gazebo pmb2_gazebo.launch public_sim:=true
+  
+  # The long corridor:
+  roslaunch pmb2_gazebo pmb2_gazebo.launch public_sim:=true world:=large_corridor
+</pre>
+</div>
+
+<h3>... PAL-PMB2_Ubuntu18: Create a map with gmapping</h3>
+Adapted from <a target="_blank" href="http://wiki.ros.org/Robots/PMB-2/Tutorials/Navigation/Mapping">Mapping</a>.<p/>
+<div class="source_code">
+<pre>
+  # On the first console:
+  cd ${HOME}/pmb2_public_ws
+  source /opt/ros/melodic/setup.bash
+  source ${HOME}/pmb2_public_ws/src/setup.bash
+  source ${HOME}/pmb2_public_ws/devel/setup.bash 
+  env | grep -e ROS
+   
+  roslaunch pmb2_2dnav_gazebo pmb2_mapping.launch public_sim:=true
+  
+  # On the second console:
+  source ./devel/setup.bash    
+  rosrun key_teleop key_teleop.py
+  
+  # When the mapping is finished, quit the key_teleop and type:
+  rosservice call /pal_map_manager/save_map "directory: ''"
+  
+  ls -lah ~/.pal/pmb2_maps/config
+</pre>
+</div>
+
+<h3>... PAL-PMB2_Ubuntu18: Localization and path planning</h3>
+Adapted from <a target="_blank" href="http://wiki.ros.org/Robots/PMB-2/Tutorials/Navigation/Localization">Localization</a>.<p/>
+
+<div class="source_code">
+<pre>
+  cd ${HOME}/pmb2_public_ws
+  source /opt/ros/melodic/setup.bash
+  source ${HOME}/pmb2_public_ws/src/setup.bash
+  source ${HOME}/pmb2_public_ws/devel/setup.bash 
+  env | grep -e ROS
+  
+  # On the first console:    
+  roslaunch pmb2_2dnav_gazebo pmb2_navigation.launch public_sim:=true lost:=true
+  
+  # In order to localize the robot run the following instruction in the second console: 
+  rosservice call /global_localization "{}"
+  
+  # On a third console, run the teleop and rotate the robot to localize it.
+  rosrun key_teleop key_teleop.py
+  
+  # Once localized, clear the map 
+  rosservice call /move_base/clear_costmaps "{}"
+</pre>
+</div>
+
+<div class="source_code">
+<pre>
+  # Source the proper files, then, on one console
+  roslaunch pmb2_2dnav_gazebo pmb2_navigation.launch public_sim:=true lost:=true
+  
+  # On another console:
+  rosservice call /global_localization "{}"
+  
+  # On a third console.
+  rosrun key_teleop key_teleop.py
+  
+  # Localize the robot, then clear the cost map.
+  rosservice call /move_base/clear_costmaps "{}"
+</pre>
+</div>
+
+
+In the cost map, the red regions are the obstacles, they are inflated into violet/blu regions to take into account the size of the robot.
+
+<h1>.. PAL-PMB2_Ubuntu20</h1>
+
+
+<h2>.. PAL-PMB2_Ubuntu20: Installation on Lubuntu 2020.04.5</h2>
+Adapted from <a target="_blank" href="http://wiki.ros.org/Robots/PMB-2/Tutorials/Installation/InstallUbuntuAndROS">Install Ubuntu and ROS</a>.<br>
+<div class="source_code">
+<pre>
+  wget https://raw.githubusercontent.com/pal-robotics/pmb2_tutorials/kinetic-devel/pmb2_public-melodic.rosinstall
+  cp pmb2_public-melodic.rosinstall pmb2_public.rosinstall
+  rosinstall src /opt/ros/noetic pmb2_public.rosinstall
+  
+  rosinstall update complete.
+
+  Now, type 'source /home/minguzzi/ros_wrkdir/pal/pmb2_public_ws/src/setup.bash' to set up your environment.
+  Add that to the bottom of your ~/.bashrc to set it up every time.
+</pre>
+</div>
+
+<div class="source_code">
+<pre>
+  sudo apt-get install -y git \
+                          python3-rosinstall  \
+                          python3-rosinstall-generator  \
+                          ros-noetic-desktop-full \
+                          python3-catkin-tools \
+                          ros-noetic-joint-state-controller \
+                          ros-noetic-twist-mux \
+                          ros-noetic-ompl \
+                          ros-noetic-controller-manager \
+                          ros-noetic-joy \
+                          ros-noetic-joy-teleop \
+                          ros-noetic-teleop-tools \
+                          ros-noetic-control-toolbox \
+                          ros-noetic-sound-play \
+                          ros-noetic-navigation \
+                          ros-noetic-base-local-planner \
+                          ros-noetic-base-local-planner \
+                          ros-noetic-depthimage-to-laserscan \
+                          ros-noetic-openslam-gmapping \
+                          ros-noetic-gmapping \
+                          ros-noetic-moveit-commander \
+                          ros-noetic-backward-ros \
+                          ros-noetic-grid-map-costmap-2d \
+                          ros-noetic-four-wheel-steering-msgs \
+                          ros-noetic-urdf-geometry-parser \
+                          ros-noetic-ddynamic-reconfigure \
+                          ros-noetic-people-msgs \
+                          ros-noetic-rqt-controller-manager \
+                          libopencv-core-dev \
+                          ros-noetic-cv-bridge \
+                          ros-noetic-vision-opencv \
+                          libcv-bridge-dev \
+                          python-is-python3 
+  # Only the first time, issue the command:
+  sudo rosdep init 
+  
+  # Anytime
+  rosdep update
+  
+  # Raises a few benign errors.
+  rosdep install --from-paths src --ignore-src --rosdistro noetic --skip-keys "pal_gazebo_plugins speed_limit_node sensor_to_cloud pmb2_rgbd_sensors pal_vo_server pal_karto pal_usb_utils pal_local_planner pal_filters hokuyo_node rrbot_launch robot_pose pal_pcl rviz_plugin_covariance pal-orbbec-openni2 slam_toolbox"
+  
+  catkin_make -DCATKIN_ENABLE_TESTING=0 -j $(expr `nproc` / 2)
+</pre>
+</div>
+Commented the calls to <code>SetLinearAccel</code> and <code>SetAngularAccel</code> , that broke the build,  as described in (<a target="_blank" href="https://github.com/gazebosim/gazebo-classic/blob/gazebo11/Migration.md">Gazebo 11 migration</a>).<br>
+In the file <code>gazebo_ros_prosilica.cpp</code>, the OpenCV includes are wrong. Fixed as below:
+<div class="source_code">
+<pre>  
+#include &lt;opencv2/core.hpp&gt;
+// #include &lt;opencv2/highgui.h&gt;
+// #include &lt;opencv2/cvwimage.h&gt;
+</pre>
+</div>
+
+
+<h2>.. PAL-PMB2_Ubuntu20: Session setup</h2>
+<div class="source_code">
+  <pre>  
+    source /opt/ros/noetic/setup.bash ; source ${HOME}/ros_wrkdir/pal/pmb2_public_ws/src/setup.bash ; printenv | grep ROS
+  </pre>
+</div>
+
+<h2>.. PAL-PMB2: Test of the installation </h2>
+Adapted from <a target="_blank" href="http://wiki.ros.org/Robots/PMB-2/Tutorials/Installation/PMB2Simulation">PMB2 Simulation Tutorial</a>.<br>
+<div class="source_code">
+<pre>
+  roslaunch pmb2_gazebo pmb2_gazebo.launch public_sim:=true    # First test to check whether Gazebo opens-up.    
+</pre>
+</div>
+
+<h2>.. PAL-PMB2_Ubuntu20: Mapping</h2>
+Adapted from <a target="_blank" href="http://wiki.ros.org/Robots/PMB-2/Tutorials/Navigation/Mapping">Mapping Tutorial</a>.<br>
+<div class="source_code">
+<pre>
+  source /opt/ros/melodic/setup.bash ; source ${HOME}/ros_wrkdir/pal/pmb2_public_ws/src/setup.bash ; source ${HOME}/ros_wrkdir/pal/pmb2_public_ws/devel/setup.bash ; printenv | grep ROS
+  roslaunch pmb2_2dnav_gazebo pmb2_mapping.launch public_sim:=true
+  
+  # In a second console, source and then run:
+  rosrun key_teleop key_teleop.py 
+</pre>
+</div>
+
+<hr>
+<!-- --------------------------------------------------------------- -->
+<h1>. Links</h1>
+<ul>
+  <li><a target="_blank" href="https://docs.ros.org/en/humble/The-ROS2-Project/Contributing/Developer-Guide.html">
+        ROS 2 Humble development guide
+      </a>
+  </li>
+  <li>ROS 1
+    <ul>
+      <li> <a target="_blank" href="http://wiki.ros.org/">ROS Wiki: main entry point of the documentation</a> </li>
+      <li> <a target="_blank" href=""></a> </li>
+      <li> <a target="_blank" href=""></a> </li>
+      <li> <a target="_blank" href=""></a> </li>
+    </ul>
+  </li>
+  <li> <a target="_blank" href="https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html">YAML Syntax</a> </li>
+  <li> <a target="_blank" href=""></a> </li>
+  <li> PAL Robotics
+    <ul>
+      <li> <a target="_blank" href="http://wiki.ros.org/Robots/TIAGo-base">TIAGo-base on ROS Wiki</a> </li>
+      <li> <a target="_blank" href="http://wiki.ros.org/Robots/PMB-2/Tutorials/Installation/InstallUbuntuAndROS">
+          Installing Ubuntu with ROS + TIAGo Base</a> </li>
+      <li> <a target="_blank" href="https://docs.pal-robotics.com/tiago-base/handbook.html">Tiago Base Handbook</a> </li>
+      <li> <a target="_blank" href="https://docs.pal-robotics.com/tiago-base/handbook.html#topic-interfaces">
+            Tiago Base: topic interfaces</a> </li>
+    </ul>
+
+  </li>
+</ul>
+
+<hr>
+<!-- --------------------------------------------------------------- -->
+<h1>. Tutorials</h1>
+<a target="_blank" href="http://wiki.ros.org/ROS/Tutorials">ROS Tutorials</a><br>
+<ul>
+  <li> ROS Humble Tutorials
+    <ul>
+      <li>Beginner: CLI Tools
+        <ul>
+          <li><a target="_blank" 
+                 href="https://docs.ros.org/en/humble/Tutorials/Beginner-CLI-Tools/Configuring-ROS2-Environment.html">
+              Configuring environment
+              </a> </li>
+          <li> <a target="_blank" 
+                  href="https://docs.ros.org/en/humble/Tutorials/Beginner-CLI-Tools/Introducing-Turtlesim/Introducing-Turtlesim.html">
+              Using turtlesim and rqt</a> </li>
+          <li> <a target="_blank" 
+                  href="https://docs.ros.org/en/humble/Tutorials/Beginner-CLI-Tools/Understanding-ROS2-Nodes/Understanding-ROS2-Nodes.html">
+              Understanding nodes</a> </li>
+          <li> <a target="_blank" 
+                  href="https://docs.ros.org/en/humble/Tutorials/Beginner-CLI-Tools/Understanding-ROS2-Topics/Understanding-ROS2-Topics.html">
+              Undertanding Topics</a> </li>
+          <li> <a target="_blank" href="https://docs.ros.org/en/humble/Tutorials/Beginner-CLI-Tools/Understanding-ROS2-Parameters/Understanding-ROS2-Parameters.html">
+              Understanding Parameters</a> </li>
+          <li> <a target="_blank" href="https://docs.ros.org/en/humble/Tutorials/Beginner-CLI-Tools/Understanding-ROS2-Actions/Understanding-ROS2-Actions.html">
+              Understanding Actions</a> </li>
+          <li> <a target="_blank" href="https://docs.ros.org/en/humble/Tutorials/Beginner-CLI-Tools/Using-Rqt-Console/Using-Rqt-Console.html">
+              Using <code>rqt_console</code> to view logs</a> </li>
+          <li> <a target="_blank" href="https://docs.ros.org/en/humble/Tutorials/Beginner-CLI-Tools/Launching-Multiple-Nodes/Launching-Multiple-Nodes.html">
+              Launching nodes</a> </li>
+          <li> <a target="_blank" href="https://docs.ros.org/en/humble/Tutorials/Beginner-CLI-Tools/Recording-And-Playing-Back-Data/Recording-And-Playing-Back-Data.html">
+              Recording and playing back data</a> </li>          
+        </ul>
+      </li>
+      <li> Beginner: Client libraries
+        <ul>
+          <li> <a target="_blank" href=""></a> </li>          
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>1. Core ROS Tutorials
+    <ul>
+      <li>1.1 Beginner Level
+        <ul>
+          <li><a target="_blank" href="http://wiki.ros.org/ROS/Tutorials/NavigatingTheFilesystem">
+                    Navigating the filesystem</a></li>
+          <li> <a target="_blank" href="http://wiki.ros.org/ROS/Tutorials/CreatingPackage">Creating a ROS Package</a> OK</li>
+          <li> <a target="_blank" href="http://wiki.ros.org/ROS/Tutorials/BuildingPackages">Building Packages</a> </li>
+          <li> <a target="_blank" href="http://wiki.ros.org/ROS/Tutorials/UnderstandingNodes">Understanding Nodes</a> </li>
+          <li> <a target="_blank" href="http://wiki.ros.org/ROS/Tutorials/UnderstandingTopics">Understanding Topics</a> </li>
+          <li> <a target="_blank" href="http://wiki.ros.org/ROS/Tutorials/UsingRqtconsoleRoslaunch">Using Rqt console Ros launch</a> </li>
+          <li> <a target="_blank" href="http://wiki.ros.org/ROS/Tutorials/UsingRosEd">Using RosEd</a> </li>
+          <li> <a target="_blank" href="http://wiki.ros.org/ROS/Tutorials/CreatingMsgAndSrv">
+                    Creating Msg And Srv</a> </li>
+          <li> <a target="_blank" href="http://wiki.ros.org/ROS/Tutorials/WritingPublisherSubscriber%28c%2B%2B%29">
+                    Writing Publisher Subscriber (C++)</a> </li>
+          <li> <a target="_blank" href="http://wiki.ros.org/ROS/Tutorials/ExaminingPublisherSubscriber">
+                    Examining Publisher Subscriber</a> </li>
+          <li> <a target="_blank" href="http://wiki.ros.org/ROS/Tutorials/WritingServiceClient%28c%2B%2B%29">
+                    Writing Service Client (c++)</a> </li>
+          <li> <a target="_blank" href="http://wiki.ros.org/ROS/Tutorials/ExaminingServiceClient">
+                    Examining Service Client</a> </li>
+          <li> <a target="_blank" href="http://wiki.ros.org/ROS/Tutorials/NavigatingTheWiki">
+                    Navigating the Wiki</a> </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <lI>  
+      <a target="_blank" href="http://wiki.ros.org/ROS/EnvironmentVariables#ROS_ROOT">Setting Env variables</a>
+  </li>
+</ul>
+
+<!--
+
+<a target="_blank" href=""></a>
+<a target="_blank" href=""></a>
+<a target="_blank" href=""></a>
+<a target="_blank" href=""></a>
+<a target="_blank" href=""></a>
+<a target="_blank" href=""></a>
+
+  <li> <a target="_blank" href=""></a> </li>
+  <li> <a target="_blank" href=""></a> </li>
+  <li> <a target="_blank" href=""></a> </li>
+  <li> <a target="_blank" href=""></a> </li>
+  <li> <a target="_blank" href=""></a> </li>
+  <li> <a target="_blank" href=""></a> </li>
+  <li> <a target="_blank" href=""></a> </li>
+  <li> <a target="_blank" href=""></a> </li>          
+  <li> <a target="_blank" href=""></a> </li>
+  <li> <a target="_blank" href=""></a> </li>
+  <li> <a target="_blank" href=""></a> </li>
+  <li> <a target="_blank" href=""></a> </li>
+  <li> <a target="_blank" href=""></a> </li>
+  <li> <a target="_blank" href=""></a> </li>
+  <li> <a target="_blank" href=""></a> </li>
+  <li> <a target="_blank" href=""></a> </li>
+  <li> <a target="_blank" href=""></a> </li>
+  <li> <a target="_blank" href=""></a> </li>          
+  <li> <a target="_blank" href=""></a> </li>          
+  <li> <a target="_blank" href=""></a> </li>
+  <li> <a target="_blank" href=""></a> </li>
+  <li> <a target="_blank" href=""></a> </li>
+  <li> <a target="_blank" href=""></a> </li>
+  <li> <a target="_blank" href=""></a> </li>
+  <li> <a target="_blank" href=""></a> </li>
+  
+  <li> <a target="_blank" href=""></a> </li>
+  <li> <a target="_blank" href=""></a> </li>
+  -->
+
+<h1>. ZZ Appendixes </h1>
+<h2>.. ZZ Appendixes: an example of a Robot Arm model</h2>
+
+<!-- --------------------------------------------------------------- -->
+<div class="source_code">
+<pre>  
+
+<?xml version="1.0"?>
+<robot name="robot_arm">
+  
+  <material name="red">
+    <color rgba="1 0 0 1"/>
+  </material>
+  
+  <material name="green">
+    <color rgba="0 1 0 1"/>
+  </material>
+  
+  <material name="blue">
+    <color rgba="0 0 1 1"/>
+  </material>
+  
+  <material name="gray">
+    <color rgba="0.6 0.6 0.6 1"/>
+  </material>
+  
+  <material name="dark_gray">
+    <color rgba="0.2 0.2 0.2 1"/>
+  </material>
+  
+  <link name="base_link">
+    <visual>
+      <geometry>        
+        <box size="1.0 0.1 0.01"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0.01"/>
+      <material name="dark_gray"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="1.0 0.1 0.01"/>
+      </geometry>
+    </collision>
+  </link>
+  
+  <link name="slide">
+    <visual>
+      <geometry>
+        <cylinder length="0.01" radius="0.2"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0.05"/>
+      <material name="red"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.01" radius="0.25"/>
+      </geometry>
+    </collision>
+  </link>
+  
+  <link name="base">
+    <visual>
+      <geometry>
+        <cylinder length="0.1" radius="0.1"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0.05"/>
+      <material name="gray"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.1" radius="0.15"/>
+      </geometry>
+    </collision>
+  </link>
+  
+  <link name="upper_arm">
+    <visual>
+      <geometry>
+        <cylinder length="0.5" radius="0.09"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0.25"/>
+      <material name="blue"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.5" radius="0.1"/>
+      </geometry>
+    </collision>
+  </link>
+  
+  <link name="forearm">
+    <visual>
+      <geometry>
+        <cylinder length="0.5" radius="0.08"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0.25"/>
+      <material name="red"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.5" radius="0.1"/>
+      </geometry>
+    </collision>
+  </link>
+  
+  <link name="gripper">
+    <visual>
+      <origin rpy="0.0 -1.5707 0" xyz="0 0 0.01"/>
+      <material name="gray"/>
+      <geometry>
+        <mesh filename="package://urdf_tutorial/meshes/l_finger.dae"/> 
+      </geometry>
+    </visual>
+  </link>
+  
+  <link name="tcp">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0.01"/>
+    </visual>
+  </link>  
+  
+  <joint name="base_link_to_slide" type="prismatic">
+    <parent link="base_link"/>
+    <child link="slide"/>
+    <origin xyz="0 0 0"/>
+    <limit effort="1000.0" lower="-0.5" upper="0.5" velocity="0.5"/>
+  </joint>
+  
+  <joint name="slide_to_base" type="revolute">
+    <axis xyz="0 0 1"/>
+    <limit effort="1000.0" lower="-3.14" upper="3.14" velocity="0.1"/>
+    <parent link="slide"/>
+    <child link="base"/>
+    <origin xyz="0 0 0.01"/>
+  </joint>
+  
+  <joint name="base_to_upper_arm" type="revolute">
+    <axis xyz="0 1 0"/>
+    <limit effort="1000.0" lower="-3.14" upper="3.14" velocity="0.1"/>
+    <parent link="base"/>
+    <child link="upper_arm"/>
+    <origin xyz="0 0 0.1"/>
+  </joint>
+  
+  <joint name="upper_arm_to_forearm" type="revolute">
+    <axis xyz="0 1 0"/>
+    <limit effort="1000.0" lower="-3.14" upper="3.14" velocity="0.1"/>
+    <parent link="upper_arm"/>
+    <child link="forearm"/>
+    <origin xyz="0 0 0.5"/>
+  </joint>
+  
+  <joint name="forearm_to_gripper" type="revolute">
+    <axis xyz="0 0 1"/>
+    <limit effort="1000.0" lower="-3.14" upper="3.14" velocity="0.1"/>
+    <parent link="forearm"/>
+    <child link="gripper"/>
+    <origin xyz="0 0 0.5"/>
+  </joint>
+  
+  <joint name="gripper_to_tcp" type="fixed">
+    <origin xyz="0 0 0.04" rpy="0.0 0 3.14" />
+    <parent link="gripper"/>
+    <child link="tcp"/>
+  </joint>
+      
+</robot>
+
+</pre>
+</div>
+<!-- --------------------------------------------------------------- -->
+
+<h2>.. ZZ Appendixes: an example of a Robot Arm model</h2>
+
+<!-- --------------------------------------------------------------- -->
+<div class="source_code">
+<pre>  
+
+rostopic echo -n 1 /move_base_simple/goal
+WARNING: no messages received and simulated time is active.
+Is /clock being published?
+
+geometry_msgs/PoseStamped
+
+header: 
+  seq: 6
+  stamp: 
+    secs: 610
+    nsecs: 692000000
+  frame_id: "map"
+pose: 
+  position: 
+    x: -3.57052373886
+    y: -11.5517024994
+    z: 0.0
+  orientation: 
+    x: 0.0
+    y: 0.0
+    z: -0.175572451787
+    w: 0.984466512469
+
+
+https://docs.pal-robotics.com/tiago-base/handbook.html#topic-interfaces
+
+
+
+rostopic pub /move_base_simple/goal geometry_msgs/PoseStamped -f pmb_target_1.yaml
+
+ 530  rostopic pub /move_base_simple/goal geometry_msgs/PoseStamped -f pmb_target_1.yaml
+  531  rostopic pub --help
+  532  rostopic pub /move_base_simple/goal geometry_msgs/PoseStamped -f pmb_target_1.yaml
+  533  rostopic echo -n 1 /move_base_simple/goal
+  534  rostopic pub /move_base_simple/goal geometry_msgs/PoseStamped -f pmb_target_1.yaml
+rostopic pub --help
+rostopic pub /move_base_simple/goal geometry_msgs/PoseStamped -1  -f pmb_target_1.yaml
+rostopic pub /move_base_simple/goal geometry_msgs/PoseStamped -1  -f pmb_target_2.yaml
+rostopic list
+
+</pre>
+</div>
+
+
+</body>
+
+</html>
+

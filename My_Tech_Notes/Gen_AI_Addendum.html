@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+  .source_code {
+    background-color: lightgray;
+    font-family: Courier New;
+    border-style: solid;
+    border-width: thin;
+    font-size: larger;
+  }
+  </style>
+
+  <title>Generative AI, addedum notes</title>
+  <link rel="icon" type="image/x-icon" href="https://pic.vsixhub.com/ae/db/570e6089-b871-41df-9cf4-a723cb34ef01-icon.png">
+</head>
+
+<body>
+
+<b>logits</b> the vector of raw (non-normalized) predictions that a classification model generates, which is ordinarily then passed to a normalization function. If the model is solving a multi-class classification problem, logits typically become an input to the softmax function. The softmax function then generates a vector of (normalized) probabilities with one value for each possible class.
+<p/>
+Hugging Face datasets is built on top of the Apache Arrow library.
+
+<h3>Pre training models</h3>
+By using pre-trained models and the magic of transfer learning, the hard work of training an AI model from zero can be bypassed,
+making it easier and quicker to get the job done. By leveraging the knowledge a model distills from a large dataset,
+we can reduce the amount of training needed to get a performant model.<br>
+Transfer learning: The process where knowledge from a pre-trained model is applied to a new, but related task.
+Examples of datasets: Common Crawl for NLP, ImageNet for image classigfication, Librispeech: 1000 hours of audiobooks to train TTS systems.<br>
+At the end of the training process, using a pre-trained model, there is a new model.<br>
+
+Often the last layer will change and it will be trained from scratch during training with a pre-trained model,
+because we need a number of output nodel different from the original network.<br>
+MobileNet v3 is a model suitable for mobile devices, it can be used as a pre-trained model.<br>
+In trasfer learning, we use supervised learning, so images are labelled.<br>
+Different example: spam filter. Use DistilBERT as pre-trained model.DistilBERT is a smaller, but effective version of BERT.
+
+
+<h1>. References</h1>
+<ul>
+  <li><a target="_blank" href=""></a></li>
+</ul>
+
+Installed Hugging face transformers in Conda using:<hr>
+<div class="source_code">
+<pre>
+conda install conda-forge::transformers
+</pre>
+</div>
+
+</body>
+</html>

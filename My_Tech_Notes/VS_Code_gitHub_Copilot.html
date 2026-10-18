@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>GitHub Copilot Notes - Visual Studio Code Extension</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      background-color: #f9f9f9;
+      color: #333;
+      padding: 40px;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    h1, h2, h3 {
+      color: #2c3e50;
+      margin-top: 40px;
+    }
+
+    h1 {
+      border-top: 1px solid #e0e0e0;
+      padding-bottom: 10px;
+    }
+
+    pre {
+      background-color: #f4f4f4;
+      padding: 15px;
+      border-left: 4px solid #007acc;
+      overflow-x: auto;
+      border-radius: 5px;
+    }
+
+    code {
+      background-color: #eee;
+      padding: 2px 4px;
+      border-radius: 3px;
+      font-family: monospace;
+    }
+
+    a {
+      color: #007acc;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    ul {
+      margin-left: 20px;
+    }
+
+    hr {
+      border: 0;
+      height: 1px;
+      background: #ddd;
+      margin: 40px 0;
+    }
+
+    .note {
+      background-color: #eaf6ff;
+      border-left: 5px solid #007acc;
+      padding: 15px 20px;
+      margin: 20px 0;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+<ul>
+<li><a target="_blank" href="https://code.visualstudio.com/docs/copilot/overview">GitHub Copilot in VS Code</a>
+</ul>
+
+  <h1>Build with agents in VS Code</h1>
+  
+  
+<a target="_blank" href="https://code.visualstudio.com/docs/agents/concepts/agents#_agent-harnesses">Harnesses</a>: VS Code supports the following harnesses: Copilot, Claude, and Codex.<br>
+
+<b>Subagents</b>
+A subagent is an independent AI agent that performs focused work. The primary benefit of subagents is context optimization. Subagents perform their work in a separate context window and return only a summary, keeping the main conversation focused on the task at hand.
+<p/>
+
+<b>Memory</b> <a target="_blank" href="https://code.visualstudio.com/docs/agents/concepts/agents#_memory">link</a><br>
+
+VS Code supports:
+<ul>
+  <li> Memory tool: three scopes: 
+      <ul>
+      <li>User memory <code>/memories/</code> </li>
+      <li>Repo memory <code>/memories/repo/</code> </li>
+      <li>Session memory <code>/memories/session/</code>: cleared when the session ends. </li>
+      </ul>
+    </li>
+  <li>Copilot Memory: gitHub-hosted memory that captures repo specifi insights across Copilot surfaces.</li>
+</ul>
+
+<b>Sessions and handoff</b>
+A session is the unit of work with an agent in Visual Studio Code. It includes the sequence of prompts and responses, relevant context, and any files or resources associated with the task. <br>
+Start a new session when you change topics to help the AI provide more relevant responses.
+<p>
+A session can contain more than one chat. Each chat is an independent conversation with its own history, title, status, and agent or model selection, but all chats in a session share the same workspace and code isolation. A new chat starts blank and doesn't inherit the conversation history of the other chats in the session.
+
+Handoff changes the session target from one harness to another and carries the full conversation history and context with it.
+
+<b>Best Practices</b>
+<a target="_blank" href="https://code.visualstudio.com/docs/agents/best-practices">
+  Best Practices</a><br>
+    
+<ul>
+  <li>Be specific about inputs, outputs, and constraints.</li>
+  <li>Break down complex tasks. Instead of asking for an entire feature at once, decompose it into smaller, well-scoped steps.   </li>
+  <li>Include expected output for verification. Provide test cases, expected results, or acceptance criteria so the AI can verify its own work. This step is one of the highest-leverage things you can do.  </li>
+</ul>  
+
+<ul>
+  <li> <a target="_blank" 
+          href="https://code.visualstudio.com/docs/agent-customization/custom-instructions">
+            Custom Instructions</a> 
+      <ul>
+      <li>Copilot Instructions: Automatically applies to all chat requests in the workspace.<br>
+          It contains project-wide instructions.  <br>
+          Use them for<br>      
+          <ul>
+          <li>Coding style and naming conventions that apply across the project </li>
+          <li>Technology stack declarations and preferred libraries</li>
+          <li>Architectural patterns to follow or avoid</li>
+          <li>Security requirements and error handling approaches</li>
+          <li>Documentation standards</li>
+          </ul>
+        </li>
+      <li><a target="_blank" 
+          href="https://code.visualstudio.com/docs/agent-customization/custom-instructions">
+            File-based instructions</a> <br>
+            Conditionally apply instructions based on file type or location by using glob patterns
+        </li>          
+      <li>VS Code automatically detects an <code>AGENTS.md</code> markdown file in the root of your workspace and applies the instructions in this file to all chat requests within this workspace.<br>
+          Multiple AGENTS.md files (experimental in August 2026) to apply different instructions to different parts of the project.</li>
+     <li> <a target="_blank" 
+             href="https://code.visualstudio.com/docs/agent-customization/prompt-files">
+            Prompt files</a>
+        <ul>
+        <li>Default location: <code>.github/prompts</code> folder.</li>
+        <li>The extension must be *.prompt.md</li>
+        <li>To invoke a prompt: start typing slash / in the chat text area.</li>
+        </ul>
+       </li>
+
+      </ul>
+    </li>
+  <li> <a target="_blank" 
+          href="https://code.visualstudio.com/docs/agent-customization/custom-agents">
+            Custom Agents</a> (TBC) </li>
+  <li> <a target="_blank" 
+          href="https://code.visualstudio.com/docs/agent-customization/agent-skills">
+            Agent Skills</a>  <br>
+            <a target="_blank" href="https://agentskills.io/">agentskills.io</a> <br>
+            Check the VS Code setting: <code>chat.agentSkillsLocations</code>
+    </li>           
+  <li> <a target="_blank" 
+          href="https://code.visualstudio.com/docs/agents/reference/workspace-context#_improve-agent-search-with-exclusion-settings">
+            Improve agent search with exclusion settings</a> <br>
+            It is possible to exclude files from 
+            <ul>
+            <li>both Explorer and the text search grep 
+                (search <code>files.exclude</code> in VS Code settings)</li>
+            <li>visible in Exploere but excluded from text search grep
+                (search <code>search.exclude</code> in VS Code settings)</li>
+            </ul>
+    </li>            
+            
+</ul>
+
+ <a target="_blank" 
+    href="https://code.visualstudio.com/docs/agent-customization/overview#_use-customizations-in-a-monorepo">
+    Use customizations in a monorepo</a> 
+    In monorepo setups, you might open a subfolder of a repository in VS Code rather than the repo root. By default, VS Code only discovers customization files within your open workspace folder(s).   Set the chat.useCustomizationsInParentRepositories
+  
+<ul>
+<li> <a target="_blank" href="https://code.visualstudio.com/docs/agents/guides/context-engineering-guide">
+  Context Engineering Flow</a>
+  </li>  
+</ul>  
+
+<hr>  
+
+  <h1>From the LinkedIn Course:<br>
+      Give Your AI Agent Skills - Angie Jones
+  </h1>
+
+Example of SKILL.md : the name must be lowercase, it must match the directory name (64 chars limit).<br>
+The description is the trigger signal for the agent, to know when it must be used (1024 chars limit).<br>
+In the body, the skill teaches the agent the workflow.
+Guidelines:
+
+<ul>
+<li>First, give an overview of the workflow.  What is the purpose and when should it be triggered.</li>
+<li>Ask questions to the user to better understand requirements.</li>
+</ul>
+Add more and more details as you progress from top to bottom. In the course, the MD file sections are:
+<ul>
+<li>When to use <br>
+  (<i>in detail</i>)</li>
+<li>Instructions<br>
+  (<i>the list of steps that the agent must follow</i>)</li>
+</ul>
+
+Evaluations are test prompts.
+<p/>
+
+Subdirectories:  if they exist, add in SKILLS.md a note on when to load those files.
+<ul>
+<li>Scripts : executable code that the agent can run.</li>
+<li>Assets : static resources that the agent can copy, or use as templates.</li>
+<li>References : additional documentation the agent can read when needed. Detailed information what would clutter the SKILLS.md</li>
+</ul>
+
+<p>
+You are creating a skill because you have an opinion on how something should be done.
+</p>
+
+Design principles:
+<ul>
+<li>Skills that capture user real experience</li>
+<li>Make them modular, so they can be used as part of a bigger workflow.</li>
+<li>Use concise guidance and progressive disclosure, to reduce the Agent context.</li>
+<li>Skills are for what an agent does not already know.</li>
+</ul>
+
+
+<code>
+<pre>
+---
+name: add-cli-arg-field
+description: Use when asked to add a new field to an existing Python CliArgs class that parses cli arguments.
+---
+</pre>
+</code>
+
+Example:
+<code>
+<pre>
+---
+name: roll-dice
+description: Roll dice using a random number generator. Use when asked to roll a die (d6, d20, etc.), roll dice, or generate a random dice roll.
+---
+
+To roll a die, use the following command that generates a random number from 1
+to the given number of sides:
+
+```bash
+echo $((RANDOM % <sides> + 1))
+```
+
+```powershell
+Get-Random -Minimum 1 -Maximum (<sides> + 1)
+```
+
+Replace `<sides>` with the number of sides on the die (e.g., 6 for a standard
+die, 20 for a d20).
+
+</pre>
+</code>
+
+
+
+<h2>Links</h2>
+<ul>
+  <li>
+    <a target="_blank" href="https://www.skills.sh/">skills.sh</a> Discoverable Skills
+  </li>
+</ul>
+
+
+<hr>  
+
+  <h1>From the LinkedIn Course:<br>
+      Unboxing AI: Visual Studio Code and GitHub Copilot Deep Dive
+  </h1>
+by Morten Rand-Hendriksen.<br>
+<a target="_blank"
+   href="https://github.com/LinkedInLearning/unboxing-ai-vscode-and-copilot-deep-dive-8016001/tree/main">gitHub repo</a><br>
+   
+In the project directory:+1:
+There is the .github folder
+
+<h2>The Copilot Instructions file</h2>
+It controls the instructions the agent is given.<br>
+In the project folder thereis the file <code>copilot-instructions.md</code>
+It describes the project overview, development practices.  In the <code>>copilot-instructions.md</code>  you can reference other files as '.github/copilot/architecture.md' etc.
+
+
+There is Agenti mode, Ask mode (chat), Edit : the system suggests edits.  Plan plans before you do .<br>
+Recommends to starts with Plan before doing anything.<br>
+He has 
+<ul>
+<li>mcp-architect</li>
+<li>mcp-code-review</li>
+<li>mcp-documentation</li>
+<li>mcp-testing</li>
+</ul>
+
+The agent can configure tools.
+
+Under .github/instructions , he places files that have suffix <code>.instructions.md</code>
+In the instructions files there is a header
+<pre>
+---
+description: "MCP server development focus guide"
+applyTo:"./src/**"
+---
+</pre>
+
+<h2>The agent.md file</h2>
+The agent md file controls the agent.  
+
+<h2>Custom agents</h2>
+Create a folder called <code>agents</code> in the project folder.
+Create one or more files that have <code>.agent.md</code> as suffix
+Agent structure
+
+Handoffs: the agent can demand work to other agents.<br>
+
+<h2>Skills</h2>
+<a target="_blank" href="https://agentskills.io/">agentskills.io</a><br>
+A skill is a workflow,
+Skills: 
+
+Skills and prompts: prompts that appear in the directory prompts, with extension .prompt.md, can be referred to with slash commands. Prompts are similar to skills, but they are more explicit.<br>
+
+
+<h2>Background Agents</h2>
+
+<a target="_blank" href="https://gofastmcp.com/">Fst MCP</a>
+
+
+
+
+
+
+
+
+
+
+
+<h1>Notes on GitHub Copilot with the VS Code Extension</h1>
+
+  <p>
+    This file contains notes on the Copilot extension for Visual Code, in particular when used in the Edit mode to suggest and autocomplete the code, in a C++ project.<p/>
+    The VS Code Copilot also includes an agent mode.<br>
+   However, it is an interactive editing mode, different from the Copilot coding agent that autonomously executes a tasks and creates the related pull requests.  <br>
+   The Copilot coding agent is only available from the GitHub website with the proper subscription.
+  </p>
+
+  <h1>Copilot Suggestions</h1>
+
+  <ul>
+    <li><strong>Inline Suggestions</strong>: for example, completing the current line or generating an entire block of code. Inline suggestions appear as <em>dimmed ghost text</em>.
+      <ul>
+        <li><strong>Tab</strong> to accept</li>
+        <li><strong>Ctrl+Right</strong> to partially accept</li>
+      </ul>
+    </li>
+    <li>Suggestions can also be generated from code comments.</li>
+    <li><strong>Next Edit Suggestions (NES)</strong>: Copilot suggests where to edit next. Indicated by a blue arrow in the gutter. NES can be disabled or shown collapsed.</li>
+  </ul>
+
+  <h2>Settings Examples</h2>
+Sometimes Copilot suggests its own completion before knowing what the added code is, and it also interferes with the TAB that is used to indent code.<br>
+
+Solutions: delay suggestions or trigger them using a shortcut.
+ 
+<p/>
+
+
+  <h3>Enable Inline Suggestions, but Add a Delay before Copilot starts suggesting</h3>
+  
+  <p>To add a delay, insert the following JSON to the bottom of your <code>settings.json</code> file:</p>
+
+  <pre><code>"editor.inlineSuggest.enabled": true,
+"editor.inlineSuggest.minShowDelay": 2500,
+"github.copilot.nextEditSuggestions.enabled": true,
+"editor.inlineSuggest.edits.showCollapsed": false
+  </code></pre>
+  
+  <h3>Disable Inline Suggestions, trigger by shurtcut</h3>
+  <p>Add the following JSON to the bottom of your <code>settings.json</code> file:</p>
+
+  <pre><code>"editor.inlineSuggest.enabled": false,
+"github.copilot.nextEditSuggestions.enabled": true,
+"editor.inlineSuggest.edits.showCollapsed": false
+  </code></pre>
+
+  <p>
+  <p><strong>Keyboard shortcut:</strong> You can still trigger inline suggestions using <code>Alt + \\</code></p>
+  
+ 
+  This works with Visual Studio Code version <code>104</code> and above. Note that VS Code may modify settings when extensions are added or updated.</p>
+
+  <p>See <a href="https://code.visualstudio.com/docs/copilot/ai-powered-suggestions" target="_blank">Visual Studio Code docs</a></p>
+  
+  <p>
+  <a href="https://docs.github.com/en/enterprise-cloud@latest/copilot/reference/keyboard-shortcuts" target="_blank">
+      Reference: Copilot Shortcuts
+    </a>  
+  </p>
+
+
+  <h1>Copilot Instructions</h1>
+
+  <p>
+    You can add a file named <code>.github/copilot-instructions.md</code> to the root directory of your Visual Studio Code project. Copilot will use it as context for every request.
+  </p>
+
+  <p>If used, the file appears as context in the Chat tab. It can be disabled if needed.</p>
+
+  <p>Common sections to include in Copilot instructions:</p>
+  <ul>
+    <li>Overview</li>
+    <li>Design Patterns</li>
+    <li>Coding Standards</li>
+    <li>Coding Guidelines</li>
+    <li>Logging</li>
+    <li>Folder Structure</li>
+    <li>Final Tips</li>
+  </ul>
+
+  <p>
+    <a href="https://docs.github.com/en/enterprise-cloud@latest/copilot/how-tos/configure-custom-instructions/add-repository-instructions" target="_blank">
+      Link to Docs
+    </a>
+  </p>
+
+  <p>
+    You can also auto-generate Copilot instructions as a first draft and then manually refine them. In Chat mode, go to:
+    <br>
+    <strong>Configure Chat → Generate Instructions</strong>
+  </p>
+
+  <h1>Moreover</h1>
+  <p>The old setting key <code>github.copilot.chat.codeGeneration.instructions</code> is now deprecated.</p>
+  
+  <h1>Appendix: Example of a copilot-instructions.md file for a C++ project</h1>
+  
+<pre><code>  
+# Github Copilot Instructions for the project: automation-gateway-scanner
+
+This instructions customize the generation of C++ code.
+Generate a completion only if the generated code is formatted the same way as the surrounding code.
+
+## Overview
+This project implements a layer of an automation system.
+The Automation Gateway Scanner manages a set of Automation Elements.
+They have a common interface, but they are also specialized.
+Automation Elements receive commands from upper layers and notify events.
+
+## Design patterns
+Common design patterns are:
+- publisher subscriber
+- factory method
+
+## Coding standards
+  - C++ code uses the C++20 standards: explicit constructors, uniform initialization, constructor initialization List
+  - in C++ classes, the public part comes before the protected (if it exists), then the private part
+  - indent using 2 spaces
+  - curly braces of methods and loops occupy their own line
+  - align curly braces vertically in all constructs except namespaces, example:
+```cpp
+    if (::robot_control::notOk(resCode))
+    {
+      return resCode;
+    }
+```
+  - use 'auto' to declare variables, whenever possible. Examples:
+```cpp
+    const auto& posBase= cartPoseBase.position();
+    auto myString= ::std::string{"Hello world."};
+```
+  - to compare a constant to a variable for equality, write the constant, the == sign and then the variable.
+  - local variables in camelCase, with the first letter lowercase
+  - member variables in camel case, with leading underscore, and the next letter lowercase example: ```cpp _virtualRobot```
+  - functions and methods in camel case, first letter lowercase: ```cpp myFunction()```
+  - getter methods names do not start with get.
+  - Class constructors other than: default, copy and move constructor, must be marked as explicit.
+  - all data types in CamelCase, with the first letter uppercase: classes, structs, enums, using, typedefs, etc., examples: SportCar, UserParameter
+  - template arguments, preprocessor macros and defines in UPPER_SNAKE_CASE
+  - file names should be all lowercase separated by underscores.
+  - namespaces in snakecase, all lowercase.
+  - use full qualified names, with namespaces. Add leading :: to the namespace, example  ```cpp ::std::string```
+  - each line should be at most 100 characters long. If the arguments do not all fit on one line, they should be broken up onto multiple lines, with each subsequent line aligned with the first argument. Example:
+```cpp
+    _ptrSmartCamera->setLight(lightControlMode,
+                              ::robot_control::MinLightIntensity,
+                              actionId);
+```
+
+  - try to use the if statement with initializer. Example:
+```cpp
+    if (auto resCode= robotControl.getServoState( servoState); ::robot_control::notOk(resCode))
+    {
+      TRACE_ERR2("getServoState:", ::robot_control::to_string(resCode));
+      return resCode;
+    }
+```
+
+## Coding Guidelines
+- Most methods of classes derived from Automation Element return an enumerator ```cpp ::gw_comm::autom_elements::ErrorCode```
+- It is possible to check if the return error code is success or failure using the functions ```cpp ::gw_comm::autom_elements::isErrorCodeOk()``` and ```cpp ::gw_comm::autom_elements::isErrorCodeNotOk()```
+- Most classes and enumeration have a ```cpp to_string()``` function in the same namespace, that return a string representation of a class object. Example:
+```cpp
+
+  if ( auto errCode= aMethod(); ::gw_comm::autom_elements::isErrorCodeNotOk( errCode))
+  {
+    LOG_ERROR("aMethod failed: {}",::gw_comm::autom_elements::to_string(errCode));
+    return errCode;
+  }
+```
+
+## Logging
+  - Custom macros are used to issue log messages of a given severity, from least critical to most critical: LOG_TRACE(), LOG_DEBUG(), LOG_WARN(), LOG_ERROR(), LOG_CRITICAL()
+
+## Folder Structure
+The directory `sources/` is where relevant source code is stored.
+The most important code is stored under `sources/libs/`
+Under `sources/libs/`, each directory contains the code to compile a specific library.
+Example: `sources/libs/robot_autom_elements/` contains the code to build the library RobotAutomElements.
+Each library directory contains the subdirectories:
+  - `include` : the header files with the interface of the library
+  - `src` : the code that implements the library
+  - `test` : the unit tests, developed using Catch2
+
+Ignore the following directories, they do not contain relevant maintained source code.
+They are:
+  - `adapter/`
+  - `build/`
+  - `cmake/`
+  - `debian/`
+  - `docker/`
+  - `installed_packages/`
+  - `rta-eip/`
+  - `script/`
+  - `target/`
+
+
+## Key Files & Directories
+  - `automation-gateway-common/include/gateway-common/field_configuration_entities/robot/defs.h`: Enum and data model definitions.
+  - `automation-gateway-common/include/gateway-common/field_configuration_entities/robot/json_serdes.h`: Enum conversions and serialization.
+  - `automation-gateway-common/include/gateway-common/autom_elements/error_code.h` Error codes returned by most Automation Elements
+
+
+## Final tips
+  - Keep comments concise and meaningful.
+  - Avoid unused includes and redundant code.
+
+
+</code></pre>  
+
+</body>
+</html>
