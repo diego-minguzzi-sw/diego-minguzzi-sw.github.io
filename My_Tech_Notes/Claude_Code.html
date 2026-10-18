@@ -511,6 +511,32 @@ Best practices:
   <li>Build specialized agents for Skill, CLI and MCP tool use.</li>
 </ul>
 
+<h3>MCP Servers</h3>
+MCP connects the harness to local and external tools and services.<br>
+Anything that has a data channel can have a MCP server.<br>
+<ul>
+<li>Remote MCP servers
+  </li>
+<li>Local MCP servers
+  </li>
+</ul>
+
+<p>Best Prectices: install specialized MCP servers at project level to avoid tool overload.</p>
+If the MCP server has bundled skills, use that skills.<br>
+It is useful to bundle MCP server and skills.<br>
+
+<h2>Advanced Settings</h2>
+The settings configure the harness.
+<br>
+
+<h3>Setting up user-and-project-level settings</h3>
+
+Scope and priority matter. User level settings can be overridden.
+<br>
+The priority from bottom to top is: user-level, project-level, personal, IT managed.<br>
+Settings are expressed into JSON files. A giant JSON Object. <br>
+
+
 
 <!-- ************************************************************************************ -->
 <hr>
