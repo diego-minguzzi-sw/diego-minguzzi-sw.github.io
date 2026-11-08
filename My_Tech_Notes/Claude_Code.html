@@ -397,6 +397,10 @@
 <h2>Developing LLMs: overview</h2>
 
 
+<!-- ************************************************************************************ -->
+<hr>
+
+
 <h1>Build Reusable AI Agent Skills</h1>
 Matt Palmer, LinkedIn Learning Course.  <br>
 
@@ -404,8 +408,38 @@ The course uses Codex.<br>
 Skills can be called implicitly or explicitly.<br>  
 Implicit when the agent matches its task to the skill description.   Explicit when you name the skill at the prompt.<br>
 
+A skill can reference assets and scripts.  To reference assets and scripts, the teacher uses the relative path, starting from the skills directory, e.g.:  
+<ul>
+<li><span class="inline-code">skills/pokemon-api/scripts/pokemon-query.mjs</span></li>
+<li><span class="inline-code">skills/pokemon-api/references/pokemon-usage.md</span></li>
+</ul>
 
+For example the SKILL.md can contain an instruction:  <br>
+Read <span class="inline-code">skills/pokemon-api/references/pokemon-usage.md</span> only when something is not clear.<br>
 
+<p>
+<i>Instruct the agent to add something to the context only when it is necessary.</i> tell it how to tell when it is necessary.  
+</p>
+Use the technique of <b>progressive disclosure</b><br>.  
+Divide the SKILL.md file into:  
+<UL>
+<li><b>metadata</b>: cheap metadata. make it less than 100 tokens</li>
+<li><b>skill body</b>:  this is read and executed when the skill is triggered.  keep it below 5000 tokens, keep it less than that</li>
+<li><b>extras</b>: scripts, references and assets, loaded only when it is needed.  <br>
+    In the skill body, instruct the agent when the extras must be read and used</li>
+</UL>
+
+<h2>Evaluate skill quality with a rubric ( * * * * * )</h2>
+<ul>
+<li>Scope:  Must focus on one clear job </li>
+<li>Metadata: under 100 tokens, use a simple name and clear description </li>
+
+<li>Instructions:  a sample, direct workflow </li>
+<li>Output: a clear output shape  </li>
+<li>Resources loaded on demand, they must have a clear purpose</li>
+<li>Progressive disclosure</li>
+<li>Context use  </li>
+</ul>
 
 
 <!-- ************************************************************************************ -->
